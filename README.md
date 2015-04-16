@@ -1,2 +1,2 @@
-# Ticker
+# Skiptracer
 Time Tracking App
