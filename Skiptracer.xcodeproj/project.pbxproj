@@ -1,0 +1,687 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3BAA1B121AE025F500FF21BE /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAA1B111AE025F500FF21BE /* InterfaceController.swift */; };
+		3BAA1B141AE025F500FF21BE /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAA1B131AE025F500FF21BE /* NotificationController.swift */; };
+		3BAA1B161AE025F500FF21BE /* GlanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAA1B151AE025F500FF21BE /* GlanceController.swift */; };
+		3BAA1B181AE025F500FF21BE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BAA1B171AE025F500FF21BE /* Images.xcassets */; };
+		3BAA1B1C1AE025F500FF21BE /* Skiptracer WatchKit App.app in Resources */ = {isa = PBXBuildFile; fileRef = 3BAA1B1B1AE025F500FF21BE /* Skiptracer WatchKit App.app */; };
+		3BAA1B241AE025F500FF21BE /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3BAA1B221AE025F500FF21BE /* Interface.storyboard */; };
+		3BAA1B261AE025F500FF21BE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BAA1B251AE025F500FF21BE /* Images.xcassets */; };
+		3BC852951AE0381A009031C0 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852901AE0381A009031C0 /* Activity.swift */; };
+		3BC852961AE0381A009031C0 /* AppData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852911AE0381A009031C0 /* AppData.swift */; };
+		3BC852971AE0381A009031C0 /* Report.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852921AE0381A009031C0 /* Report.swift */; };
+		3BC852981AE0381A009031C0 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852931AE0381A009031C0 /* Settings.swift */; };
+		3BC852991AE0381A009031C0 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852941AE0381A009031C0 /* User.swift */; };
+		3BC8529B1AE03825009031C0 /* Skiptracer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3BC8529A1AE03825009031C0 /* Skiptracer.xcdatamodeld */; };
+		3BC8529F1AE03884009031C0 /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC8529C1AE03884009031C0 /* CustomTableViewCell.swift */; };
+		3BC852A01AE03884009031C0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BC8529D1AE03884009031C0 /* Images.xcassets */; };
+		3BC852A11AE03884009031C0 /* StatisticsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC8529E1AE03884009031C0 /* StatisticsTableViewCell.swift */; };
+		3BC852A61AE0389F009031C0 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3BC852A21AE0389F009031C0 /* LaunchScreen.xib */; };
+		3BC852A71AE0389F009031C0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3BC852A41AE0389F009031C0 /* Main.storyboard */; };
+		3BC852AB1AE038D8009031C0 /* Bugs.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3BC852A81AE038D8009031C0 /* Bugs.txt */; };
+		3BC852AC1AE038D8009031C0 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3BC852A91AE038D8009031C0 /* Info.plist */; };
+		3BC852AD1AE038D8009031C0 /* Plan.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3BC852AA1AE038D8009031C0 /* Plan.txt */; };
+		3BC852B11AE0390C009031C0 /* NSIndexPathAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852AE1AE0390C009031C0 /* NSIndexPathAdditions.swift */; };
+		3BC852B21AE0390C009031C0 /* SGCoreDataTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852AF1AE0390C009031C0 /* SGCoreDataTableViewController.swift */; };
+		3BC852B31AE0390C009031C0 /* SGViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852B01AE0390C009031C0 /* SGViewController.swift */; };
+		3BC852BD1AE03943009031C0 /* ActivitiesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852B41AE03943009031C0 /* ActivitiesViewController.swift */; };
+		3BC852BE1AE03943009031C0 /* ActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852B51AE03943009031C0 /* ActivityViewController.swift */; };
+		3BC852BF1AE03943009031C0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852B61AE03943009031C0 /* AppDelegate.swift */; };
+		3BC852C01AE03943009031C0 /* AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852B71AE03943009031C0 /* AppStore.swift */; };
+		3BC852C11AE03943009031C0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852B81AE03943009031C0 /* Constants.swift */; };
+		3BC852C21AE03943009031C0 /* NowViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852B91AE03943009031C0 /* NowViewController.swift */; };
+		3BC852C31AE03943009031C0 /* ReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852BA1AE03943009031C0 /* ReportViewController.swift */; };
+		3BC852C41AE03943009031C0 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852BB1AE03943009031C0 /* SettingsViewController.swift */; };
+		3BC852C51AE03943009031C0 /* StatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852BC1AE03943009031C0 /* StatisticsViewController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3BAA1B1D1AE025F500FF21BE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3B1361031ABE6E1100E0CBDC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3BAA1B1A1AE025F500FF21BE;
+			remoteInfo = "Skiptracer WatchKit App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		3B13610B1ABE6E1100E0CBDC /* Skiptracer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skiptracer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3BAA1B0C1AE025F500FF21BE /* Skiptracer WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Skiptracer WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3BAA1B0F1AE025F500FF21BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3BAA1B101AE025F500FF21BE /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
+		3BAA1B111AE025F500FF21BE /* InterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceController.swift; sourceTree = "<group>"; };
+		3BAA1B131AE025F500FF21BE /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
+		3BAA1B151AE025F500FF21BE /* GlanceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlanceController.swift; sourceTree = "<group>"; };
+		3BAA1B171AE025F500FF21BE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		3BAA1B1B1AE025F500FF21BE /* Skiptracer WatchKit App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Skiptracer WatchKit App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3BAA1B211AE025F500FF21BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3BAA1B231AE025F500FF21BE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
+		3BAA1B251AE025F500FF21BE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		3BC852901AE0381A009031C0 /* Activity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Activity.swift; path = Skiptracer/Activity.swift; sourceTree = SOURCE_ROOT; };
+		3BC852911AE0381A009031C0 /* AppData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppData.swift; path = Skiptracer/AppData.swift; sourceTree = SOURCE_ROOT; };
+		3BC852921AE0381A009031C0 /* Report.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Report.swift; path = Skiptracer/Report.swift; sourceTree = SOURCE_ROOT; };
+		3BC852931AE0381A009031C0 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Settings.swift; path = Skiptracer/Settings.swift; sourceTree = SOURCE_ROOT; };
+		3BC852941AE0381A009031C0 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = Skiptracer/User.swift; sourceTree = SOURCE_ROOT; };
+		3BC8529C1AE03884009031C0 /* CustomTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CustomTableViewCell.swift; path = Skiptracer/CustomTableViewCell.swift; sourceTree = SOURCE_ROOT; };
+		3BC8529D1AE03884009031C0 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Skiptracer/Images.xcassets; sourceTree = SOURCE_ROOT; };
+		3BC8529E1AE03884009031C0 /* StatisticsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StatisticsTableViewCell.swift; path = Skiptracer/StatisticsTableViewCell.swift; sourceTree = SOURCE_ROOT; };
+		3BC852A31AE0389F009031C0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Skiptracer/Base.lproj/LaunchScreen.xib; sourceTree = SOURCE_ROOT; };
+		3BC852A51AE0389F009031C0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Skiptracer/Base.lproj/Main.storyboard; sourceTree = SOURCE_ROOT; };
+		3BC852A81AE038D8009031C0 /* Bugs.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Bugs.txt; path = Skiptracer/Bugs.txt; sourceTree = SOURCE_ROOT; };
+		3BC852A91AE038D8009031C0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Skiptracer/Info.plist; sourceTree = SOURCE_ROOT; };
+		3BC852AA1AE038D8009031C0 /* Plan.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Plan.txt; path = Skiptracer/Plan.txt; sourceTree = SOURCE_ROOT; };
+		3BC852AE1AE0390C009031C0 /* NSIndexPathAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NSIndexPathAdditions.swift; path = Skiptracer/NSIndexPathAdditions.swift; sourceTree = SOURCE_ROOT; };
+		3BC852AF1AE0390C009031C0 /* SGCoreDataTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SGCoreDataTableViewController.swift; path = Skiptracer/SGCoreDataTableViewController.swift; sourceTree = SOURCE_ROOT; };
+		3BC852B01AE0390C009031C0 /* SGViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SGViewController.swift; path = Skiptracer/SGViewController.swift; sourceTree = SOURCE_ROOT; };
+		3BC852B41AE03943009031C0 /* ActivitiesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ActivitiesViewController.swift; path = Skiptracer/ActivitiesViewController.swift; sourceTree = SOURCE_ROOT; };
+		3BC852B51AE03943009031C0 /* ActivityViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ActivityViewController.swift; path = Skiptracer/ActivityViewController.swift; sourceTree = SOURCE_ROOT; };
+		3BC852B61AE03943009031C0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Skiptracer/AppDelegate.swift; sourceTree = SOURCE_ROOT; };
+		3BC852B71AE03943009031C0 /* AppStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppStore.swift; path = Skiptracer/AppStore.swift; sourceTree = SOURCE_ROOT; };
+		3BC852B81AE03943009031C0 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = Skiptracer/Constants.swift; sourceTree = SOURCE_ROOT; };
+		3BC852B91AE03943009031C0 /* NowViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NowViewController.swift; path = Skiptracer/NowViewController.swift; sourceTree = SOURCE_ROOT; };
+		3BC852BA1AE03943009031C0 /* ReportViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReportViewController.swift; path = Skiptracer/ReportViewController.swift; sourceTree = SOURCE_ROOT; };
+		3BC852BB1AE03943009031C0 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettingsViewController.swift; path = Skiptracer/SettingsViewController.swift; sourceTree = SOURCE_ROOT; };
+		3BC852BC1AE03943009031C0 /* StatisticsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StatisticsViewController.swift; path = Skiptracer/StatisticsViewController.swift; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3B1361081ABE6E1100E0CBDC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3BAA1B091AE025F500FF21BE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3B1361021ABE6E1100E0CBDC = {
+			isa = PBXGroup;
+			children = (
+				3B13610D1ABE6E1100E0CBDC /* Skiptracer */,
+				3BAA1B1F1AE025F500FF21BE /* Watch */,
+				3BAA1B0D1AE025F500FF21BE /* Watch Extension */,
+				3B13610C1ABE6E1100E0CBDC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3B13610C1ABE6E1100E0CBDC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3B13610B1ABE6E1100E0CBDC /* Skiptracer.app */,
+				3BAA1B0C1AE025F500FF21BE /* Skiptracer WatchKit Extension.appex */,
+				3BAA1B1B1AE025F500FF21BE /* Skiptracer WatchKit App.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3B13610D1ABE6E1100E0CBDC /* Skiptracer */ = {
+			isa = PBXGroup;
+			children = (
+				3BA64E161ACB4AB600D5AE92 /* Models */,
+				3BA64E171ACB4AC500D5AE92 /* Views */,
+				3BA64E181ACB4AD000D5AE92 /* Controllers */,
+				3B84A4601AD09C4400F4ABD4 /* Additions */,
+				3B13610E1ABE6E1100E0CBDC /* Supporting Files */,
+			);
+			name = Skiptracer;
+			path = Ticker;
+			sourceTree = "<group>";
+		};
+		3B13610E1ABE6E1100E0CBDC /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				3BC852A91AE038D8009031C0 /* Info.plist */,
+				3BC852A81AE038D8009031C0 /* Bugs.txt */,
+				3BC852AA1AE038D8009031C0 /* Plan.txt */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		3B84A4601AD09C4400F4ABD4 /* Additions */ = {
+			isa = PBXGroup;
+			children = (
+				3BC852B01AE0390C009031C0 /* SGViewController.swift */,
+				3BC852AF1AE0390C009031C0 /* SGCoreDataTableViewController.swift */,
+				3BC852AE1AE0390C009031C0 /* NSIndexPathAdditions.swift */,
+			);
+			name = Additions;
+			sourceTree = "<group>";
+		};
+		3BA64E161ACB4AB600D5AE92 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				3BC8529A1AE03825009031C0 /* Skiptracer.xcdatamodeld */,
+				3BC852911AE0381A009031C0 /* AppData.swift */,
+				3BC852941AE0381A009031C0 /* User.swift */,
+				3BC852901AE0381A009031C0 /* Activity.swift */,
+				3BC852921AE0381A009031C0 /* Report.swift */,
+				3BC852931AE0381A009031C0 /* Settings.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		3BA64E171ACB4AC500D5AE92 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3BC8529D1AE03884009031C0 /* Images.xcassets */,
+				3BC852A21AE0389F009031C0 /* LaunchScreen.xib */,
+				3BC852A41AE0389F009031C0 /* Main.storyboard */,
+				3BC8529C1AE03884009031C0 /* CustomTableViewCell.swift */,
+				3BC8529E1AE03884009031C0 /* StatisticsTableViewCell.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		3BA64E181ACB4AD000D5AE92 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				3BC852B81AE03943009031C0 /* Constants.swift */,
+				3BC852B61AE03943009031C0 /* AppDelegate.swift */,
+				3BC852B71AE03943009031C0 /* AppStore.swift */,
+				3BC852B91AE03943009031C0 /* NowViewController.swift */,
+				3BC852B41AE03943009031C0 /* ActivitiesViewController.swift */,
+				3BC852B51AE03943009031C0 /* ActivityViewController.swift */,
+				3BC852BC1AE03943009031C0 /* StatisticsViewController.swift */,
+				3BC852BA1AE03943009031C0 /* ReportViewController.swift */,
+				3BC852BB1AE03943009031C0 /* SettingsViewController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		3BAA1B0D1AE025F500FF21BE /* Watch Extension */ = {
+			isa = PBXGroup;
+			children = (
+				3BAA1B111AE025F500FF21BE /* InterfaceController.swift */,
+				3BAA1B131AE025F500FF21BE /* NotificationController.swift */,
+				3BAA1B151AE025F500FF21BE /* GlanceController.swift */,
+				3BAA1B171AE025F500FF21BE /* Images.xcassets */,
+				3BAA1B0E1AE025F500FF21BE /* Supporting Files */,
+			);
+			name = "Watch Extension";
+			path = "Skiptracer WatchKit Extension";
+			sourceTree = "<group>";
+		};
+		3BAA1B0E1AE025F500FF21BE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				3BAA1B0F1AE025F500FF21BE /* Info.plist */,
+				3BAA1B101AE025F500FF21BE /* PushNotificationPayload.apns */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		3BAA1B1F1AE025F500FF21BE /* Watch */ = {
+			isa = PBXGroup;
+			children = (
+				3BAA1B221AE025F500FF21BE /* Interface.storyboard */,
+				3BAA1B251AE025F500FF21BE /* Images.xcassets */,
+				3BAA1B201AE025F500FF21BE /* Supporting Files */,
+			);
+			name = Watch;
+			path = "Skiptracer WatchKit App";
+			sourceTree = "<group>";
+		};
+		3BAA1B201AE025F500FF21BE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				3BAA1B211AE025F500FF21BE /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3B13610A1ABE6E1100E0CBDC /* Skiptracer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3B13612C1ABE6E1100E0CBDC /* Build configuration list for PBXNativeTarget "Skiptracer" */;
+			buildPhases = (
+				3B1361071ABE6E1100E0CBDC /* Sources */,
+				3B1361081ABE6E1100E0CBDC /* Frameworks */,
+				3B1361091ABE6E1100E0CBDC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Skiptracer;
+			productName = Ticker;
+			productReference = 3B13610B1ABE6E1100E0CBDC /* Skiptracer.app */;
+			productType = "com.apple.product-type.application";
+		};
+		3BAA1B0B1AE025F500FF21BE /* Skiptracer WatchKit Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3BAA1B2D1AE025F500FF21BE /* Build configuration list for PBXNativeTarget "Skiptracer WatchKit Extension" */;
+			buildPhases = (
+				3BAA1B081AE025F500FF21BE /* Sources */,
+				3BAA1B091AE025F500FF21BE /* Frameworks */,
+				3BAA1B0A1AE025F500FF21BE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3BAA1B1E1AE025F500FF21BE /* PBXTargetDependency */,
+			);
+			name = "Skiptracer WatchKit Extension";
+			productName = "Skiptracer WatchKit Extension";
+			productReference = 3BAA1B0C1AE025F500FF21BE /* Skiptracer WatchKit Extension.appex */;
+			productType = "com.apple.product-type.watchkit-extension";
+		};
+		3BAA1B1A1AE025F500FF21BE /* Skiptracer WatchKit App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3BAA1B2A1AE025F500FF21BE /* Build configuration list for PBXNativeTarget "Skiptracer WatchKit App" */;
+			buildPhases = (
+				3BAA1B191AE025F500FF21BE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Skiptracer WatchKit App";
+			productName = "Skiptracer WatchKit App";
+			productReference = 3BAA1B1B1AE025F500FF21BE /* Skiptracer WatchKit App.app */;
+			productType = "com.apple.product-type.application.watchapp";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3B1361031ABE6E1100E0CBDC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = "Secret Geometry, Inc.";
+				TargetAttributes = {
+					3B13610A1ABE6E1100E0CBDC = {
+						CreatedOnToolsVersion = 6.1.1;
+						DevelopmentTeam = B55ZL2Y7PW;
+					};
+					3BAA1B0B1AE025F500FF21BE = {
+						CreatedOnToolsVersion = 6.3;
+						DevelopmentTeam = B55ZL2Y7PW;
+					};
+					3BAA1B1A1AE025F500FF21BE = {
+						CreatedOnToolsVersion = 6.3;
+					};
+				};
+			};
+			buildConfigurationList = 3B1361061ABE6E1100E0CBDC /* Build configuration list for PBXProject "Skiptracer" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 3B1361021ABE6E1100E0CBDC;
+			productRefGroup = 3B13610C1ABE6E1100E0CBDC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3B13610A1ABE6E1100E0CBDC /* Skiptracer */,
+				3BAA1B0B1AE025F500FF21BE /* Skiptracer WatchKit Extension */,
+				3BAA1B1A1AE025F500FF21BE /* Skiptracer WatchKit App */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3B1361091ABE6E1100E0CBDC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3BC852A61AE0389F009031C0 /* LaunchScreen.xib in Resources */,
+				3BC852A71AE0389F009031C0 /* Main.storyboard in Resources */,
+				3BC852A01AE03884009031C0 /* Images.xcassets in Resources */,
+				3BC852AC1AE038D8009031C0 /* Info.plist in Resources */,
+				3BC852AB1AE038D8009031C0 /* Bugs.txt in Resources */,
+				3BC852AD1AE038D8009031C0 /* Plan.txt in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3BAA1B0A1AE025F500FF21BE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3BAA1B1C1AE025F500FF21BE /* Skiptracer WatchKit App.app in Resources */,
+				3BAA1B181AE025F500FF21BE /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3BAA1B191AE025F500FF21BE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3BAA1B241AE025F500FF21BE /* Interface.storyboard in Resources */,
+				3BAA1B261AE025F500FF21BE /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3B1361071ABE6E1100E0CBDC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3BC852971AE0381A009031C0 /* Report.swift in Sources */,
+				3BC852BD1AE03943009031C0 /* ActivitiesViewController.swift in Sources */,
+				3BC852951AE0381A009031C0 /* Activity.swift in Sources */,
+				3BC852961AE0381A009031C0 /* AppData.swift in Sources */,
+				3BC852BF1AE03943009031C0 /* AppDelegate.swift in Sources */,
+				3BC852C41AE03943009031C0 /* SettingsViewController.swift in Sources */,
+				3BC8529F1AE03884009031C0 /* CustomTableViewCell.swift in Sources */,
+				3BC852C01AE03943009031C0 /* AppStore.swift in Sources */,
+				3BC852C21AE03943009031C0 /* NowViewController.swift in Sources */,
+				3BC852C11AE03943009031C0 /* Constants.swift in Sources */,
+				3BC852B11AE0390C009031C0 /* NSIndexPathAdditions.swift in Sources */,
+				3BC852C51AE03943009031C0 /* StatisticsViewController.swift in Sources */,
+				3BC852981AE0381A009031C0 /* Settings.swift in Sources */,
+				3BC852A11AE03884009031C0 /* StatisticsTableViewCell.swift in Sources */,
+				3BC852BE1AE03943009031C0 /* ActivityViewController.swift in Sources */,
+				3BC852B21AE0390C009031C0 /* SGCoreDataTableViewController.swift in Sources */,
+				3BC852C31AE03943009031C0 /* ReportViewController.swift in Sources */,
+				3BC852991AE0381A009031C0 /* User.swift in Sources */,
+				3BC852B31AE0390C009031C0 /* SGViewController.swift in Sources */,
+				3BC8529B1AE03825009031C0 /* Skiptracer.xcdatamodeld in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3BAA1B081AE025F500FF21BE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3BAA1B141AE025F500FF21BE /* NotificationController.swift in Sources */,
+				3BAA1B121AE025F500FF21BE /* InterfaceController.swift in Sources */,
+				3BAA1B161AE025F500FF21BE /* GlanceController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3BAA1B1E1AE025F500FF21BE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3BAA1B1A1AE025F500FF21BE /* Skiptracer WatchKit App */;
+			targetProxy = 3BAA1B1D1AE025F500FF21BE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		3BAA1B221AE025F500FF21BE /* Interface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3BAA1B231AE025F500FF21BE /* Base */,
+			);
+			name = Interface.storyboard;
+			sourceTree = "<group>";
+		};
+		3BC852A21AE0389F009031C0 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3BC852A31AE0389F009031C0 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+		3BC852A41AE0389F009031C0 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3BC852A51AE0389F009031C0 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		3B13612A1ABE6E1100E0CBDC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_SWIFT_FLAGS = "-D DEBUG";
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3B13612B1ABE6E1100E0CBDC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		3B13612D1ABE6E1100E0CBDC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = Skiptracer/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = Skiptracer;
+				PROVISIONING_PROFILE = "";
+			};
+			name = Debug;
+		};
+		3B13612E1ABE6E1100E0CBDC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = Skiptracer/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = Skiptracer;
+				PROVISIONING_PROFILE = "";
+			};
+			name = Release;
+		};
+		3BAA1B2B1AE025F500FF21BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IBSC_MODULE = Skiptracer_WatchKit_Extension;
+				INFOPLIST_FILE = "Skiptracer WatchKit App/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = "1,4";
+			};
+			name = Debug;
+		};
+		3BAA1B2C1AE025F500FF21BE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_NO_COMMON_BLOCKS = YES;
+				IBSC_MODULE = Skiptracer_WatchKit_Extension;
+				INFOPLIST_FILE = "Skiptracer WatchKit App/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				"TARGETED_DEVICE_FAMILY[sdk=iphonesimulator*]" = "1,4";
+			};
+			name = Release;
+		};
+		3BAA1B2E1AE025F500FF21BE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Skiptracer WatchKit Extension/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		3BAA1B2F1AE025F500FF21BE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = "Skiptracer WatchKit Extension/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3B1361061ABE6E1100E0CBDC /* Build configuration list for PBXProject "Skiptracer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3B13612A1ABE6E1100E0CBDC /* Debug */,
+				3B13612B1ABE6E1100E0CBDC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3B13612C1ABE6E1100E0CBDC /* Build configuration list for PBXNativeTarget "Skiptracer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3B13612D1ABE6E1100E0CBDC /* Debug */,
+				3B13612E1ABE6E1100E0CBDC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3BAA1B2A1AE025F500FF21BE /* Build configuration list for PBXNativeTarget "Skiptracer WatchKit App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3BAA1B2B1AE025F500FF21BE /* Debug */,
+				3BAA1B2C1AE025F500FF21BE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3BAA1B2D1AE025F500FF21BE /* Build configuration list for PBXNativeTarget "Skiptracer WatchKit Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3BAA1B2E1AE025F500FF21BE /* Debug */,
+				3BAA1B2F1AE025F500FF21BE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		3BC8529A1AE03825009031C0 /* Skiptracer.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+			);
+			name = Skiptracer.xcdatamodeld;
+			path = ../Skiptracer/Skiptracer.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 3B1361031ABE6E1100E0CBDC /* Project object */;
+}

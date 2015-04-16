@@ -1,0 +1,58 @@
+Plan
+====
+
+0.2 Breaks
+----------
+
+- Data model
+- Break button action
+- Update Now UI during break
+- End breaks when activity changes
+- Implement automatic breaks
+- Subtract from total in statistics
+
+SGExpandableTableViewController:
+- Change ActivityViewController to subclass
+- Add breaks cell to Report detail view
+- Break detail view (or Breaks view)
+
+0.X Alerts
+----------
+
+- Read up
+- Implement break alerts
+- Implement progress alerts
+- Background stay-alive thread?
+
+0.X iCloud
+----------
+
+- Read https://developer.apple.com/library/ios/documentation/DataManagement/Conceptual/UsingCoreDataWithiCloudPG/UsingSQLiteStoragewithiCloud/UsingSQLiteStoragewithiCloud.html#//apple_ref/doc/uid/TP40013491-CH3-SW1
+
+0.X In-App Purchases
+--------------------
+
+- Add UI
+- Test with servers
+
+0.X iPad
+--------
+
+- SplitViewControllers
+- Rotation
+
+0.X iWatch
+----------
+
+0.X Internationalization
+------------------------
+
+0.X Graphs
+----------
+
+0.X Fun
+-------
+
+- Customizable intro sentence
+- Customizable sounds for breaks and progress
+- User images for activities
