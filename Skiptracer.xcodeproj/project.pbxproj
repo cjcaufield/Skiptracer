@@ -26,7 +26,6 @@
 		3BC852A61AE0389F009031C0 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3BC852A21AE0389F009031C0 /* LaunchScreen.xib */; };
 		3BC852A71AE0389F009031C0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3BC852A41AE0389F009031C0 /* Main.storyboard */; };
 		3BC852AB1AE038D8009031C0 /* Bugs.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3BC852A81AE038D8009031C0 /* Bugs.txt */; };
-		3BC852AC1AE038D8009031C0 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3BC852A91AE038D8009031C0 /* Info.plist */; };
 		3BC852AD1AE038D8009031C0 /* Plan.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3BC852AA1AE038D8009031C0 /* Plan.txt */; };
 		3BC852B11AE0390C009031C0 /* NSIndexPathAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852AE1AE0390C009031C0 /* NSIndexPathAdditions.swift */; };
 		3BC852B21AE0390C009031C0 /* SGCoreDataTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852AF1AE0390C009031C0 /* SGCoreDataTableViewController.swift */; };
@@ -304,7 +303,7 @@
 		3B1361031ABE6E1100E0CBDC /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = "Secret Geometry, Inc.";
 				TargetAttributes = {
 					3B13610A1ABE6E1100E0CBDC = {
@@ -348,7 +347,6 @@
 				3BC852A61AE0389F009031C0 /* LaunchScreen.xib in Resources */,
 				3BC852A71AE0389F009031C0 /* Main.storyboard in Resources */,
 				3BC852A01AE03884009031C0 /* Images.xcassets in Resources */,
-				3BC852AC1AE038D8009031C0 /* Info.plist in Resources */,
 				3BC852AB1AE038D8009031C0 /* Bugs.txt in Resources */,
 				3BC852AD1AE038D8009031C0 /* Plan.txt in Resources */,
 			);

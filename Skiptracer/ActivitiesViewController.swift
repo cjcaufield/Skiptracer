@@ -25,7 +25,6 @@ class ActivitiesViewController: SGCoreDataTableViewController {
     
     override func cellIdentifierForObject(object: AnyObject) -> String {
         return "Activity"
-        UILayoutPriorityRequired
     }
     
     override func createNewObject() -> AnyObject {
