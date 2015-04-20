@@ -1,5 +1,5 @@
 //
-//  StatisticsViewController.swift
+//  ReportsViewController.swift
 //  Skiptracer
 //
 //  Created by Colin Caufield on 3/31/15.
@@ -9,30 +9,48 @@
 import UIKit
 import CoreData
 
-class StatisticsViewController: SGCoreDataTableViewController {
+class ReportsViewController: SGCoreDataTableViewController {
 
     var timer: NSTimer?
+    var parent: Report?
     
-    override var entityName: String { return "Report" }
+    override var needsBackButton: Bool {
+        return self.parent != nil
+    }
     
-    override var fetchPredicate: NSPredicate? { return AppData.shared.currentUserPredicate() }
+    override var entityName: String {
+        return "Report"
+    }
     
-    override var sortDescriptors: [NSSortDescriptor] { return [NSSortDescriptor(key: "startDate", ascending: false)] }
+    override var fetchPredicate: NSPredicate? {
+        let data = AppData.shared
+        let userPredicate = data.currentUserPredicate()
+        let parentPredicate = data.parentReportPredicate(self.parent)
+        return NSCompoundPredicate.andPredicateWithSubpredicates([userPredicate, parentPredicate])
+    }
     
-    override var sectionKey: String? { return "dayText" }
+    override var sortDescriptors: [NSSortDescriptor] {
+        return [NSSortDescriptor(key: "startDate", ascending: false)]
+    }
     
-    override var headerHeight: CGFloat { return 22.0 }
+    override var sectionKey: String? {
+        return (self.parent == nil) ? "dayText" : nil
+    }
+    
+    override var headerHeight: CGFloat {
+        return (self.parent == nil) ? 22.0 : 0.0
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.refreshData() // Currently needed to handle activity name changes.
+        self.configureView() // Currently needed for refreshing if the activity name changes.
         let center = NSNotificationCenter.defaultCenter()
         center.addObserver(self, selector: "userWasSwitched:", name: UserWasSwitchedNotification, object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.refreshData()
+        self.configureView()
         self.timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "updateClock", userInfo: nil, repeats: true)
     }
     
@@ -42,12 +60,18 @@ class StatisticsViewController: SGCoreDataTableViewController {
         self.timer = nil
     }
     
+    func configureView() {
+        self.title = (self.parent == nil) ? "Reports" : "Breaks"
+        self.refreshData()
+    }
+    
     func updateClock() {
         let user = AppData.shared.settings.currentUser
+        // CJC: recursive fix
         if let report = user?.currentReport {
             if report.active {
                 if let path = self.fetchController.indexPathForObject(report) {
-                    if let cell = self.tableView.cellForRowAtIndexPath(path) as? StatisticsTableViewCell {
+                    if let cell = self.tableView.cellForRowAtIndexPath(path) as? ReportsTableViewCell {
                         self.configureCell(cell, withObject: report)
                     }
                 }
@@ -60,7 +84,9 @@ class StatisticsViewController: SGCoreDataTableViewController {
         header.textLabel.textColor = UIColor(white: 0.6, alpha: 1.0)
         header.textLabel.font = UIFont.systemFontOfSize(12.0)
         header.textLabel.frame = header.frame
-        //header.textLabel.textAlignment = NSTextAlignment.Center
+        if self.centerHeaderText {
+            header.textLabel.textAlignment = NSTextAlignment.Center
+        }
     }
     
     override func cellIdentifierForObject(object: AnyObject) -> String {
@@ -68,15 +94,32 @@ class StatisticsViewController: SGCoreDataTableViewController {
     }
     
     override func createNewObject() -> AnyObject {
-        return AppData.shared.createReport(nil, user: AppData.shared.settings.currentUser, active: false)
+        let data = AppData.shared
+        let user = data.settings.currentUser
+        let isBreak = (self.parent != nil)
+        return data.createReport(nil, parent: parent, user: user, active: false, isBreak: isBreak)
     }
     
     override func configureCell(cell: UITableViewCell, withObject object: AnyObject) {
         
         let report = object as? Report
         
-        if let statsCell = cell as? StatisticsTableViewCell {
-            statsCell.leftLabel?.text = report?.activity?.name ?? "Untitled"
+        if let statsCell = cell as? ReportsTableViewCell {
+            
+            var label = "Untitled"
+            
+            if report != nil && report!.isBreak {
+                label = "Break"
+                if let breaks = self.fetchController.fetchedObjects as? [Report] {
+                    if let index = find(breaks, report!) {
+                        label += " \(index + 1)"
+                    }
+                }
+            } else {
+                label = report?.activity?.name ?? "Untitled"
+            }
+            
+            statsCell.leftLabel?.text = label
             statsCell.middleLabel?.text = report?.startAndEndText ?? ""
             statsCell.rightLabel?.text = report?.lengthText ?? ""
         }

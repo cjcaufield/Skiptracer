@@ -12,12 +12,25 @@ import CoreData
 class SGCoreDataTableViewController: UITableViewController, NSFetchedResultsControllerDelegate {
     
     override func viewDidLoad() {
+        
         super.viewDidLoad()
-        self.navigationItem.leftBarButtonItem = self.editButtonItem()
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "add:")
+        
+        let editButton = self.editButtonItem()
+        let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "add:")
+        
+        let navItem = self.navigationItem
+        
+        if (self.needsBackButton) {
+            navItem.rightBarButtonItems = [addButton, editButton]
+        } else {
+            navItem.leftBarButtonItem = editButton
+            navItem.rightBarButtonItem = addButton
+        }
     }
     
     // MARK: - Methods to override.
+    
+    var needsBackButton: Bool { return false }
     
     var fetchPredicate: NSPredicate? { return nil }
     
@@ -28,6 +41,8 @@ class SGCoreDataTableViewController: UITableViewController, NSFetchedResultsCont
     var sectionKey: String? { return nil }
     
     var headerHeight: CGFloat { return 0.0 }
+    
+    var centerHeaderText: Bool { return false }
     
     var cacheName: String? { return nil }
     

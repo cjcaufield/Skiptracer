@@ -4,22 +4,28 @@ Plan
 0.2 Breaks
 ----------
 
-- Data model
-- Break button action
-- Update Now UI during break
-- End breaks when activity changes
-- Implement automatic breaks
-- Subtract from total in statistics
+Now:
+* Break button action
+* End breaks when activity changes
+* Update Now UI during break
+* Fade clock during activity transitions
 
-SGExpandableTableViewController:
-- Change ActivityViewController to subclass
-- Add breaks cell to Report detail view
-- Break detail view (or Breaks view)
+Stats:
+* Hide activity and breaks cells in breaks.
+* Only show "Done" button in detail views when adding objects.
+* Fix updating clock for active breaks.
+* Break count doesn't update when returning to report after manually adding breaks.
 
 0.X Alerts
 ----------
 
-- Read up
+SGExpandableTableViewController:
+- Implement abstract class
+- Use as base class for ActivityViewController
+- Add picker logic to ActivityViewController
+
+Alerts:
+- Read https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Introduction.html#//apple_ref/doc/uid/TP40008194-CH1-SW1
 - Implement break alerts
 - Implement progress alerts
 - Background stay-alive thread?

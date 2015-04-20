@@ -17,10 +17,13 @@ class Report: NSManagedObject {
 
     @NSManaged var user: User?
     @NSManaged var activity: Activity?
+    @NSManaged var parent: Report?
+    @NSManaged var breaks: NSSet
     @NSManaged var startDate: NSDate
     @NSManaged var endDate: NSDate
     @NSManaged var notes: String?
     @NSManaged var active: Bool
+    @NSManaged var isBreak: Bool
 
     var length: Double {
         let nowOrEndDate = (self.active) ? NSDate() : self.endDate
@@ -77,6 +80,12 @@ class Report: NSManagedObject {
         
         var startText = startAndEndFormatter?.stringFromDate(self.startDate)
         var endText = startAndEndFormatter?.stringFromDate(endDate)
+        
+        /*
+        if self.active {
+            endText = "now"
+        }
+        */
         
         if startText != nil && endText != nil {
             return startText! + " - " + endText!

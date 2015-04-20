@@ -76,14 +76,24 @@ class AppData: NSObject {
         return activity
     }
     
-    func createReport(activity: Activity?, user: User?, active: Bool) -> Report {
+    func createReport(activity: Activity?, parent: Report?, user: User?, active: Bool, isBreak: Bool) -> Report {
         var report = self.insertNewObject("Report") as! Report
         report.active = active
+        report.isBreak = isBreak
+        report.parent = parent
         report.activity = activity
         report.startDate = NSDate()
         report.endDate = NSDate()
         report.user = user
         return report
+    }
+    
+    func createReport(activity: Activity?, user: User?, active: Bool) -> Report {
+        return createReport(activity, parent: nil, user: user, active: active, isBreak: false)
+    }
+    
+    func createBreak(parent: Report?, user: User?, active: Bool) -> Report {
+        return createReport(nil, parent: parent, user: user, active: active, isBreak: true)
     }
     
     func save() {
@@ -161,13 +171,20 @@ class AppData: NSObject {
     func userPredicate(testUser: Bool = false) -> NSPredicate {
         let user = testUser ? self.testUser : self.basicUser
         return NSPredicate(format: "user = %@", user)
-        //return NSPredicate(format: "user = %@", self.settings.currentUser!)!
     }
     
     func currentUserPredicate() -> NSPredicate {
         return self.userPredicate(testUser: self.settings.enableTestUser)
     }
-   
+    
+    func parentReportPredicate(parent: Report?)-> NSPredicate {
+        if parent != nil {
+            return NSPredicate(format: "parent = %@", parent!)
+        } else {
+            return NSPredicate(format: "parent = nil")
+        }
+    }
+    
     lazy var applicationDocumentsDirectory: NSURL = {
         let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
         return urls[urls.count - 1] as! NSURL

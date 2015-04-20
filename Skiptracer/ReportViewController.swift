@@ -16,13 +16,15 @@ struct CellData {
 let ACTIVITY_SECTION        = 0
 let START_DATE_SECTION      = 1
 let FINISH_DATE_SECTION     = 2
-let NOTES_SECTION           = 3
+let BREAKS_SECTION          = 3
+let NOTES_SECTION           = 4
 let ACTIVITY_PICKER_TAG     = 1000
 let DATE_PICKER_TAG         = 1001
 let ACTIVITY_LABEL_CELL_ID  = "ActivityLabel"
 let ACTIVITY_PICKER_CELL_ID = "ActivityPicker"
 let DATE_LABEL_CELL_ID      = "DateLabel"
 let DATE_PICKER_CELL_ID     = "DatePicker"
+let BREAKS_LABEL_CELL_ID    = "BreaksLabel"
 let NOTES_CELL_ID           = "Notes"
 let OTHER_CELL_ID           = "Other"
 
@@ -65,6 +67,9 @@ class ReportViewController: UITableViewController, UITextViewDelegate, UIPickerV
                 CellData(title: "End Date", modelPath: "endDate")
             ],
             [
+                CellData(title: "Breaks", modelPath: "breaks")
+            ],
+            [
                 CellData(title: "", modelPath: "notes")
             ]
         ]
@@ -82,6 +87,11 @@ class ReportViewController: UITableViewController, UITextViewDelegate, UIPickerV
         super.viewDidDisappear(animated)
         self.timer?.invalidate()
         self.timer = nil
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        let newViewController = segue.destinationViewController as! ReportsViewController
+        newViewController.parent = self.report
     }
     
     func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
@@ -154,7 +164,6 @@ class ReportViewController: UITableViewController, UITextViewDelegate, UIPickerV
     }
     
     func indexPathHasActivityLabel(indexPath: NSIndexPath) -> Bool {
-        
         return indexPath.section == ACTIVITY_SECTION && indexPath.row == 0
     }
     
@@ -193,8 +202,12 @@ class ReportViewController: UITableViewController, UITextViewDelegate, UIPickerV
         return false
     }
     
+    func indexPathHasBreaksLabel(indexPath: NSIndexPath) -> Bool {
+        return indexPath.section == BREAKS_SECTION && indexPath.row == 0
+    }
+    
     func indexPathHasNotes(indexPath: NSIndexPath) -> Bool {
-        return indexPath.section == 3 && indexPath.row == 0
+        return indexPath.section == NOTES_SECTION && indexPath.row == 0
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -249,15 +262,18 @@ class ReportViewController: UITableViewController, UITextViewDelegate, UIPickerV
         else if self.indexPathHasDatePicker(indexPath) {
             cellID = DATE_PICKER_CELL_ID
         }
+        else if self.indexPathHasBreaksLabel(indexPath) {
+            cellID = BREAKS_LABEL_CELL_ID
+        }
         else if self.indexPathHasNotes(indexPath) {
             cellID = NOTES_CELL_ID
         }
         
-        var cell = self.tableView.dequeueReusableCellWithIdentifier(cellID) as! UITableViewCell
+        var cell = self.tableView.dequeueReusableCellWithIdentifier(cellID) as? UITableViewCell
         
-        self.configureCell(cell, atIndexPath: indexPath)
+        self.configureCell(cell!, atIndexPath: indexPath)
         
-        return cell
+        return cell!
     }
     
     func configureCell(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) {
@@ -296,6 +312,18 @@ class ReportViewController: UITableViewController, UITextViewDelegate, UIPickerV
             } else {
                 cell.detailTextLabel?.text = ""
             }
+            
+            let editable = (self.report?.active == false)
+            cell.userInteractionEnabled = editable
+            cell.textLabel?.enabled = editable
+            cell.detailTextLabel?.enabled = editable
+        
+        } else if cellID == BREAKS_LABEL_CELL_ID {
+            
+            let breakCount = self.report?.breaks.count ?? 0
+            
+            cell.textLabel?.text = item.title
+            cell.detailTextLabel?.text = "\(breakCount)"
             
             let editable = (self.report?.active == false)
             cell.userInteractionEnabled = editable

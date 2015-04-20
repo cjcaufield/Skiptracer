@@ -1,5 +1,5 @@
 //
-//  StatisticsTableViewCell.swift
+//  ReportsTableViewCell.swift
 //  Skiptracer
 //
 //  Created by Colin Caufield on 4/4/15.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class StatisticsTableViewCell: CustomTableViewCell
+class ReportsTableViewCell: CustomTableViewCell
 {
     @IBOutlet weak var leftLabel: UILabel!
     @IBOutlet weak var middleLabel: UILabel!
