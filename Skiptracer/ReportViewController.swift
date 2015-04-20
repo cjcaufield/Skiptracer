@@ -36,6 +36,7 @@ class ReportViewController: UITableViewController, UITextViewDelegate, UIPickerV
     var cellData = [[CellData]]()
     var dateFormatter: NSDateFormatter?
     var revealedCellIndexPath: NSIndexPath?
+    var showDoneButton = false
     
     var report: Report? {
         didSet {
@@ -45,11 +46,16 @@ class ReportViewController: UITableViewController, UITextViewDelegate, UIPickerV
         }
     }
     
+    var hideActivityRow: Bool { return self.report?.isBreak ?? false }
+    var hideBreaksRow: Bool { return self.report?.isBreak ?? false }
+    
     override func viewDidLoad() {
         
         super.viewDidLoad()
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "done:")
+        if self.showDoneButton {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "done:")
+        }
         
         self.dateFormatter = NSDateFormatter()
         self.dateFormatter?.dateStyle = .MediumStyle
@@ -119,6 +125,8 @@ class ReportViewController: UITableViewController, UITextViewDelegate, UIPickerV
         let data = AppData.shared
         self.user = data.settings.currentUser
         self.activities = data.fetchOrderedActivities()
+        
+        self.tableView.reloadData()
         
         self.updateClock()
     }
@@ -220,6 +228,14 @@ class ReportViewController: UITableViewController, UITextViewDelegate, UIPickerV
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         
+        if indexPath.section == ACTIVITY_SECTION && self.hideActivityRow {
+            return 0.0
+        }
+        
+        if indexPath.section == BREAKS_SECTION && self.hideBreaksRow {
+            return 0.0
+        }
+        
         if self.indexPathHasDatePicker(indexPath) {
             return 216.0 //self.pickerCellRowHeight
         }
@@ -274,6 +290,17 @@ class ReportViewController: UITableViewController, UITextViewDelegate, UIPickerV
         self.configureCell(cell!, atIndexPath: indexPath)
         
         return cell!
+    }
+    
+    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        let isActivity = indexPath.section == ACTIVITY_SECTION && self.hideActivityRow
+        let isBreaks = indexPath.section == BREAKS_SECTION && self.hideBreaksRow
+        
+        if isActivity || isBreaks {
+            cell.hidden = true
+            cell.userInteractionEnabled = false
+        }
     }
     
     func configureCell(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) {

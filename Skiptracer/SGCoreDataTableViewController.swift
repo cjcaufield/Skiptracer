@@ -68,7 +68,7 @@ class SGCoreDataTableViewController: UITableViewController, NSFetchedResultsCont
         // nothing
     }
     
-    func didSelectObject(object: AnyObject) {
+    func didSelectObject(object: AnyObject, new: Bool = false) {
         // nothing
     }
     
@@ -84,7 +84,7 @@ class SGCoreDataTableViewController: UITableViewController, NSFetchedResultsCont
         self.prepareNewObject(object)
         
         if self.autoSelectAddedObjects {
-            self.didSelectObject(object)
+            self.didSelectObject(object, new: true)
         }
         
         AppData.shared.save()

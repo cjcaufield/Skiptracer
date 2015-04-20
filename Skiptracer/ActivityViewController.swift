@@ -19,6 +19,8 @@ class ActivityViewController: UITableViewController, UITextFieldDelegate {
     @IBOutlet weak var progressSwitch: UISwitch!
     @IBOutlet weak var progressIntervalField: UITextField!
     
+    var showDoneButton = false
+    
     var activity: Activity? {
         didSet {
             if self.tableView != nil {
@@ -34,7 +36,9 @@ class ActivityViewController: UITableViewController, UITextFieldDelegate {
     
     func configureView() {
         
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "done:")
+        if self.showDoneButton {
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "done:")
+        }
         
         if let activity = self.activity {
             

@@ -42,9 +42,14 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     }
     
     func configureButton(button: UIButton) {
-        button.layer.cornerRadius = button.bounds.width / 2.0
-        button.layer.borderWidth = 1.0
-        button.layer.borderColor = button.titleLabel?.textColor.CGColor
+        
+        let state: UIControlState = button.enabled ? .Normal : .Disabled
+        let color = button.titleColorForState(state)!
+        
+        let layer = button.layer
+        layer.cornerRadius = button.bounds.width / 2.0
+        layer.borderWidth = 1.0
+        layer.borderColor = color.CGColor
     }
     
     func setButtonState(button: UIButton, on: Bool) {
@@ -59,13 +64,10 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         let breakEnabled = stopEnabled
         let breakText = inBreak ? "Resume" : "Break"
         
-        //self.breakButton.titleLabel?.text = breakText
-        self.breakButton.setTitle(breakText, forState: .Normal)
-        
-        println("setting break button label to \(breakText)")
-        
         self.setButtonState(self.stopButton, on: stopEnabled)
         self.setButtonState(self.breakButton, on: breakEnabled)
+        
+        self.breakButton.setTitle(breakText, forState: .Normal)
     }
     
     func updateClock() {
@@ -149,6 +151,12 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     
     func switchActivity(newActivity: Activity) {
         
+        let data = AppData.shared
+        
+        if self.user?.currentBreak != nil {
+            endBreak()
+        }
+        
         let oldReport = self.user?.currentReport
         let oldActivity = oldReport?.activity
         
@@ -156,25 +164,15 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
             return
         }
         
-        oldReport?.endDate = NSDate()
-        oldReport?.active = false
-        
-        let data = AppData.shared
-        
-        if let duration = oldReport?.length {
-            if let atomic = oldActivity?.atomic {
-                if duration < MINIMAL_DURATION && !atomic {
-                    self.user?.currentReport = nil
-                    data.managedObjectContext?.deleteObject(oldReport!)
-                    data.save()
-                }
-            }
+        if let report = oldReport {
+            self.endReport(report)
         }
+        self.user?.currentReport = nil
         
         var newReport: Report?
         
         if !newActivity.silent {
-            newReport = data.createReport(newActivity, user: AppData.shared.settings.currentUser, active: true)
+            newReport = data.createReport(newActivity, user: self.user, active: true)
         }
         
         self.user?.currentReport = newReport
@@ -205,15 +203,37 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
             self.endBreak()
         }
         
-        println("setting currentBreak")
         self.updateButtonStates()
+        AppData.shared.save()
     }
     
     func endBreak() {
-        let user = self.user!
-        var oldBreak = user.currentBreak!
-        user.currentBreak = nil
-        oldBreak.active = false
+        
+        if let report = self.user?.currentBreak {
+            self.endReport(report)
+        }
+        
+        self.user?.currentBreak = nil
+        
+        self.updateButtonStates()
+        AppData.shared.save()
+    }
+    
+    func endReport(report: Report) {
+        
+        let data = AppData.shared
+        
+        report.endDate = NSDate()
+        report.active = false
+        
+        let atomic = report.activity?.atomic ?? false
+        
+        if !atomic && report.length < MINIMAL_DURATION {
+            data.managedObjectContext?.deleteObject(report)
+        }
+        
+        self.updateButtonStates()
+        AppData.shared.save()
     }
 
     func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {

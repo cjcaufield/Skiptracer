@@ -8,9 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3B92BDD91AE057D30012B00E /* Skiptracer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3B92BDD71AE057D30012B00E /* Skiptracer.xcdatamodeld */; };
-		3B92BDDB1AE0F48C0012B00E /* BreaksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B92BDDA1AE0F48C0012B00E /* BreaksViewController.swift */; };
 		3B92BDDD1AE0F6280012B00E /* SGExpandableTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B92BDDC1AE0F6280012B00E /* SGExpandableTableViewController.swift */; };
-		3B92BDDF1AE101980012B00E /* BreakViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B92BDDE1AE101980012B00E /* BreakViewController.swift */; };
 		3BAA1B121AE025F500FF21BE /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAA1B111AE025F500FF21BE /* InterfaceController.swift */; };
 		3BAA1B141AE025F500FF21BE /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAA1B131AE025F500FF21BE /* NotificationController.swift */; };
 		3BAA1B161AE025F500FF21BE /* GlanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAA1B151AE025F500FF21BE /* GlanceController.swift */; };
@@ -57,9 +55,7 @@
 /* Begin PBXFileReference section */
 		3B13610B1ABE6E1100E0CBDC /* Skiptracer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skiptracer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B92BDD81AE057D30012B00E /* Skiptracer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Skiptracer.xcdatamodel; sourceTree = "<group>"; };
-		3B92BDDA1AE0F48C0012B00E /* BreaksViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BreaksViewController.swift; sourceTree = "<group>"; };
 		3B92BDDC1AE0F6280012B00E /* SGExpandableTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SGExpandableTableViewController.swift; sourceTree = "<group>"; };
-		3B92BDDE1AE101980012B00E /* BreakViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BreakViewController.swift; sourceTree = "<group>"; };
 		3BAA1B0C1AE025F500FF21BE /* Skiptracer WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Skiptracer WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BAA1B0F1AE025F500FF21BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3BAA1B101AE025F500FF21BE /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
@@ -205,8 +201,6 @@
 				3BC852B51AE03943009031C0 /* ActivityViewController.swift */,
 				3BC852BC1AE03943009031C0 /* ReportsViewController.swift */,
 				3BC852BA1AE03943009031C0 /* ReportViewController.swift */,
-				3B92BDDA1AE0F48C0012B00E /* BreaksViewController.swift */,
-				3B92BDDE1AE101980012B00E /* BreakViewController.swift */,
 				3BC852BB1AE03943009031C0 /* SettingsViewController.swift */,
 			);
 			name = Controllers;
@@ -392,7 +386,6 @@
 				3B92BDDD1AE0F6280012B00E /* SGExpandableTableViewController.swift in Sources */,
 				3BC852961AE0381A009031C0 /* AppData.swift in Sources */,
 				3BC852BF1AE03943009031C0 /* AppDelegate.swift in Sources */,
-				3B92BDDF1AE101980012B00E /* BreakViewController.swift in Sources */,
 				3BC852C41AE03943009031C0 /* SettingsViewController.swift in Sources */,
 				3BC8529F1AE03884009031C0 /* CustomTableViewCell.swift in Sources */,
 				3BC852C01AE03943009031C0 /* AppStore.swift in Sources */,
@@ -400,7 +393,6 @@
 				3BC852C11AE03943009031C0 /* Constants.swift in Sources */,
 				3BC852B11AE0390C009031C0 /* NSIndexPathAdditions.swift in Sources */,
 				3BC852C51AE03943009031C0 /* ReportsViewController.swift in Sources */,
-				3B92BDDB1AE0F48C0012B00E /* BreaksViewController.swift in Sources */,
 				3BC852981AE0381A009031C0 /* Settings.swift in Sources */,
 				3BC852A11AE03884009031C0 /* StatisticsTableViewCell.swift in Sources */,
 				3BC852BE1AE03943009031C0 /* ActivityViewController.swift in Sources */,

@@ -5,16 +5,12 @@ Plan
 ----------
 
 Now:
-* Break button action
-* End breaks when activity changes
-* Update Now UI during break
-* Fade clock during activity transitions
+* Update Now clock during break.
+* Fade clock during activity transitions.
 
 Stats:
-* Hide activity and breaks cells in breaks.
-* Only show "Done" button in detail views when adding objects.
-* Fix updating clock for active breaks.
-* Break count doesn't update when returning to report after manually adding breaks.
+* Allow startDate and breaks to be edited in active reports.
+* Highlight active reports.
 
 0.X Alerts
 ----------
@@ -22,6 +18,7 @@ Stats:
 SGExpandableTableViewController:
 - Implement abstract class
 - Use as base class for ActivityViewController
+- Use as base class for ReportViewController (to hide extra gaps)
 - Add picker logic to ActivityViewController
 
 Alerts:

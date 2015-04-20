@@ -66,13 +66,15 @@ class ReportsViewController: SGCoreDataTableViewController {
     }
     
     func updateClock() {
+        
         let user = AppData.shared.settings.currentUser
-        // CJC: recursive fix
-        if let report = user?.currentReport {
-            if report.active {
-                if let path = self.fetchController.indexPathForObject(report) {
+        var activeReports = [user?.currentReport, user?.currentBreak]
+        
+        for report in activeReports {
+            if report != nil && report!.active {
+                if let path = self.fetchController.indexPathForObject(report!) {
                     if let cell = self.tableView.cellForRowAtIndexPath(path) as? ReportsTableViewCell {
-                        self.configureCell(cell, withObject: report)
+                        self.configureCell(cell, withObject: report!)
                     }
                 }
             }
@@ -125,9 +127,10 @@ class ReportsViewController: SGCoreDataTableViewController {
         }
     }
     
-    override func didSelectObject(object: AnyObject) {
+    override func didSelectObject(object: AnyObject, new: Bool = false) {
         
         let newController = self.storyboard?.instantiateViewControllerWithIdentifier("Report") as! ReportViewController
+        newController.showDoneButton = new
         newController.report = object as? Report
         
         self.navigationController?.pushViewController(newController, animated: true)

@@ -28,7 +28,8 @@ class ActivitiesViewController: SGCoreDataTableViewController {
     }
     
     override func createNewObject() -> AnyObject {
-        return AppData.shared.createActivity(nil, user: AppData.shared.settings.currentUser)
+        let data = AppData.shared
+        return data.createActivity(nil, user: data.settings.currentUser)
     }
     
     override func configureCell(cell: UITableViewCell, withObject object: AnyObject) {
@@ -40,9 +41,10 @@ class ActivitiesViewController: SGCoreDataTableViewController {
         }
     }
     
-    override func didSelectObject(object: AnyObject) {
+    override func didSelectObject(object: AnyObject, new: Bool = false) {
         
         let newController = self.storyboard?.instantiateViewControllerWithIdentifier("Activity") as! ActivityViewController
+        newController.showDoneButton = new
         newController.activity = object as? Activity
         
         self.navigationController?.pushViewController(newController, animated: true)
