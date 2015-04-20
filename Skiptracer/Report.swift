@@ -24,13 +24,30 @@ class Report: NSManagedObject {
     @NSManaged var notes: String?
     @NSManaged var active: Bool
     @NSManaged var isBreak: Bool
-
+    
     var length: Double {
         let nowOrEndDate = (self.active) ? NSDate() : self.endDate
         return nowOrEndDate.timeIntervalSinceDate(self.startDate)
     }
     
+    var lengthWithoutBreaks: Double {
+        var totalLength = self.length
+        for report in self.breaks as! Set<Report> {
+            let breakLength = report.length
+            totalLength -= breakLength
+        }
+        return totalLength
+    }
+    
     var lengthText: String {
+        return self.stringFromLength(self.length)
+    }
+    
+    var lengthWithoutBreaksText: String {
+        return self.stringFromLength(self.lengthWithoutBreaks)
+    }
+    
+    func stringFromLength(length: Double) -> String {
         
         if lengthFormatter == nil {
             lengthFormatter = NSDateComponentsFormatter()
@@ -40,7 +57,7 @@ class Report: NSManagedObject {
             lengthFormatter?.zeroFormattingBehavior = .DropAll
         }
         
-        if let text = lengthFormatter?.stringFromTimeInterval(self.length) {
+        if let text = lengthFormatter?.stringFromTimeInterval(length) {
             return text
         }
         

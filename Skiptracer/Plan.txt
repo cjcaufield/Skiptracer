@@ -5,12 +5,13 @@ Plan
 ----------
 
 Now:
-* Update Now clock during break.
+* Use audio control icons for buttons?
+* Change clock during break.
 * Fade clock during activity transitions.
 
 Stats:
-* Allow startDate and breaks to be edited in active reports.
-* Highlight active reports.
+* Allow startDate and breaks to be edited in active reports?
+* Allow reports to be deleted while active?
 
 0.X Alerts
 ----------

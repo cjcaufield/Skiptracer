@@ -71,61 +71,7 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     }
     
     func updateClock() {
-        
-        var text = ""
-        
-        if let report = self.user?.currentReport {
-            
-            let date = report.startDate
-            
-            let calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)
-            
-            let units = (NSCalendarUnit.CalendarUnitDay | NSCalendarUnit.CalendarUnitHour | NSCalendarUnit.CalendarUnitMinute | NSCalendarUnit.CalendarUnitSecond)
-            
-            let components = calendar?.components(units, fromDate: report.startDate, toDate: NSDate(), options: NSCalendarOptions(0))
-            
-            func addSeparators() {
-                if text != "" {
-                    text += ":"
-                }
-            }
-            
-            if let d = components?.day {
-                if d > 0 {
-                    text += "\(d)"
-                }
-            }
-            
-            if let h = components?.hour {
-                if h > 0 {
-                    let hasDay = text != ""
-                    addSeparators()
-                    if hasDay && h < 10 {
-                        text += "0"
-                    }
-                    text += "\(h)"
-                }
-            }
-            
-            if let m = components?.minute {
-                addSeparators()
-                text += String(format:"%02d", m)
-            }
-            
-            if let s = components?.second {
-                addSeparators()
-                text += String(format:"%02d", s)
-            }
-        }
-        
-        if text == "" {
-            text = "--:--"
-        }
-        
-        self.clockLabel.text = text
-        
-        // This doesn't work because of a bug in NSDateComponentsFormatter
-        //self.clockLabel.text = self.user?.currentReport?.durationText ?? "--:--"
+        self.clockLabel.text = self.user?.currentReport?.lengthWithoutBreaksText ?? "--:--"
     }
     
     func refreshData() {
