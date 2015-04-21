@@ -26,13 +26,13 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         super.viewDidLoad()
         self.configureButton(self.stopButton)
         self.configureButton(self.breakButton)
-        self.refreshData()
+        self.refreshData(animated: false)
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.refreshData()
-        self.timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "updateClock", userInfo: nil, repeats: true)
+        self.refreshData(animated: false)
+        self.timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: "updateClock", userInfo: nil, repeats: true)
     }
     
     override func viewDidDisappear(animated: Bool) {
@@ -43,13 +43,25 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     
     func configureButton(button: UIButton) {
         
-        let state: UIControlState = button.enabled ? .Normal : .Disabled
-        let color = button.titleColorForState(state)!
+        //button.tintColor = self.view.tintColor
+        
+        //let state: UIControlState = button.enabled ? .Normal : .Disabled
+        //let color = button.titleColorForState(state)!
+        
+        let enabledColor = button.titleColorForState(.Normal)! //self.view.tintColor
+        var disabledColor = button.titleColorForState(.Disabled)! //UIColor.lightGrayColor()
+        disabledColor = disabledColor.colorWithAlphaComponent(0.5)
+        
+        let color = button.enabled ? enabledColor : disabledColor
         
         let layer = button.layer
         layer.cornerRadius = button.bounds.width / 2.0
         layer.borderWidth = 1.0
         layer.borderColor = color.CGColor
+        layer.backgroundColor = UIColor.whiteColor().CGColor
+        
+        //button.setTitleColor(enabledColor, forState: .Normal)
+        //button.setTitleColor(disabledColor, forState: .Disabled)
     }
     
     func setButtonState(button: UIButton, on: Bool) {
@@ -57,24 +69,54 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         self.configureButton(button)
     }
     
-    func updateButtonStates() {
+    func updateClockControlStates(#animated: Bool = true) {
         
         let stopEnabled = (self.user?.currentReport != nil)
         let inBreak = (self.user?.currentBreak != nil)
         let breakEnabled = stopEnabled
-        let breakText = inBreak ? "Resume" : "Break"
         
         self.setButtonState(self.stopButton, on: stopEnabled)
         self.setButtonState(self.breakButton, on: breakEnabled)
         
-        self.breakButton.setTitle(breakText, forState: .Normal)
+        let breakImageTitle = inBreak ? "Play" : "Pause"
+        let breakImage = UIImage(named: breakImageTitle)
+        self.breakButton.setImage(breakImage, forState: .Normal)
+        
+        //let breakText = inBreak ? "Resume" : "Break"
+        //self.breakButton.setTitle(breakText, forState: .Normal)
+        
+        //self.clockLabel.enabled = !inBreak
+        
+        let alpha: CGFloat = (!stopEnabled || inBreak) ? 0.3 : 1.0
+        self.setClockAlpha(alpha, animated: animated)
     }
     
     func updateClock() {
         self.clockLabel.text = self.user?.currentReport?.lengthWithoutBreaksText ?? "--:--"
     }
     
-    func refreshData() {
+    func setClockAlpha(alpha: CGFloat, animated: Bool) {
+        
+        func setClockLabelAlpha() {
+            self.clockLabel.alpha = alpha
+        }
+        
+        if !animated {
+            //self.clockLabel.alpha = alpha
+            setClockLabelAlpha()
+            return
+        }
+        
+        UIView.transitionWithView(
+            self.clockLabel,
+            duration: 0.5,
+            options: .CurveEaseInOut,
+            animations: setClockLabelAlpha,
+            completion: nil
+        )
+    }
+    
+    func refreshData(#animated: Bool) {
         
         let data = AppData.shared
         self.user = data.settings.currentUser
@@ -92,7 +134,7 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         self.picker.selectRow(row, inComponent: 0, animated: false)
         
         self.updateClock()
-        self.updateButtonStates()
+        self.updateClockControlStates(animated: animated)
     }
     
     func switchActivity(newActivity: Activity) {
@@ -124,7 +166,7 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         self.user?.currentReport = newReport
         
         self.updateClock()
-        self.updateButtonStates()
+        self.updateClockControlStates()
         
         data.save()
     }
@@ -149,7 +191,9 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
             self.endBreak()
         }
         
-        self.updateButtonStates()
+        self.updateClock()
+        self.updateClockControlStates()
+        
         AppData.shared.save()
     }
     
@@ -161,7 +205,9 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         
         self.user?.currentBreak = nil
         
-        self.updateButtonStates()
+        self.updateClock()
+        self.updateClockControlStates()
+        
         AppData.shared.save()
     }
     
@@ -178,7 +224,9 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
             data.managedObjectContext?.deleteObject(report)
         }
         
-        self.updateButtonStates()
+        self.updateClock()
+        self.updateClockControlStates()
+        
         AppData.shared.save()
     }
 

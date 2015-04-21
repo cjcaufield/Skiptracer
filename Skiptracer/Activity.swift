@@ -22,4 +22,9 @@ class Activity: NSManagedObject {
     @NSManaged var breaks: Bool
     @NSManaged var progress: Bool
     @NSManaged var reports: NSSet
+    
+    override func validateForDelete(error: NSErrorPointer) -> Bool {
+        println("Deleting \(self)")
+        return true
+    }
 }

@@ -98,11 +98,10 @@ class Report: NSManagedObject {
         var startText = startAndEndFormatter?.stringFromDate(self.startDate)
         var endText = startAndEndFormatter?.stringFromDate(endDate)
         
-        /*
         if self.active {
-            endText = "now"
+            //endText = "now"
+            //endText = "..."
         }
-        */
         
         if startText != nil && endText != nil {
             return startText! + " - " + endText!
@@ -128,5 +127,10 @@ class Report: NSManagedObject {
         formatter.dateFormat = "EEEE"
         let text = formatter.stringFromDate(self.startDate)
         return text
+    }
+    
+    override func validateForDelete(error: NSErrorPointer) -> Bool {
+        println("Deleting \(self)")
+        return true
     }
 }

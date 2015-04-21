@@ -66,28 +66,28 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sHK-Mc-EmA" userLabel="Buttons View">
                                         <rect key="frame" x="0.0" y="149" width="608" height="64"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N86-H4-GTO">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N86-H4-GTO" userLabel="Break">
                                                 <rect key="frame" x="373" y="0.0" width="64" height="64"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="64" id="cz0-FV-Ter"/>
                                                     <constraint firstAttribute="height" constant="64" id="rVq-yT-39f"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                <state key="normal" title="Break">
-                                                    <color key="titleColor" red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <state key="normal" image="Pause">
+                                                    <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
                                                 <connections>
                                                     <action selector="toggleBreak:" destination="9pv-A4-QxB" eventType="touchUpInside" id="qhB-v6-Ca0"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AeL-Qs-4WM">
-                                                <rect key="frame" x="170" y="0.0" width="64" height="64"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AeL-Qs-4WM">
+                                                <rect key="frame" x="171" y="0.0" width="64" height="64"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="64" id="B2n-xT-F6m"/>
                                                     <constraint firstAttribute="height" constant="64" id="Uf1-m0-PXp"/>
                                                 </constraints>
-                                                <state key="normal" title="Stop">
+                                                <state key="normal" image="Stop">
+                                                    <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
                                                 <connections>
@@ -442,7 +442,7 @@
         <scene sceneID="54O-VU-WDq">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="GeG-rX-4FF" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Activities" image="second" id="fvo-FJ-qwd"/>
+                    <tabBarItem key="tabBarItem" title="Activities" image="Activities" id="fvo-FJ-qwd"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="2bw-r1-BD4">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -462,7 +462,7 @@
             <objects>
                 <tableViewController title="Reports" id="Oxy-kY-mUy" customClass="ReportsViewController" customModule="Skiptracer" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="bZf-0U-Cp6">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="1000"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -778,7 +778,7 @@
         <scene sceneID="eGu-cf-atY">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="HgC-3G-lNV" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Now" image="first" id="acW-dT-cKf" userLabel="Now"/>
+                    <tabBarItem key="tabBarItem" title="Now" image="Now" id="acW-dT-cKf" userLabel="Now"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="4V6-WO-uHq">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -797,7 +797,7 @@
         <scene sceneID="rM5-wi-tOD">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="kp6-Lp-d0j" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Reports" image="first" id="pLH-7j-9b6"/>
+                    <tabBarItem key="tabBarItem" title="Reports" image="Reports" id="pLH-7j-9b6"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="vNz-Vj-tdx">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -816,7 +816,7 @@
         <scene sceneID="mon-ES-uwI">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="IQB-ym-nO0" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Settings" image="second" id="ArJ-4i-rWJ"/>
+                    <tabBarItem key="tabBarItem" title="Settings" image="Settings" id="ArJ-4i-rWJ"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="9Y8-en-tXS">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -833,10 +833,14 @@
         </scene>
     </scenes>
     <resources>
-        <image name="first" width="30" height="30"/>
-        <image name="second" width="30" height="30"/>
+        <image name="Activities" width="30" height="30"/>
+        <image name="Now" width="30" height="30"/>
+        <image name="Pause" width="23" height="23"/>
+        <image name="Reports" width="30" height="30"/>
+        <image name="Settings" width="30" height="30"/>
+        <image name="Stop" width="23" height="23"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="vc2-Lk-oeb"/>
+        <segue reference="LPl-hI-iDn"/>
     </inferredMetricsTieBreakers>
 </document>

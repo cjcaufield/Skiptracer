@@ -10,7 +10,7 @@
         <attribute name="progress" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="progressInterval" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="silent" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <relationship name="reports" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Report" inverseName="activity" inverseEntity="Report" syncable="YES"/>
+        <relationship name="reports" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Report" inverseName="activity" inverseEntity="Report" syncable="YES"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="activities" inverseEntity="User" syncable="YES"/>
     </entity>
     <entity name="Report" representedClassName="Skiptracer.Report" syncable="YES">
@@ -24,7 +24,7 @@
         <attribute name="startDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="weekText" optional="YES" transient="YES" attributeType="String" syncable="YES"/>
         <relationship name="activity" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Activity" inverseName="reports" inverseEntity="Activity" syncable="YES"/>
-        <relationship name="breaks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Report" inverseName="parent" inverseEntity="Report" syncable="YES"/>
+        <relationship name="breaks" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Report" inverseName="parent" inverseEntity="Report" syncable="YES"/>
         <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Report" inverseName="breaks" inverseEntity="Report" syncable="YES"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="reports" inverseEntity="User" syncable="YES"/>
     </entity>
@@ -35,7 +35,7 @@
     </entity>
     <entity name="User" representedClassName="Skiptracer.User" syncable="YES">
         <attribute name="isTestUser" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <relationship name="activities" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Activity" inverseName="user" inverseEntity="Activity" syncable="YES"/>
+        <relationship name="activities" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Activity" inverseName="user" inverseEntity="Activity" syncable="YES"/>
         <relationship name="currentBreak" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Report" syncable="YES"/>
         <relationship name="currentReport" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Report" syncable="YES"/>
         <relationship name="reports" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Report" inverseName="user" inverseEntity="Report" syncable="YES"/>
