@@ -4,10 +4,7 @@ Plan
 0.2 Breaks
 ----------
 
-* Allow startDate and breaks to be edited in active reports?
 * Allow reports to be deleted while active?
-* Ensure breaks are deleted with their parents.
-* Ensure reports are deleted with their parent activities.
 
 0.X Alerts
 ----------

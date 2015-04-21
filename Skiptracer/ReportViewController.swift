@@ -120,8 +120,6 @@ class ReportViewController: UITableViewController, UITextViewDelegate, UIPickerV
         
         self.title = self.report?.activity?.name ?? "Untitled"
         
-        let active = self.report?.active ?? false
-        
         let data = AppData.shared
         self.user = data.settings.currentUser
         self.activities = data.fetchOrderedActivities()
@@ -340,7 +338,7 @@ class ReportViewController: UITableViewController, UITextViewDelegate, UIPickerV
                 cell.detailTextLabel?.text = ""
             }
             
-            let editable = (self.report?.active == false)
+            let editable = !live
             cell.userInteractionEnabled = editable
             cell.textLabel?.enabled = editable
             cell.detailTextLabel?.enabled = editable
@@ -352,7 +350,7 @@ class ReportViewController: UITableViewController, UITextViewDelegate, UIPickerV
             cell.textLabel?.text = item.title
             cell.detailTextLabel?.text = "\(breakCount)"
             
-            let editable = (self.report?.active == false)
+            let editable = true
             cell.userInteractionEnabled = editable
             cell.textLabel?.enabled = editable
             cell.detailTextLabel?.enabled = editable
@@ -415,9 +413,14 @@ class ReportViewController: UITableViewController, UITextViewDelegate, UIPickerV
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
         if let cell = self.tableView.cellForRowAtIndexPath(indexPath) {
+            
             let isLabelCell = (cell.reuseIdentifier == ACTIVITY_LABEL_CELL_ID || cell.reuseIdentifier == DATE_LABEL_CELL_ID)
-            if self.report?.active == false && isLabelCell {
+            let isStartDateLabelCell = (indexPath.section == START_DATE_SECTION && indexPath.row == 0)
+            let canModify = isStartDateLabelCell || (self.report?.active == false && isLabelCell)
+            
+            if canModify {
                 self.displayRevealedCellForRowAtIndexPath(indexPath)
             } else {
                 self.tableView.deselectRowAtIndexPath(indexPath, animated: true)

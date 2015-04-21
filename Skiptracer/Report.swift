@@ -129,8 +129,10 @@ class Report: NSManagedObject {
         return text
     }
     
+    /*
     override func validateForDelete(error: NSErrorPointer) -> Bool {
         println("Deleting \(self)")
         return true
     }
+    */
 }
