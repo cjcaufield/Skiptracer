@@ -1,12 +1,7 @@
 Plan
 ====
 
-0.2 Breaks
-----------
-
-* Allow reports to be deleted while active?
-
-0.X Alerts
+0.3 Alerts
 ----------
 
 SGExpandableTableViewController:

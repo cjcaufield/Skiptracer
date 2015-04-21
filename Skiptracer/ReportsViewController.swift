@@ -114,7 +114,7 @@ class ReportsViewController: SGCoreDataTableViewController {
                 label = "Break"
                 if let breaks = self.fetchController.fetchedObjects as? [Report] {
                     if let index = find(breaks, report!) {
-                        label += " \(index + 1)"
+                        label += " \(breaks.count - index)"
                     }
                 }
             } else {
@@ -145,9 +145,11 @@ class ReportsViewController: SGCoreDataTableViewController {
     }
     
     override func canEditObject(object: AnyObject) -> Bool {
+        /*
         if let report = object as? Report {
             return report.active == false
         }
+        */
         return true
     }
     

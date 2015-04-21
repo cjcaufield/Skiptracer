@@ -15,18 +15,17 @@
     </entity>
     <entity name="Report" representedClassName="Skiptracer.Report" syncable="YES">
         <attribute name="active" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="dayText" optional="YES" transient="YES" attributeType="String" syncable="YES"/>
         <attribute name="endDate" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="isBreak" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="length" optional="YES" transient="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="lengthText" optional="YES" transient="YES" attributeType="String" syncable="YES"/>
         <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="startDate" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="weekText" optional="YES" transient="YES" attributeType="String" syncable="YES"/>
         <relationship name="activity" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Activity" inverseName="reports" inverseEntity="Activity" syncable="YES"/>
         <relationship name="breaks" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Report" inverseName="parent" inverseEntity="Report" syncable="YES"/>
         <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Report" inverseName="breaks" inverseEntity="Report" syncable="YES"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="reports" inverseEntity="User" syncable="YES"/>
+        <relationship name="userOfThisBreak" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="currentBreak" inverseEntity="User" syncable="YES"/>
+        <relationship name="userOfThisReport" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="currentReport" inverseEntity="User" syncable="YES"/>
     </entity>
     <entity name="Settings" representedClassName="Skiptracer.Settings" syncable="YES">
         <attribute name="enableAlerts" optional="YES" attributeType="Boolean" syncable="YES"/>
@@ -36,13 +35,13 @@
     <entity name="User" representedClassName="Skiptracer.User" syncable="YES">
         <attribute name="isTestUser" optional="YES" attributeType="Boolean" syncable="YES"/>
         <relationship name="activities" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Activity" inverseName="user" inverseEntity="Activity" syncable="YES"/>
-        <relationship name="currentBreak" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Report" syncable="YES"/>
-        <relationship name="currentReport" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Report" syncable="YES"/>
+        <relationship name="currentBreak" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Report" inverseName="userOfThisBreak" inverseEntity="Report" syncable="YES"/>
+        <relationship name="currentReport" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Report" inverseName="userOfThisReport" inverseEntity="Report" syncable="YES"/>
         <relationship name="reports" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Report" inverseName="user" inverseEntity="Report" syncable="YES"/>
     </entity>
     <elements>
         <element name="Activity" positionX="160" positionY="192" width="128" height="210"/>
-        <element name="Report" positionX="160" positionY="192" width="128" height="240"/>
+        <element name="Report" positionX="160" positionY="192" width="128" height="225"/>
         <element name="Settings" positionX="160" positionY="192" width="128" height="90"/>
         <element name="User" positionX="160" positionY="192" width="128" height="120"/>
     </elements>
