@@ -40,6 +40,7 @@
 		3BC852C31AE03943009031C0 /* ReportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852BA1AE03943009031C0 /* ReportViewController.swift */; };
 		3BC852C41AE03943009031C0 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852BB1AE03943009031C0 /* SettingsViewController.swift */; };
 		3BC852C51AE03943009031C0 /* ReportsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852BC1AE03943009031C0 /* ReportsViewController.swift */; };
+		3BDCC3DB1AE72CB7006D81EC /* Formatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDCC3DA1AE72CB7006D81EC /* Formatter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,6 +93,7 @@
 		3BC852BA1AE03943009031C0 /* ReportViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReportViewController.swift; path = Skiptracer/ReportViewController.swift; sourceTree = SOURCE_ROOT; };
 		3BC852BB1AE03943009031C0 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettingsViewController.swift; path = Skiptracer/SettingsViewController.swift; sourceTree = SOURCE_ROOT; };
 		3BC852BC1AE03943009031C0 /* ReportsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReportsViewController.swift; path = Skiptracer/ReportsViewController.swift; sourceTree = SOURCE_ROOT; };
+		3BDCC3DA1AE72CB7006D81EC /* Formatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Formatter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +176,7 @@
 				3BC852901AE0381A009031C0 /* Activity.swift */,
 				3BC852921AE0381A009031C0 /* Report.swift */,
 				3BC852931AE0381A009031C0 /* Settings.swift */,
+				3BDCC3DA1AE72CB7006D81EC /* Formatter.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -382,6 +385,7 @@
 			files = (
 				3BC852971AE0381A009031C0 /* Report.swift in Sources */,
 				3BC852BD1AE03943009031C0 /* ActivitiesViewController.swift in Sources */,
+				3BDCC3DB1AE72CB7006D81EC /* Formatter.swift in Sources */,
 				3BC852951AE0381A009031C0 /* Activity.swift in Sources */,
 				3B92BDDD1AE0F6280012B00E /* SGExpandableTableViewController.swift in Sources */,
 				3BC852961AE0381A009031C0 /* AppData.swift in Sources */,

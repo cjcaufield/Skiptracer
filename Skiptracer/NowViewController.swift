@@ -43,25 +43,18 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     
     func configureButton(button: UIButton) {
         
-        //button.tintColor = self.view.tintColor
-        
-        //let state: UIControlState = button.enabled ? .Normal : .Disabled
-        //let color = button.titleColorForState(state)!
-        
-        let enabledColor = button.titleColorForState(.Normal)! //self.view.tintColor
-        var disabledColor = button.titleColorForState(.Disabled)! //UIColor.lightGrayColor()
+        let enabledColor = button.titleColorForState(.Normal)!
+        var disabledColor = button.titleColorForState(.Disabled)!
         disabledColor = disabledColor.colorWithAlphaComponent(0.5)
         
         let color = button.enabled ? enabledColor : disabledColor
+        let backgroundColor = button.enabled ? UIColor.whiteColor() : UIColor.clearColor()
         
         let layer = button.layer
         layer.cornerRadius = button.bounds.width / 2.0
         layer.borderWidth = 1.0
         layer.borderColor = color.CGColor
-        layer.backgroundColor = UIColor.whiteColor().CGColor
-        
-        //button.setTitleColor(enabledColor, forState: .Normal)
-        //button.setTitleColor(disabledColor, forState: .Disabled)
+        layer.backgroundColor = backgroundColor.CGColor
     }
     
     func setButtonState(button: UIButton, on: Bool) {
@@ -69,7 +62,7 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         self.configureButton(button)
     }
     
-    func updateClockControlStates(#animated: Bool = true) {
+    func updateClockControlStates(animated: Bool = true) {
         
         let stopEnabled = (self.user?.currentReport != nil)
         let inBreak = (self.user?.currentBreak != nil)

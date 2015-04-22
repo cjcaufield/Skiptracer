@@ -9,10 +9,6 @@
 import Foundation
 import CoreData
 
-var lengthFormatter: NSDateComponentsFormatter? = nil
-var durationFormatter: NSDateIntervalFormatter? = nil
-var startAndEndFormatter: NSDateFormatter? = nil
-
 class Report: NSManagedObject {
 
     @NSManaged var user: User?
@@ -40,93 +36,34 @@ class Report: NSManagedObject {
     }
     
     var lengthText: String {
-        return self.stringFromLength(self.length)
+        return Formatter.stringFromLength(self.length)
     }
     
     var lengthWithoutBreaksText: String {
-        return self.stringFromLength(self.lengthWithoutBreaks)
+        return Formatter.stringFromLength(self.lengthWithoutBreaks)
     }
-    
-    func stringFromLength(length: Double) -> String {
-        
-        if lengthFormatter == nil {
-            lengthFormatter = NSDateComponentsFormatter()
-            lengthFormatter?.allowedUnits = (.CalendarUnitDay | .CalendarUnitHour | .CalendarUnitMinute | .CalendarUnitSecond)
-            lengthFormatter?.maximumUnitCount = 2
-            lengthFormatter?.unitsStyle = .Abbreviated
-            lengthFormatter?.zeroFormattingBehavior = .DropAll
-        }
-        
-        if let text = lengthFormatter?.stringFromTimeInterval(length) {
-            return text
-        }
-        
-        return ""
-    }
-    
-    /*
-    var durationText: String {
-        
-        if durationFormatter == nil {
-            durationFormatter = NSDateIntervalFormatter()
-            durationFormatter?.dateStyle = .NoStyle
-            durationFormatter?.timeStyle = .ShortStyle
-            //durationFormatter?.allowedUnits = (.CalendarUnitHour | .CalendarUnitMinute | .CalendarUnitSecond)
-            //durationFormatter?.unitsStyle = .Positional
-            //durationFormatter?.zeroFormattingBehavior = .Default
-        }
-        
-        //if let text = durationFormatter?.stringFromTimeInterval(self.length) {
-        let nowOrEndDate = (self.active) ? NSDate() : self.endDate
-        if let text = durationFormatter?.stringFromDate(self.startDate, toDate: nowOrEndDate) {
-            return text
-        }
-        
-        return ""
-    }
-    */
     
     var startAndEndText: String {
         
         let endDate = self.active ? NSDate() : self.endDate
         
-        if startAndEndFormatter == nil {
-            startAndEndFormatter = NSDateFormatter()
-            startAndEndFormatter?.dateFormat = "hh:mm"
-        }
-        
-        var startText = startAndEndFormatter?.stringFromDate(self.startDate)
-        var endText = startAndEndFormatter?.stringFromDate(endDate)
+        var startText = Formatter.stringFromDate(self.startDate)
+        var endText = Formatter.stringFromDate(endDate)
         
         if self.active {
             //endText = "now"
             //endText = "..."
         }
         
-        if startText != nil && endText != nil {
-            return startText! + " - " + endText!
-        }
-        
-        return ""
+        return startText + " - " + endText
     }
     
     var dayText: String {
-        let formatter = NSDateFormatter()
-        formatter.dateStyle = .LongStyle
-        formatter.timeStyle = .NoStyle
-        //formatter.dateFormat = "EEEE"
-        formatter.doesRelativeDateFormatting = true
-        //formatter.dateStyle = lkjds
-        //formatter.timeStyle = dlkjd
-        let text = formatter.stringFromDate(self.startDate).uppercaseString
-        return text
+        return Formatter.dayStringFromDate(self.startDate).uppercaseString
     }
     
     var monthText: String {
-        let formatter = NSDateFormatter()
-        formatter.dateFormat = "EEEE"
-        let text = formatter.stringFromDate(self.startDate)
-        return text
+        return Formatter.monthStringFromDate(self.startDate).uppercaseString
     }
     
     /*

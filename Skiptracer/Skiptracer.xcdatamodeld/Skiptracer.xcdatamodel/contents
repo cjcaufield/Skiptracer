@@ -30,7 +30,7 @@
     <entity name="Settings" representedClassName="Skiptracer.Settings" syncable="YES">
         <attribute name="enableAlerts" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="enableTestUser" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <relationship name="currentUser" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" syncable="YES"/>
+        <relationship name="currentUser" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="settings" inverseEntity="User" syncable="YES"/>
     </entity>
     <entity name="User" representedClassName="Skiptracer.User" syncable="YES">
         <attribute name="isTestUser" optional="YES" attributeType="Boolean" syncable="YES"/>
@@ -38,11 +38,12 @@
         <relationship name="currentBreak" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Report" inverseName="userOfThisBreak" inverseEntity="Report" syncable="YES"/>
         <relationship name="currentReport" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Report" inverseName="userOfThisReport" inverseEntity="Report" syncable="YES"/>
         <relationship name="reports" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Report" inverseName="user" inverseEntity="Report" syncable="YES"/>
+        <relationship name="settings" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Settings" inverseName="currentUser" inverseEntity="Settings" syncable="YES"/>
     </entity>
     <elements>
         <element name="Activity" positionX="160" positionY="192" width="128" height="210"/>
         <element name="Report" positionX="160" positionY="192" width="128" height="225"/>
         <element name="Settings" positionX="160" positionY="192" width="128" height="90"/>
-        <element name="User" positionX="160" positionY="192" width="128" height="120"/>
+        <element name="User" positionX="160" positionY="192" width="128" height="135"/>
     </elements>
 </model>
