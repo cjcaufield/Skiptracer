@@ -31,8 +31,8 @@ class SGCellData {
 }
 
 class ActivityViewController: UITableViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+    
     var cellData = [[SGCellData]]()
-    var dateFormatter: NSDateFormatter?
     var revealedCellIndexPath: NSIndexPath?
     var showDoneButton = false
     
@@ -48,19 +48,15 @@ class ActivityViewController: UITableViewController, UITableViewDelegate, UITabl
         
         super.viewDidLoad()
         
-        self.cellData = [
-            [
+        self.cellData = [[
                 SGCellData(cellIdentifier: TEXT_FIELD_CELL_ID, title: "Name",              modelPath: "name")
-            ],
-            [
+            ], /*[
                 SGCellData(cellIdentifier: SWITCH_CELL_ID,     title: "Atomic",            modelPath: "atomic")
-            ],
-            [
+            ],*/ [
                 SGCellData(cellIdentifier: SWITCH_CELL_ID,     title: "Break Alerts",      modelPath: "breaks"),
                 SGCellData(cellIdentifier: TIME_LABEL_CELL_ID, title: "Break Length",      modelPath: "breakLength"),
                 SGCellData(cellIdentifier: TIME_LABEL_CELL_ID, title: "Break Interval",    modelPath: "breakInterval")
-            ],
-            [
+            ], [
                 SGCellData(cellIdentifier: SWITCH_CELL_ID,     title: "Progress Alerts",   modelPath: "progress"),
                 SGCellData(cellIdentifier: TIME_LABEL_CELL_ID, title: "Progress Interval", modelPath: "progressInterval")
             ]
@@ -101,6 +97,25 @@ class ActivityViewController: UITableViewController, UITableViewDelegate, UITabl
         }
     }
     
+    @IBAction func dateDidChange(picker: UIDatePicker) {
+        
+        // Update the model.
+        
+        if let data = self.dataForControl(picker) {
+            let length = picker.countDownDuration
+            self.activity?.setValue(length, forKey: data.modelPath)
+            AppData.shared.save()
+        }
+        
+        // Update the cell above.
+        
+        if let path = self.revealedCellIndexPath?.previous() {
+            if let cell = self.tableView.cellForRowAtIndexPath(path) {
+                self.configureCell(cell, atIndexPath: path)
+            }
+        }
+    }
+    
     @IBAction func done(sender: AnyObject) {
         self.navigationController?.popViewControllerAnimated(true)
     }
@@ -114,20 +129,18 @@ class ActivityViewController: UITableViewController, UITableViewDelegate, UITabl
         return self.cellData.count
     }
     
-    /*
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         
-        if self.indexPathHasDatePicker(indexPath) {
-            return 216.0
+        if self.cellIdentifierForIndexPath(indexPath) == TIME_CELL_ID {
+            return 216.0 // CJC todo: don't hardcode.
         }
         
         return self.tableView.rowHeight
     }
-    */
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: NSInteger) -> NSInteger {
         
-        var numRows = self.cellData[section].count;
+        var numRows = self.cellData[section].count
         
         if section == self.revealedCellIndexPath?.section {
             numRows++
@@ -156,31 +169,41 @@ class ActivityViewController: UITableViewController, UITableViewDelegate, UITabl
     
     func dataForIndexPath(indexPath: NSIndexPath) -> SGCellData? {
         
-        if indexPath.section < self.cellData.count {
-            let section = self.cellData[indexPath.section]
-            if indexPath.row < section.count {
-                let data = section[indexPath.row]
-                return data
+        let modelPath = self.modelPathForIndexPath(indexPath)
+        if modelPath.section < self.cellData.count {
+            let section = self.cellData[modelPath.section]
+            if modelPath.row < section.count {
+                return section[modelPath.row]
             }
         }
         
         return nil
     }
     
+    func modelPathForIndexPath(indexPath: NSIndexPath) -> NSIndexPath {
+        
+        if let path = self.revealedCellIndexPath {
+            if (path.section == indexPath.section && path.row <= indexPath.row) {
+                return indexPath.previous()
+            }
+        }
+        
+        return indexPath
+    }
+    
     func cellIdentifierForIndexPath(indexPath: NSIndexPath) -> String {
-        return self.dataForIndexPath(indexPath)?.cellIdentifier ?? ANOTHER_CELL_ID
+        
+        if indexPath == self.revealedCellIndexPath {
+            return TIME_CELL_ID // CJC: revisit
+        }
+        
+        let data = self.dataForIndexPath(indexPath)
+        return data?.cellIdentifier ?? ANOTHER_CELL_ID
     }
     
     func configureCell(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) {
         
-        var modelPath = indexPath
-        if let path = self.revealedCellIndexPath {
-            if (path.section == indexPath.section && path.row <= indexPath.row) {
-                modelPath = indexPath.previous()
-            }
-        }
-        
-        let item = self.dataForIndexPath(modelPath)!
+        let item = self.dataForIndexPath(indexPath)!
         
         let cellID = cell.reuseIdentifier
         
@@ -212,16 +235,24 @@ class ActivityViewController: UITableViewController, UITableViewDelegate, UITabl
             
             cell.textLabel?.text = item.title
             
-            var timeString = ""
-            if let length = self.activity?.valueForKey(item.modelPath) as? NSTimeInterval {
-                timeString = Formatter.stringFromLength(length)
-            }
+            let length = self.activity?.valueForKey(item.modelPath) as? NSTimeInterval ?? 0.0
+            let timeString = Formatter.stringFromLength(length)
             
             cell.detailTextLabel?.text = timeString
             
             let enabled = self.enabledStateForRowAtIndexPath(indexPath)
             self.setEnabled(enabled, forCell: cell)
             
+        } else if cellID == TIME_CELL_ID {
+            
+            let length = self.activity?.valueForKey(item.modelPath) as? NSTimeInterval ?? 0.0
+            
+            let picker = cell.viewWithTag(2) as! UIDatePicker
+            picker.countDownDuration = length
+            
+            let enabled = self.enabledStateForRowAtIndexPath(indexPath)
+            self.setEnabled(enabled, forCell: cell)
+        
         } else if cellID == ANOTHER_CELL_ID {
             
             cell.textLabel?.text = item.title
@@ -242,16 +273,14 @@ class ActivityViewController: UITableViewController, UITableViewDelegate, UITabl
         cell.detailTextLabel?.enabled = enabled
     }
     
-    /*
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
     
         if let cell = self.tableView.cellForRowAtIndexPath(indexPath) {
-    
-            let isLabelCell = (cell.reuseIdentifier == ACTIVITY_LABEL_CELL_ID || cell.reuseIdentifier == DATE_LABEL_CELL_ID)
-            let isStartDateLabelCell = (indexPath.section == START_DATE_SECTION && indexPath.row == 0)
-            let canModify = isStartDateLabelCell || (self.report?.active == false && isLabelCell)
             
-            if canModify {
+            let hasRevealableCellBelow = (cell.reuseIdentifier == TIME_LABEL_CELL_ID) // CJC: revisit
+            let canModify = true // CJC: revisit
+            
+            if hasRevealableCellBelow && canModify {
                 self.displayRevealedCellForRowAtIndexPath(indexPath)
             } else {
                 self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
@@ -262,84 +291,20 @@ class ActivityViewController: UITableViewController, UITableViewDelegate, UITabl
     func hasRevealedCellForIndexPath(indexPath: NSIndexPath) -> Bool {
     
         let targetPath = indexPath.next()
-        let cell = self.tableView.cellForRowAtIndexPath(targetPath)
         
-        let datePicker = cell?.viewWithTag(DATE_PICKER_TAG)
-        let picker = cell?.viewWithTag(ACTIVITY_PICKER_TAG)
+        if let cell = self.tableView.cellForRowAtIndexPath(targetPath) {
+            return cell.reuseIdentifier == TIME_CELL_ID
+        }
         
-        return datePicker != nil || picker != nil
+        return false
     }
     
     func updateRevealedControl() {
-        
         if let path = self.revealedCellIndexPath {
             if let cell = self.tableView.cellForRowAtIndexPath(path) {
-                
-                let item = self.cellData[path.section][path.row - 1]
-                
-                if let picker = cell.viewWithTag(DATE_PICKER_TAG) as? UIDatePicker {
-                    if let date = self.report?.valueForKey(item.modelPath) as? NSDate {
-                        picker.setDate(date, animated: false)
-                    }
-                }
-                
-                if let picker = cell.viewWithTag(ACTIVITY_PICKER_TAG) as? UIPickerView {
-                    if let activity = self.report?.activity {
-                        if let index = find(self.activities, activity) {
-                            picker.reloadAllComponents()
-                            picker.selectRow(index, inComponent: 0, animated: false)
-                        }
-                    }
-                }
+                self.configureCell(cell, atIndexPath: path)
             }
         }
-    }
-    
-    func hasRevealedCell() -> Bool {
-        return self.revealedCellIndexPath != nil
-    }
-    
-    func indexPathHasActivityLabel(indexPath: NSIndexPath) -> Bool {
-        return indexPath.section == ACTIVITY_SECTION && indexPath.row == 0
-    }
-    
-    func indexPathHasRevealedActivityPicker(indexPath: NSIndexPath) -> Bool {
-        
-        if self.hasRevealedCell() {
-            if let pickerPath = self.revealedCellIndexPath {
-                if pickerPath == indexPath && indexPath.section == ACTIVITY_SECTION {
-                    return true
-                }
-            }
-        }
-        
-        return false
-    }
-    
-    func indexPathHasDateLabel(indexPath: NSIndexPath) -> Bool {
-        
-        let isStartDateCell = indexPath.section == START_DATE_SECTION && indexPath.row == 0
-        let isFinishDateCell = indexPath.section == FINISH_DATE_SECTION && indexPath.row == 0
-        
-        return isStartDateCell || isFinishDateCell
-    }
-    
-    func indexPathHasRevealedDatePicker(indexPath: NSIndexPath) -> Bool {
-        
-        if self.hasRevealedCell() {
-            if let datePath = self.revealedCellIndexPath {
-                if datePath == indexPath &&
-                    (indexPath.section == START_DATE_SECTION || indexPath.section == FINISH_DATE_SECTION) {
-                        return true
-                }
-            }
-        }
-        
-        return false
-    }
-    
-    func indexPathHasBreaksLabel(indexPath: NSIndexPath) -> Bool {
-        return indexPath.section == BREAKS_SECTION && indexPath.row == 0
     }
     
     func toggleRevealedCellForSelectedIndexPath(indexPath: NSIndexPath) {
@@ -362,28 +327,19 @@ class ActivityViewController: UITableViewController, UITableViewDelegate, UITabl
         self.tableView.beginUpdates()
         
         var before = false
-        if self.hasRevealedCell() {
-            if let path = self.revealedCellIndexPath {
-                before = path.row < indexPath.row
-            }
-        }
-        
         var sameCellClicked = false
+        
         if let path = self.revealedCellIndexPath {
+            before = path.row < indexPath.row
             sameCellClicked = (path.previous() == indexPath)
+            self.tableView.deleteRowsAtIndexPaths([path], withRowAnimation: .Fade)
+            self.revealedCellIndexPath = nil
         }
         
-        if self.hasRevealedCell() {
-            if let path = self.revealedCellIndexPath {
-                self.tableView.deleteRowsAtIndexPaths([path], withRowAnimation: .Fade)
-                self.revealedCellIndexPath = nil
-            }
-        }
-        
-        if (!sameCellClicked) {
-            let indexPathToReveal = (before) ? indexPath.previous() : indexPath
-            self.toggleRevealedCellForSelectedIndexPath(indexPathToReveal)
-            self.revealedCellIndexPath = indexPathToReveal.next()
+        if !sameCellClicked {
+            let path = (before) ? indexPath.previous() : indexPath
+            self.toggleRevealedCellForSelectedIndexPath(path)
+            self.revealedCellIndexPath = path.next()
         }
         
         self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
@@ -393,16 +349,14 @@ class ActivityViewController: UITableViewController, UITableViewDelegate, UITabl
     }
     
     func targetedCell() -> NSIndexPath? {
-        
-        if self.hasRevealedCell() {
-            if let path = self.revealedCellIndexPath {
-                return path.previous()
-            }
+        if let path = self.revealedCellIndexPath {
+            return path.previous()
         } else {
-            return self.tableView.indexPathForSelectedRow()
+           return self.tableView.indexPathForSelectedRow()
         }
-        
-        return nil
     }
-    */
+    
+    func hasRevealedCell() -> Bool {
+        return self.revealedCellIndexPath != nil
+    }
 }
