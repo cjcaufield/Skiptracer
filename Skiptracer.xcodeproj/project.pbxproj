@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		3B4013361AE92CA40092F5CC /* DatePickerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B4013351AE92CA40092F5CC /* DatePickerCell.xib */; };
+		3B4013381AE9336C0092F5CC /* TextViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B4013371AE9336C0092F5CC /* TextViewCell.xib */; };
+		3B40133A1AE939150092F5CC /* SwitchCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B4013391AE939150092F5CC /* SwitchCell.xib */; };
+		3B40133C1AE93ABA0092F5CC /* PickerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B40133B1AE93ABA0092F5CC /* PickerCell.xib */; };
+		3B40133E1AE93CA80092F5CC /* TimePickerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B40133D1AE93CA80092F5CC /* TimePickerCell.xib */; };
+		3B4013401AE950140092F5CC /* TextFieldCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B40133F1AE950140092F5CC /* TextFieldCell.xib */; };
 		3B92BDD91AE057D30012B00E /* Skiptracer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3B92BDD71AE057D30012B00E /* Skiptracer.xcdatamodeld */; };
 		3B92BDDD1AE0F6280012B00E /* SGExpandableTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B92BDDC1AE0F6280012B00E /* SGExpandableTableViewController.swift */; };
 		3BAA1B121AE025F500FF21BE /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAA1B111AE025F500FF21BE /* InterfaceController.swift */; };
@@ -57,6 +62,11 @@
 /* Begin PBXFileReference section */
 		3B13610B1ABE6E1100E0CBDC /* Skiptracer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skiptracer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B4013351AE92CA40092F5CC /* DatePickerCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DatePickerCell.xib; sourceTree = "<group>"; };
+		3B4013371AE9336C0092F5CC /* TextViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextViewCell.xib; sourceTree = "<group>"; };
+		3B4013391AE939150092F5CC /* SwitchCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SwitchCell.xib; sourceTree = "<group>"; };
+		3B40133B1AE93ABA0092F5CC /* PickerCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PickerCell.xib; sourceTree = "<group>"; };
+		3B40133D1AE93CA80092F5CC /* TimePickerCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TimePickerCell.xib; sourceTree = "<group>"; };
+		3B40133F1AE950140092F5CC /* TextFieldCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextFieldCell.xib; sourceTree = "<group>"; };
 		3B92BDD81AE057D30012B00E /* Skiptracer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Skiptracer.xcdatamodel; sourceTree = "<group>"; };
 		3B92BDDC1AE0F6280012B00E /* SGExpandableTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SGExpandableTableViewController.swift; sourceTree = "<group>"; };
 		3BAA1B0C1AE025F500FF21BE /* Skiptracer WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Skiptracer WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -161,10 +171,16 @@
 		3B84A4601AD09C4400F4ABD4 /* Additions */ = {
 			isa = PBXGroup;
 			children = (
+				3BC852AE1AE0390C009031C0 /* NSIndexPathAdditions.swift */,
 				3BC852B01AE0390C009031C0 /* SGViewController.swift */,
 				3BC852AF1AE0390C009031C0 /* SGCoreDataTableViewController.swift */,
 				3B92BDDC1AE0F6280012B00E /* SGExpandableTableViewController.swift */,
-				3BC852AE1AE0390C009031C0 /* NSIndexPathAdditions.swift */,
+				3B4013351AE92CA40092F5CC /* DatePickerCell.xib */,
+				3B4013371AE9336C0092F5CC /* TextViewCell.xib */,
+				3B4013391AE939150092F5CC /* SwitchCell.xib */,
+				3B40133B1AE93ABA0092F5CC /* PickerCell.xib */,
+				3B40133D1AE93CA80092F5CC /* TimePickerCell.xib */,
+				3B40133F1AE950140092F5CC /* TextFieldCell.xib */,
 			);
 			name = Additions;
 			sourceTree = "<group>";
@@ -191,7 +207,6 @@
 				3BC852A41AE0389F009031C0 /* Main.storyboard */,
 				3BC8529C1AE03884009031C0 /* CustomTableViewCell.swift */,
 				3BC8529E1AE03884009031C0 /* StatisticsTableViewCell.swift */,
-				3B4013351AE92CA40092F5CC /* DatePickerCell.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -354,10 +369,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BC852A61AE0389F009031C0 /* LaunchScreen.xib in Resources */,
+				3B40133A1AE939150092F5CC /* SwitchCell.xib in Resources */,
+				3B4013381AE9336C0092F5CC /* TextViewCell.xib in Resources */,
 				3BC852A71AE0389F009031C0 /* Main.storyboard in Resources */,
 				3BC852A01AE03884009031C0 /* Images.xcassets in Resources */,
 				3B4013361AE92CA40092F5CC /* DatePickerCell.xib in Resources */,
+				3B40133C1AE93ABA0092F5CC /* PickerCell.xib in Resources */,
+				3B4013401AE950140092F5CC /* TextFieldCell.xib in Resources */,
 				3BC852AB1AE038D8009031C0 /* Bugs.txt in Resources */,
+				3B40133E1AE93CA80092F5CC /* TimePickerCell.xib in Resources */,
 				3BC852AD1AE038D8009031C0 /* Plan.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

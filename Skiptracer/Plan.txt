@@ -4,7 +4,8 @@ Plan
 0.3 Alerts
 ----------
 
-- Enable break/progress cells when appropriate.
+- Make titles work again.
+- Enable/disable break/progress cells when appropriate.
 
 Alerts:
 * Read https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Introduction.html#//apple_ref/doc/uid/TP40008194-CH1-SW1
@@ -12,17 +13,16 @@ Alerts:
 - Implement progress alerts
 - Background stay-alive thread?
 
+0.X iCloud
+----------
+
+- Read https://developer.apple.com/library/ios/documentation/DataManagement/Conceptual/UsingCoreDataWithiCloudPG/UsingSQLiteStoragewithiCloud/UsingSQLiteStoragewithiCloud.html#//apple_ref/doc/uid/TP40013491-CH3-SW1
+
 Workflow:
 - Join previously deactivated reports if a new one is started quickly?  HOW?
 - Implement atomic activities
 - Now UI for atomic activities (checkbox, ding?)
 - Now UI for break countdown.
-
-
-0.X iCloud
-----------
-
-- Read https://developer.apple.com/library/ios/documentation/DataManagement/Conceptual/UsingCoreDataWithiCloudPG/UsingSQLiteStoragewithiCloud/UsingSQLiteStoragewithiCloud.html#//apple_ref/doc/uid/TP40013491-CH3-SW1
 
 0.X In-App Purchases
 --------------------

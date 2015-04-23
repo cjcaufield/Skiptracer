@@ -8,43 +8,31 @@
 
 import UIKit
 
-let ACTIVITY_SECTION        = 0
-let START_DATE_SECTION      = 1
-let FINISH_DATE_SECTION     = 2
-let BREAKS_SECTION          = 3
-let NOTES_SECTION           = 4
-let ACTIVITY_PICKER_TAG     = 1000
-let DATE_PICKER_TAG         = 1001
-
 class ReportViewController: SGExpandableTableViewController {
     
     var report: Report? { return self.object as? Report }
-    
     var timer: NSTimer?
     var user: User?
     var activities = [Activity]()
-    
-    var hideActivityRow: Bool { return self.report?.isBreak ?? false }
-    var hideBreaksRow: Bool { return self.report?.isBreak ?? false }
+    var endDateIndex = 2
     
     override func createCellData() -> [[SGCellData]] {
-        return [
-            [
-                SGCellData(cellIdentifier: ACTIVITY_LABEL_CELL_ID, title: "Activity",   modelPath: "activity.name")
-            ],
-            [
-                SGCellData(cellIdentifier: DATE_LABEL_CELL_ID,     title: "Start Date", modelPath: "startDate")
-            ],
-            [
-                SGCellData(cellIdentifier: DATE_LABEL_CELL_ID,     title: "End Date",   modelPath: "liveEndDate")
-            ],
-            [
-                SGCellData(cellIdentifier: BREAKS_LABEL_CELL_ID,   title: "Breaks",     modelPath: "breaks.@count")
-            ],
-            [
-                SGCellData(cellIdentifier: NOTES_CELL_ID,          title: "",           modelPath: "notes")
-            ]
+        
+        var data = [
+            [ SGCellData(cellIdentifier: PICKER_LABEL_CELL_ID, title: "Activity",   modelPath: "activity.name") ],
+            [ SGCellData(cellIdentifier: DATE_LABEL_CELL_ID,   title: "Start Date", modelPath: "startDate") ],
+            [ SGCellData(cellIdentifier: DATE_LABEL_CELL_ID,   title: "End Date",   modelPath: "liveEndDate") ],
+            [ SGCellData(cellIdentifier: BREAKS_LABEL_CELL_ID, title: "Breaks",     modelPath: "breaks.@count") ],
+            [ SGCellData(cellIdentifier: TEXT_VIEW_CELL_ID,    title: "",           modelPath: "notes") ]
         ]
+        
+        if self.report?.isBreak ?? false {
+            data.removeAtIndex(3)
+            data.removeAtIndex(0)
+            self.endDateIndex--
+        }
+        
+        return data
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -67,13 +55,14 @@ class ReportViewController: SGExpandableTableViewController {
     func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         if text == "\n" {
             textView.resignFirstResponder()
+            return false
         }
-        return false
+        return true
     }
     
     func updateClock() {
         if self.report?.active == true {
-            let path = NSIndexPath(forRow: 0, inSection: FINISH_DATE_SECTION)
+            let path = NSIndexPath(forRow: 0, inSection: self.endDateIndex)
             if let cell = self.tableView.cellForRowAtIndexPath(path) {
                 self.configureCell(cell, atIndexPath: path)
             }
@@ -109,38 +98,22 @@ class ReportViewController: SGExpandableTableViewController {
     }
     
     override func canExpandCell(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) -> Bool {
-        let isLabelCell = (cell.reuseIdentifier == ACTIVITY_LABEL_CELL_ID || cell.reuseIdentifier == DATE_LABEL_CELL_ID)
-        let isStartDateLabelCell = (indexPath.section == START_DATE_SECTION && indexPath.row == 0)
-        let canExpand = isStartDateLabelCell || (self.report?.active == false && isLabelCell)
-        return canExpand
+        
+        let data = self.dataForIndexPath(indexPath)
+        
+        let isActivityLabel = (data?.modelPath == "activity.name")
+        let isStartDateLabel = (data?.modelPath == "startDate")
+        let isEndDateLabel = (data?.modelPath == "liveEndDate")
+        
+        let isLabelCell = isActivityLabel || isStartDateLabel || isEndDateLabel
+        return isLabelCell
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return (section == NOTES_SECTION) ? "Notes" : ""
-    }
-    
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        
-        if indexPath.section == ACTIVITY_SECTION && self.hideActivityRow {
-            return 0.0
-        }
-        
-        if indexPath.section == BREAKS_SECTION && self.hideBreaksRow {
-            return 0.0
-        }
-        
-        return super.tableView(tableView, heightForRowAtIndexPath: indexPath)
-    }
-    
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        
-        let isActivity = indexPath.section == ACTIVITY_SECTION && self.hideActivityRow
-        let isBreaks = indexPath.section == BREAKS_SECTION && self.hideBreaksRow
-        
-        if isActivity || isBreaks {
-            cell.hidden = true
-            cell.userInteractionEnabled = false
-        }
+        let path = NSIndexPath(forRow: 0, inSection: section)
+        let data = self.dataForIndexPath(path)
+        let isNotes = (data?.modelPath == "notes")
+        return isNotes ? "Notes" : nil
     }
     
     override func configurePicker(picker: UIPickerView, forModelPath: String) {
@@ -152,9 +125,7 @@ class ReportViewController: SGExpandableTableViewController {
         }
     }
     
-    // - MARK: UIPickerViewDelegate/DataSource
-    
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
+    override func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
         if component != 0 {
             return ""
         } else {
@@ -162,7 +133,7 @@ class ReportViewController: SGExpandableTableViewController {
         }
     }
     
-    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    override func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
         if let path = self.targetedCell() {
             
@@ -172,16 +143,16 @@ class ReportViewController: SGExpandableTableViewController {
             AppData.shared.save()
             
             if let cell = self.tableView.cellForRowAtIndexPath(path) {
-                cell.detailTextLabel?.text = activity.name
+                self.configureCell(cell, atIndexPath: path)
             }
         }
     }
     
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    override func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
         return 1
     }
     
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    override func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return self.activities.count
     }
 }

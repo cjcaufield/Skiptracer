@@ -8,17 +8,17 @@
 
 import UIKit
 
-let TEXT_FIELD_CELL_ID      = "TextFieldCell"
-let SWITCH_CELL_ID          = "SwitchCell"
-let TIME_LABEL_CELL_ID      = "TimeLabelCell"
-let TIME_CELL_ID            = "TimePickerCell"
-let ACTIVITY_LABEL_CELL_ID  = "ActivityLabelCell"
-let ACTIVITY_PICKER_CELL_ID = "ActivityPickerCell"
-let DATE_LABEL_CELL_ID      = "DateLabelCell"
-let DATE_PICKER_CELL_ID     = "DatePickerCell"
-let BREAKS_LABEL_CELL_ID    = "BreaksLabelCell"
-let NOTES_CELL_ID           = "NotesCell"
-let OTHER_CELL_ID           = "OtherCell"
+let TEXT_FIELD_CELL_ID     = "TextFieldCell"
+let SWITCH_CELL_ID         = "SwitchCell"
+let TIME_LABEL_CELL_ID     = "TimeLabelCell"
+let TIME_PICKER_CELL_ID    = "TimePickerCell"
+let PICKER_LABEL_CELL_ID   = "PickerLabelCell"
+let PICKER_CELL_ID         = "PickerCell"
+let DATE_LABEL_CELL_ID     = "DateLabelCell"
+let DATE_PICKER_CELL_ID    = "DatePickerCell"
+let BREAKS_LABEL_CELL_ID   = "BreaksLabelCell"
+let TEXT_VIEW_CELL_ID      = "TextViewCell"
+let OTHER_CELL_ID          = "OtherCell"
 
 class SGCellData {
     
@@ -35,7 +35,7 @@ class SGCellData {
     }
 }
 
-class SGExpandableTableViewController: UITableViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+class SGExpandableTableViewController: UITableViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UITextViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
     
     var cellData = [[SGCellData]]()
     
@@ -54,16 +54,21 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
         
         super.viewDidLoad()
         
-        func loadNib(name: String) {
-            let nib = UINib(nibName: name, bundle: nil)
-            self.tableView.registerNib(nib, forCellReuseIdentifier: name)
-        }
-        
-        loadNib(DATE_PICKER_CELL_ID)
+        self.registerCellNib(DATE_PICKER_CELL_ID)
+        self.registerCellNib(PICKER_CELL_ID)
+        self.registerCellNib(SWITCH_CELL_ID)
+        self.registerCellNib(TEXT_FIELD_CELL_ID)
+        self.registerCellNib(TEXT_VIEW_CELL_ID)
+        self.registerCellNib(TIME_PICKER_CELL_ID)
         
         self.cellData = self.createCellData()
         
         self.configureView()
+    }
+    
+    func registerCellNib(name: String) {
+        let nib = UINib(nibName: name, bundle: nil)
+        self.tableView.registerNib(nib, forCellReuseIdentifier: name)
     }
     
     func createCellData() -> [[SGCellData]] {
@@ -79,7 +84,7 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
         self.title = self.object?.name ?? "Untitled"
     }
     
-    func cellForControl(control: UIControl) -> UITableViewCell? {
+    func cellForControl(control: UIView) -> UITableViewCell? {
         return control.superview?.superview as? UITableViewCell
     }
     
@@ -95,6 +100,13 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
         }
     }
     
+    func textViewDidEndEditing(textView: UITextView) {
+        if let data = self.dataForControl(textView) {
+            self.object?.setValue(textView.text, forKey: data.modelPath)
+            AppData.shared.save()
+        }
+    }
+    
     @IBAction func switchDidChange(toggle: UISwitch) {
         if let data = self.dataForControl(toggle) {
             self.object?.setValue(toggle.on, forKey: data.modelPath)
@@ -102,7 +114,7 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
         }
     }
     
-    @IBAction func dateDidChange(picker: UIDatePicker) {
+    @IBAction func timePickerDidChange(picker: UIDatePicker) {
         
         // Update the model.
         
@@ -121,7 +133,7 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
         }
     }
     
-    @IBAction func datePickerAction(sender: AnyObject) {
+    @IBAction func datePickerDidChange(sender: AnyObject) {
         
         if let path = self.targetedCell() {
             
@@ -162,16 +174,16 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
             
         switch self.cellIdentifierForIndexPath(indexPath) {
                 
-            case TIME_CELL_ID:
+            case TIME_PICKER_CELL_ID:
                 return 216.0
             
             case DATE_PICKER_CELL_ID:
                 return 216.0
             
-            case NOTES_CELL_ID:
+            case TEXT_VIEW_CELL_ID:
                 return 178.0
             
-            case ACTIVITY_PICKER_CELL_ID:
+            case PICKER_CELL_ID:
                 return 162.0
 
             default:
@@ -197,7 +209,7 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
         return cell!
     }
     
-    func dataForControl(control: UIControl) -> SGCellData? {
+    func dataForControl(control: UIView) -> SGCellData? {
         
         if let cell = self.cellForControl(control) {
             if let path = self.tableView.indexPathForCell(cell) {
@@ -240,14 +252,14 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
             
             switch id {
                 
-                case ACTIVITY_LABEL_CELL_ID:
-                    return ACTIVITY_PICKER_CELL_ID
+                case PICKER_LABEL_CELL_ID:
+                    return PICKER_CELL_ID
                 
                 case DATE_LABEL_CELL_ID:
                     return DATE_PICKER_CELL_ID
                 
                 case TIME_LABEL_CELL_ID:
-                    return TIME_CELL_ID
+                    return TIME_PICKER_CELL_ID
                 
                 default:
                     break
@@ -263,7 +275,12 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
         
         switch (cell.reuseIdentifier ?? "") {
             
-            case ACTIVITY_LABEL_CELL_ID:
+            case OTHER_CELL_ID:
+                
+                cell.textLabel?.text = item.title
+                cell.selectionStyle = .None
+                
+            case PICKER_LABEL_CELL_ID:
             
                 let name = self.object?.valueForKeyPath(item.modelPath) as? String
                 
@@ -276,22 +293,18 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
                 
                 cell.textLabel?.text = item.title
                 cell.detailTextLabel?.text = Formatter.dateStringFromDate(date)
+            
+            case TIME_LABEL_CELL_ID:
                 
-            case DATE_PICKER_CELL_ID:
+                cell.textLabel?.text = item.title
                 
-                let date = self.object?.valueForKeyPath(item.modelPath) as? NSDate ?? NSDate()
-                let picker = cell.viewWithTag(2) as? UIDatePicker
-                picker?.setDate(date, animated: false)
-            
-                picker?.addTarget(self, action: "datePickerAction:", forControlEvents: .ValueChanged)
-            
-            case ACTIVITY_PICKER_CELL_ID:
-            
-                let picker = cell.viewWithTag(2) as! UIPickerView
-                self.configurePicker(picker, forModelPath: item.modelPath)
+                let length = self.object?.valueForKeyPath(item.modelPath) as? NSTimeInterval ?? 0.0
+                let timeString = Formatter.stringFromLength(length)
+                
+                cell.detailTextLabel?.text = timeString
                 
             case BREAKS_LABEL_CELL_ID:
-        
+                
                 var text = ""
                 
                 if let value: AnyObject = self.object?.valueForKeyPath(item.modelPath) {
@@ -300,7 +313,7 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
                 
                 cell.textLabel?.text = item.title
                 cell.detailTextLabel?.text = text
-                
+            
             case TEXT_FIELD_CELL_ID:
                 
                 let label = cell.viewWithTag(1) as! UILabel
@@ -309,6 +322,14 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
                 let value = self.object?.valueForKeyPath(item.modelPath) as? String
                 let textField = cell.viewWithTag(2) as! UITextField
                 textField.text = value ?? "Untitled"
+                textField.delegate = self
+            
+            case TEXT_VIEW_CELL_ID:
+                
+                let text = self.object?.valueForKeyPath(item.modelPath) as? String ?? ""
+                let textView = cell.viewWithTag(2) as! UITextView
+                textView.text = text
+                textView.delegate = self
                 
             case SWITCH_CELL_ID:
                 
@@ -319,26 +340,28 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
                 let toggle = cell.viewWithTag(2) as! UISwitch
                 toggle.on = value ?? false
                 
-            case TIME_LABEL_CELL_ID:
+                toggle.addTarget(self, action: "switchDidChange:", forControlEvents: .ValueChanged)
                 
-                cell.textLabel?.text = item.title
+            case PICKER_CELL_ID:
+                
+                let picker = cell.viewWithTag(2) as! UIPickerView
+                picker.delegate = self
+                self.configurePicker(picker, forModelPath: item.modelPath)
+            
+            case DATE_PICKER_CELL_ID:
+                
+                let date = self.object?.valueForKeyPath(item.modelPath) as? NSDate ?? NSDate()
+                let picker = cell.viewWithTag(2) as! UIDatePicker
+                picker.setDate(date, animated: false)
+                picker.addTarget(self, action: "datePickerDidChange:", forControlEvents: .ValueChanged)
+                
+            case TIME_PICKER_CELL_ID:
                 
                 let length = self.object?.valueForKeyPath(item.modelPath) as? NSTimeInterval ?? 0.0
-                let timeString = Formatter.stringFromLength(length)
-                
-                cell.detailTextLabel?.text = timeString
-                
-            case TIME_CELL_ID:
-                
-                let length = self.object?.valueForKeyPath(item.modelPath) as? NSTimeInterval ?? 0.0
-                
                 let picker = cell.viewWithTag(2) as! UIDatePicker
                 picker.countDownDuration = length
-                
-            case OTHER_CELL_ID:
-                
-                cell.textLabel?.text = item.title
-                cell.selectionStyle = .None
+            
+                picker.addTarget(self, action: "timePickerDidChange:", forControlEvents: .ValueChanged)
             
             default:
                 break
@@ -376,10 +399,24 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
     
     func hasRevealedCellForIndexPath(indexPath: NSIndexPath) -> Bool {
         
-        let targetPath = indexPath.next()
-        
-        if let cell = self.tableView.cellForRowAtIndexPath(targetPath) {
-            return cell.reuseIdentifier == TIME_CELL_ID
+        if let thisCell = self.tableView.cellForRowAtIndexPath(indexPath) {
+            if let nextCell = self.tableView.cellForRowAtIndexPath(indexPath.next()) {
+                
+                let thisID = thisCell.reuseIdentifier
+                let nextID = nextCell.reuseIdentifier
+                
+                if thisID == TIME_LABEL_CELL_ID {
+                    return nextID == TIME_PICKER_CELL_ID
+                }
+                
+                if thisID == DATE_LABEL_CELL_ID {
+                    return nextID == DATE_PICKER_CELL_ID
+                }
+                
+                if thisID == PICKER_LABEL_CELL_ID {
+                    return nextID == PICKER_CELL_ID
+                }
+            }
         }
         
         return false
@@ -444,5 +481,21 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
     
     func hasRevealedCell() -> Bool {
         return self.revealedCellIndexPath != nil
+    }
+    
+    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
+        return ""
+    }
+    
+    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        //
+    }
+    
+    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+        return 0
+    }
+    
+    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return 0
     }
 }

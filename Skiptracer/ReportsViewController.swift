@@ -126,9 +126,11 @@ class ReportsViewController: SGCoreDataTableViewController {
             statsCell.rightLabel?.text = report?.lengthWithoutBreaksText ?? ""
             
             if report?.active ?? false {
+                //statsCell.leftLabel.textColor = statsCell.leftLabel.tintColor
                 statsCell.rightLabel.textColor = statsCell.rightLabel.tintColor
                 //statsCell.backgroundColor = UIColor(red: 0.0, green: 0.478, blue: 1.0, alpha: 0.03)
             } else {
+                //statsCell.leftLabel.textColor = UIColor.blackColor()
                 statsCell.rightLabel.textColor = UIColor.blackColor()
                 //statsCell.backgroundColor = UIColor.whiteColor()
             }
