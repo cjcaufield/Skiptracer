@@ -247,7 +247,7 @@
                                     </constraints>
                                 </tableViewCellContentView>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="DateLabelCell" textLabel="tcx-wy-uEP" detailTextLabel="kXx-in-kbR" style="IBUITableViewCellStyleValue1" id="DuM-FH-r60" customClass="CustomTableViewCell" customModule="Skiptracer" customModuleProvider="target">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="TimeLabelCell" textLabel="tcx-wy-uEP" detailTextLabel="kXx-in-kbR" style="IBUITableViewCellStyleValue1" id="DuM-FH-r60" customClass="CustomTableViewCell" customModule="Skiptracer" customModuleProvider="target">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DuM-FH-r60" id="j9q-Eg-6Dt">
                                     <autoresizingMask key="autoresizingMask"/>
@@ -267,7 +267,7 @@
                                     </subviews>
                                 </tableViewCellContentView>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DatePickerCell" rowHeight="216" id="Ybj-et-Ygu">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="TimePickerCell" rowHeight="216" id="Ybj-et-Ygu">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Ybj-et-Ygu" id="rhe-v2-Bdu">
                                     <autoresizingMask key="autoresizingMask"/>
@@ -420,16 +420,16 @@
             </objects>
             <point key="canvasLocation" x="1032" y="838"/>
         </scene>
-        <!--Breaks-->
+        <!--Report-->
         <scene sceneID="wYQ-sw-vPj">
             <objects>
-                <tableViewController storyboardIdentifier="Report" title="Breaks" id="Kry-hx-ZfF" customClass="ReportViewController" customModule="Skiptracer" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="Report" title="Report" id="Kry-hx-ZfF" customClass="ReportViewController" customModule="Skiptracer" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="ESo-5I-ozG">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="1000"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ActivityLabel" textLabel="LlF-Re-Xg0" detailTextLabel="MJs-S8-chB" style="IBUITableViewCellStyleValue1" id="z6b-bC-3YE">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ActivityLabelCell" textLabel="LlF-Re-Xg0" detailTextLabel="MJs-S8-chB" style="IBUITableViewCellStyleValue1" id="z6b-bC-3YE">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="z6b-bC-3YE" id="qud-DY-Mqv">
                                     <autoresizingMask key="autoresizingMask"/>
@@ -449,12 +449,12 @@
                                     </subviews>
                                 </tableViewCellContentView>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ActivityPicker" rowHeight="162" id="Li1-58-465">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ActivityPickerCell" rowHeight="162" id="Li1-58-465">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Li1-58-465" id="wdm-jG-2ca">
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <pickerView tag="1000" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gyt-Q3-wE7">
+                                        <pickerView tag="2" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gyt-Q3-wE7">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="162"/>
                                             <connections>
                                                 <outlet property="dataSource" destination="Kry-hx-ZfF" id="1CS-mS-94w"/>
@@ -470,7 +470,7 @@
                                     </constraints>
                                 </tableViewCellContentView>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DateLabel" textLabel="cXi-oa-PVJ" detailTextLabel="zjv-69-5au" style="IBUITableViewCellStyleValue1" id="njR-si-v3i">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DateLabelCell" textLabel="cXi-oa-PVJ" detailTextLabel="zjv-69-5au" style="IBUITableViewCellStyleValue1" id="njR-si-v3i">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="njR-si-v3i" id="qxi-rb-MLj">
                                     <autoresizingMask key="autoresizingMask"/>
@@ -490,7 +490,7 @@
                                     </subviews>
                                 </tableViewCellContentView>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="BreaksLabel" textLabel="VfD-vc-lbe" detailTextLabel="O4B-LU-XPu" style="IBUITableViewCellStyleValue1" id="fgD-O5-GIw">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="BreaksLabelCell" textLabel="VfD-vc-lbe" detailTextLabel="O4B-LU-XPu" style="IBUITableViewCellStyleValue1" id="fgD-O5-GIw">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fgD-O5-GIw" id="qqp-fA-oWT">
                                     <autoresizingMask key="autoresizingMask"/>
@@ -513,12 +513,12 @@
                                     <segue destination="Oxy-kY-mUy" kind="show" identifier="ReportsSegue" id="vc2-Lk-oeb"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DatePicker" rowHeight="216" id="F98-rt-Vzn">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DatePickerCell" rowHeight="216" id="F98-rt-Vzn">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="F98-rt-Vzn" id="EH7-cr-j8n">
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <datePicker tag="1001" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="2sc-rL-4Aj">
+                                        <datePicker tag="2" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="2sc-rL-4Aj">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="216"/>
                                             <date key="date" timeIntervalSinceReferenceDate="450221873.30697697">
                                                 <!--2015-04-08 21:37:53 +0000-->
@@ -536,12 +536,12 @@
                                     </constraints>
                                 </tableViewCellContentView>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Notes" rowHeight="178" id="VeF-OG-LPq">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="NotesCell" rowHeight="178" id="VeF-OG-LPq">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VeF-OG-LPq" id="w9j-6A-c4C">
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ADO-rI-uxQ">
+                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" tag="2" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ADO-rI-uxQ">
                                             <rect key="frame" x="8" y="8" width="584" height="162"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>

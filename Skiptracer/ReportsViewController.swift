@@ -127,10 +127,10 @@ class ReportsViewController: SGCoreDataTableViewController {
             
             if report?.active ?? false {
                 statsCell.rightLabel.textColor = statsCell.rightLabel.tintColor
-                statsCell.backgroundColor = UIColor(red: 0.0, green: 0.478, blue: 1.0, alpha: 0.03)
+                //statsCell.backgroundColor = UIColor(red: 0.0, green: 0.478, blue: 1.0, alpha: 0.03)
             } else {
                 statsCell.rightLabel.textColor = UIColor.blackColor()
-                statsCell.backgroundColor = UIColor.whiteColor()
+                //statsCell.backgroundColor = UIColor.whiteColor()
             }
         }
     }
@@ -139,7 +139,7 @@ class ReportsViewController: SGCoreDataTableViewController {
         
         let newController = self.storyboard?.instantiateViewControllerWithIdentifier("Report") as! ReportViewController
         newController.showDoneButton = new
-        newController.report = object as? Report
+        newController.object = object
         
         self.navigationController?.pushViewController(newController, animated: true)
     }

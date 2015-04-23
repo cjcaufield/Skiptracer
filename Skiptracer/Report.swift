@@ -21,9 +21,17 @@ class Report: NSManagedObject {
     @NSManaged var active: Bool
     @NSManaged var isBreak: Bool
     
+    var liveEndDate: NSDate {
+        get {
+            return self.active ? NSDate() : self.endDate
+        }
+        set(date) {
+            self.endDate = date
+        }
+    }
+    
     var length: Double {
-        let nowOrEndDate = (self.active) ? NSDate() : self.endDate
-        return nowOrEndDate.timeIntervalSinceDate(self.startDate)
+        return self.liveEndDate.timeIntervalSinceDate(self.startDate)
     }
     
     var lengthWithoutBreaks: Double {
@@ -45,15 +53,15 @@ class Report: NSManagedObject {
     
     var startAndEndText: String {
         
-        let endDate = self.active ? NSDate() : self.endDate
+        var startText = Formatter.clockStringFromDate(self.startDate)
+        var endText = Formatter.clockStringFromDate(self.liveEndDate)
         
-        var startText = Formatter.stringFromDate(self.startDate)
-        var endText = Formatter.stringFromDate(endDate)
-        
+        /*
         if self.active {
-            //endText = "now"
-            //endText = "..."
+            endText = "now"
+            endText = "..."
         }
+        */
         
         return startText + " - " + endText
     }

@@ -88,18 +88,18 @@ class AppStore: NSObject, SKRequestDelegate, SKProductsRequestDelegate {
             if let transaction = possibleTransaction as? SKPaymentTransaction {
                 
                 switch transaction.transactionState {
-                    
-                case .Purchased:
-                    SKPaymentQueue.defaultQueue().finishTransaction(transaction)
-                    
-                case .Failed:
-                    SKPaymentQueue.defaultQueue().finishTransaction(transaction)
-                    
-                // case .Restored:
-                //     self.restoreTransaction(transaction)
-                    
-                default:
-                    break
+                        
+                    case .Purchased:
+                        SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+                        
+                    case .Failed:
+                        SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+                        
+                    // case .Restored:
+                    //     self.restoreTransaction(transaction)
+                        
+                    default:
+                        break
                 }
             }
         }

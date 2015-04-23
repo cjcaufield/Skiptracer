@@ -10,6 +10,7 @@ import UIKit
 
 private var lengthFormatter: NSDateComponentsFormatter? = nil
 private var dateFormatter: NSDateFormatter? = nil
+private var longDateFormatter: NSDateFormatter? = nil
 private var dayFormatter: NSDateFormatter? = nil
 private var monthFormatter: NSDateFormatter? = nil
 
@@ -28,7 +29,7 @@ class Formatter: NSObject {
         return lengthFormatter!.stringFromTimeInterval(length) ?? ""
     }
     
-    class func stringFromDate(date: NSDate) -> String {
+    class func clockStringFromDate(date: NSDate) -> String {
         
         if dateFormatter == nil {
             dateFormatter = NSDateFormatter()
@@ -36,6 +37,17 @@ class Formatter: NSObject {
         }
         
         return dateFormatter!.stringFromDate(date)
+    }
+    
+    class func dateStringFromDate(date: NSDate) -> String {
+        
+        if longDateFormatter == nil {
+            longDateFormatter = NSDateFormatter()
+            longDateFormatter?.dateStyle = .MediumStyle
+            longDateFormatter?.timeStyle = .MediumStyle
+        }
+        
+        return longDateFormatter!.stringFromDate(date)
     }
     
     class func dayStringFromDate(date: NSDate) -> String {

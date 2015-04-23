@@ -8,11 +8,6 @@
 
 import UIKit
 
-struct CellData {
-    var title: String
-    var modelPath: String
-}
-
 let ACTIVITY_SECTION        = 0
 let START_DATE_SECTION      = 1
 let FINISH_DATE_SECTION     = 2
@@ -20,67 +15,36 @@ let BREAKS_SECTION          = 3
 let NOTES_SECTION           = 4
 let ACTIVITY_PICKER_TAG     = 1000
 let DATE_PICKER_TAG         = 1001
-let ACTIVITY_LABEL_CELL_ID  = "ActivityLabel"
-let ACTIVITY_PICKER_CELL_ID = "ActivityPicker"
-let DATE_LABEL_CELL_ID      = "DateLabel"
-let DATE_PICKER_CELL_ID     = "DatePicker"
-let BREAKS_LABEL_CELL_ID    = "BreaksLabel"
-let NOTES_CELL_ID           = "Notes"
-let OTHER_CELL_ID           = "Other"
 
-class ReportViewController: UITableViewController, UITextViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
+class ReportViewController: SGExpandableTableViewController {
+    
+    var report: Report? { return self.object as? Report }
     
     var timer: NSTimer?
     var user: User?
     var activities = [Activity]()
-    var cellData = [[CellData]]()
-    var dateFormatter: NSDateFormatter?
-    var revealedCellIndexPath: NSIndexPath?
-    var showDoneButton = false
-    
-    var report: Report? {
-        didSet {
-            if self.tableView != nil {
-                self.refreshData()
-            }
-        }
-    }
     
     var hideActivityRow: Bool { return self.report?.isBreak ?? false }
     var hideBreaksRow: Bool { return self.report?.isBreak ?? false }
     
-    override func viewDidLoad() {
-        
-        super.viewDidLoad()
-        
-        if self.showDoneButton {
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "done:")
-        }
-        
-        self.dateFormatter = NSDateFormatter()
-        self.dateFormatter?.dateStyle = .MediumStyle
-        self.dateFormatter?.timeStyle = .MediumStyle
-        
-        self.cellData =
-        [
+    override func createCellData() -> [[SGCellData]] {
+        return [
             [
-                CellData(title: "Activity", modelPath: "activity")
+                SGCellData(cellIdentifier: ACTIVITY_LABEL_CELL_ID, title: "Activity",   modelPath: "activity.name")
             ],
             [
-                CellData(title: "Start Date", modelPath: "startDate")
+                SGCellData(cellIdentifier: DATE_LABEL_CELL_ID,     title: "Start Date", modelPath: "startDate")
             ],
             [
-                CellData(title: "End Date", modelPath: "endDate")
+                SGCellData(cellIdentifier: DATE_LABEL_CELL_ID,     title: "End Date",   modelPath: "liveEndDate")
             ],
             [
-                CellData(title: "Breaks", modelPath: "breaks")
+                SGCellData(cellIdentifier: BREAKS_LABEL_CELL_ID,   title: "Breaks",     modelPath: "breaks.@count")
             ],
             [
-                CellData(title: "", modelPath: "notes")
+                SGCellData(cellIdentifier: NOTES_CELL_ID,          title: "",           modelPath: "notes")
             ]
         ]
-        
-        self.refreshData()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -116,108 +80,39 @@ class ReportViewController: UITableViewController, UITextViewDelegate, UIPickerV
         }
     }
     
-    func refreshData() {
-        
-        self.title = self.report?.activity?.name ?? "Untitled"
+    override func refreshData() {
         
         let data = AppData.shared
         self.user = data.settings.currentUser
         self.activities = data.fetchOrderedActivities()
         
-        self.tableView.reloadData()
+        super.refreshData()
         
         self.updateClock()
     }
     
-    func hasRevealedCellForIndexPath(indexPath: NSIndexPath) -> Bool {
+    override func enabledStateForModelPath(modelPath: String) -> Bool {
         
-        let targetPath = indexPath.next()
-        let cell = self.tableView.cellForRowAtIndexPath(targetPath)
+        let inactive = (self.report?.active == false)
         
-        let datePicker = cell?.viewWithTag(DATE_PICKER_TAG)
-        let picker = cell?.viewWithTag(ACTIVITY_PICKER_TAG)
-        
-        return datePicker != nil || picker != nil
-    }
-    
-    func updateRevealedControl() {
-        
-        if let path = self.revealedCellIndexPath {
-            if let cell = self.tableView.cellForRowAtIndexPath(path) {
-                
-                let item = self.cellData[path.section][path.row - 1]
-                
-                if let picker = cell.viewWithTag(DATE_PICKER_TAG) as? UIDatePicker {
-                    if let date = self.report?.valueForKey(item.modelPath) as? NSDate {
-                        picker.setDate(date, animated: false)
-                    }
-                }
-                
-                if let picker = cell.viewWithTag(ACTIVITY_PICKER_TAG) as? UIPickerView {
-                    if let activity = self.report?.activity {
-                        if let index = find(self.activities, activity) {
-                            picker.reloadAllComponents()
-                            picker.selectRow(index, inComponent: 0, animated: false)
-                        }
-                    }
-                }
-            }
+        switch modelPath {
+            
+            case "activity.name":
+                return inactive
+            
+            case "liveEndDate":
+                return inactive
+            
+            default:
+                return true
         }
     }
     
-    func hasRevealedCell() -> Bool {
-        return self.revealedCellIndexPath != nil
-    }
-    
-    func indexPathHasActivityLabel(indexPath: NSIndexPath) -> Bool {
-        return indexPath.section == ACTIVITY_SECTION && indexPath.row == 0
-    }
-    
-    func indexPathHasActivityPicker(indexPath: NSIndexPath) -> Bool {
-        
-        if self.hasRevealedCell() {
-            if let datePath = self.revealedCellIndexPath {
-                if datePath == indexPath && indexPath.section == ACTIVITY_SECTION {
-                    return true
-                }
-            }
-        }
-        
-        return false
-    }
-    
-    func indexPathHasDateLabel(indexPath: NSIndexPath) -> Bool {
-        
-        let isStartDateCell = indexPath.section == START_DATE_SECTION && indexPath.row == 0
-        let isFinishDateCell = indexPath.section == FINISH_DATE_SECTION && indexPath.row == 0
-        
-        return isStartDateCell || isFinishDateCell
-    }
-    
-    func indexPathHasDatePicker(indexPath: NSIndexPath) -> Bool {
-        
-        if self.hasRevealedCell() {
-            if let datePath = self.revealedCellIndexPath {
-                if datePath == indexPath &&
-                   (indexPath.section == START_DATE_SECTION || indexPath.section == FINISH_DATE_SECTION) {
-                    return true
-                }
-            }
-        }
-        
-        return false
-    }
-    
-    func indexPathHasBreaksLabel(indexPath: NSIndexPath) -> Bool {
-        return indexPath.section == BREAKS_SECTION && indexPath.row == 0
-    }
-    
-    func indexPathHasNotes(indexPath: NSIndexPath) -> Bool {
-        return indexPath.section == NOTES_SECTION && indexPath.row == 0
-    }
-    
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return self.cellData.count
+    override func canExpandCell(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) -> Bool {
+        let isLabelCell = (cell.reuseIdentifier == ACTIVITY_LABEL_CELL_ID || cell.reuseIdentifier == DATE_LABEL_CELL_ID)
+        let isStartDateLabelCell = (indexPath.section == START_DATE_SECTION && indexPath.row == 0)
+        let canExpand = isStartDateLabelCell || (self.report?.active == false && isLabelCell)
+        return canExpand
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -234,60 +129,7 @@ class ReportViewController: UITableViewController, UITextViewDelegate, UIPickerV
             return 0.0
         }
         
-        if self.indexPathHasDatePicker(indexPath) {
-            return 216.0 //self.pickerCellRowHeight
-        }
-        
-        if self.indexPathHasNotes(indexPath) {
-            return 178.0 //self.notesCellRowHeight
-        }
-        
-        if self.indexPathHasActivityPicker(indexPath) {
-            return 162.0
-        }
-        
-        return self.tableView.rowHeight
-    }
-    
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: NSInteger) -> NSInteger {
-        
-        var numRows = self.cellData[section].count;
-        
-        if section == self.revealedCellIndexPath?.section {
-            numRows++
-        }
-        
-        return numRows
-    }
-    
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
-        var cellID = OTHER_CELL_ID
-        
-        if self.indexPathHasActivityLabel(indexPath) {
-            cellID = ACTIVITY_LABEL_CELL_ID
-        }
-        else if self.indexPathHasActivityPicker(indexPath) {
-            cellID = ACTIVITY_PICKER_CELL_ID
-        }
-        else if self.indexPathHasDateLabel(indexPath) {
-            cellID = DATE_LABEL_CELL_ID
-        }
-        else if self.indexPathHasDatePicker(indexPath) {
-            cellID = DATE_PICKER_CELL_ID
-        }
-        else if self.indexPathHasBreaksLabel(indexPath) {
-            cellID = BREAKS_LABEL_CELL_ID
-        }
-        else if self.indexPathHasNotes(indexPath) {
-            cellID = NOTES_CELL_ID
-        }
-        
-        var cell = self.tableView.dequeueReusableCellWithIdentifier(cellID) as? UITableViewCell
-        
-        self.configureCell(cell!, atIndexPath: indexPath)
-        
-        return cell!
+        return super.tableView(tableView, heightForRowAtIndexPath: indexPath)
     }
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -301,166 +143,13 @@ class ReportViewController: UITableViewController, UITextViewDelegate, UIPickerV
         }
     }
     
-    func configureCell(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) {
-        
-        var modelPath = indexPath
-        if let path = self.revealedCellIndexPath {
-            if (path.section == indexPath.section && path.row <= indexPath.row) {
-                modelPath = indexPath.previous()
+    override func configurePicker(picker: UIPickerView, forModelPath: String) {
+        if let activity = self.report?.activity {
+            if let index = find(self.activities, activity) {
+                picker.reloadAllComponents()
+                picker.selectRow(index, inComponent: 0, animated: false)
             }
         }
-        
-        let item = self.cellData[modelPath.section][modelPath.row]
-        
-        let cellID = cell.reuseIdentifier
-        
-        if cellID == ACTIVITY_LABEL_CELL_ID {
-            
-            cell.textLabel?.text = item.title
-            cell.detailTextLabel?.text = self.report?.activity?.name ?? "Untitled"
-            
-            let editable = (self.report?.active == false)
-            cell.userInteractionEnabled = editable
-            cell.textLabel?.enabled = editable
-            cell.detailTextLabel?.enabled = editable
-            
-        } else if cellID == DATE_LABEL_CELL_ID {
-            
-            cell.textLabel?.text = item.title
-            
-            let live = (self.report?.active == true && item.modelPath == "endDate")
-            let storedDate = self.report?.valueForKey(item.modelPath) as? NSDate
-            let dateToUse = (live) ? NSDate() : storedDate
-            
-            if let date = dateToUse {
-                cell.detailTextLabel?.text = self.dateFormatter?.stringFromDate(date)
-            } else {
-                cell.detailTextLabel?.text = ""
-            }
-            
-            let editable = !live
-            cell.userInteractionEnabled = editable
-            cell.textLabel?.enabled = editable
-            cell.detailTextLabel?.enabled = editable
-        
-        } else if cellID == BREAKS_LABEL_CELL_ID {
-            
-            let breakCount = self.report?.breaks.count ?? 0
-            
-            cell.textLabel?.text = item.title
-            cell.detailTextLabel?.text = "\(breakCount)"
-            
-            let editable = true
-            cell.userInteractionEnabled = editable
-            cell.textLabel?.enabled = editable
-            cell.detailTextLabel?.enabled = editable
-            
-        } else if cellID == OTHER_CELL_ID {
-            
-            cell.textLabel?.text = item.title
-            cell.selectionStyle = .None
-        }
-    }
-    
-    func toggleRevealedCellForSelectedIndexPath(indexPath: NSIndexPath) {
-        
-        self.tableView.beginUpdates()
-        
-        let indexPaths = [indexPath.next()]
-        
-        if self.hasRevealedCellForIndexPath(indexPath) {
-            self.tableView.deleteRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
-        } else {
-            self.tableView.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
-        }
-        
-        self.tableView.endUpdates()
-    }
-    
-    func displayRevealedCellForRowAtIndexPath(indexPath: NSIndexPath) {
-        
-        self.tableView.beginUpdates()
-        
-        var before = false
-        if self.hasRevealedCell() {
-            if let path = self.revealedCellIndexPath {
-                before = path.row < indexPath.row
-            }
-        }
-        
-        var sameCellClicked = false
-        if let path = self.revealedCellIndexPath {
-            sameCellClicked = (path.previous() == indexPath)
-        }
-        
-        if self.hasRevealedCell() {
-            if let path = self.revealedCellIndexPath {
-                self.tableView.deleteRowsAtIndexPaths([path], withRowAnimation: .Fade)
-                self.revealedCellIndexPath = nil
-            }
-        }
-        
-        if (!sameCellClicked) {
-            let indexPathToReveal = (before) ? indexPath.previous() : indexPath
-            self.toggleRevealedCellForSelectedIndexPath(indexPathToReveal)
-            self.revealedCellIndexPath = indexPathToReveal.next()
-        }
-        
-        self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        self.tableView.endUpdates()
-        
-        self.updateRevealedControl()
-    }
-    
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-        if let cell = self.tableView.cellForRowAtIndexPath(indexPath) {
-            
-            let isLabelCell = (cell.reuseIdentifier == ACTIVITY_LABEL_CELL_ID || cell.reuseIdentifier == DATE_LABEL_CELL_ID)
-            let isStartDateLabelCell = (indexPath.section == START_DATE_SECTION && indexPath.row == 0)
-            let canModify = isStartDateLabelCell || (self.report?.active == false && isLabelCell)
-            
-            if canModify {
-                self.displayRevealedCellForRowAtIndexPath(indexPath)
-            } else {
-                self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
-            }
-        }
-    }
-    
-    func targetedCell() -> NSIndexPath? {
-        
-        if self.hasRevealedCell() {
-            if let path = self.revealedCellIndexPath {
-                return path.previous()
-            }
-        } else {
-            return self.tableView.indexPathForSelectedRow()
-        }
-        
-        return nil
-    }
-    
-    @IBAction func datePickerAction(sender: AnyObject) {
-        
-        if let path = self.targetedCell() {
-            
-            var item = self.cellData[path.section][path.row]
-            
-            if let picker = sender as? UIDatePicker {
-                
-                self.report?.setValue(picker.date, forKey: item.modelPath)
-                AppData.shared.save()
-                
-                if let cell = self.tableView.cellForRowAtIndexPath(path) {
-                    self.configureCell(cell, atIndexPath: path)
-                }
-            }
-        }
-    }
-    
-    @IBAction func done(sender: AnyObject) {
-        self.navigationController?.popViewControllerAnimated(true)
     }
     
     // - MARK: UIPickerViewDelegate/DataSource

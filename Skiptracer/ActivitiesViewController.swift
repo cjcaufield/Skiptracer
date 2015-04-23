@@ -45,7 +45,7 @@ class ActivitiesViewController: SGCoreDataTableViewController {
         
         let newController = self.storyboard?.instantiateViewControllerWithIdentifier("Activity") as! ActivityViewController
         newController.showDoneButton = new
-        newController.activity = object as? Activity
+        newController.object = object
         
         self.navigationController?.pushViewController(newController, animated: true)
     }
