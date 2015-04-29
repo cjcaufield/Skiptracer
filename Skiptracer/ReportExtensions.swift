@@ -1,34 +1,16 @@
 //
-//  Report.swift
+//  ReportExtensions.swift
 //  Skiptracer
 //
-//  Created by Colin Caufield on 3/31/15.
+//  Created by Colin Caufield on 4/26/15.
 //  Copyright (c) 2015 Secret Geometry, Inc. All rights reserved.
 //
 
-import Foundation
-import CoreData
+import UIKit
 
-class Report: NSManagedObject {
+// Date and Time Extensions
 
-    @NSManaged var user: User?
-    @NSManaged var activity: Activity?
-    @NSManaged var parent: Report?
-    @NSManaged var breaks: NSSet
-    @NSManaged var startDate: NSDate
-    @NSManaged var endDate: NSDate
-    @NSManaged var notes: String?
-    @NSManaged var active: Bool
-    @NSManaged var isBreak: Bool
-    
-    var liveEndDate: NSDate {
-        get {
-            return self.active ? NSDate() : self.endDate
-        }
-        set(date) {
-            self.endDate = date
-        }
-    }
+extension Report {
     
     var length: Double {
         return self.liveEndDate.timeIntervalSinceDate(self.startDate)
@@ -42,6 +24,28 @@ class Report: NSManagedObject {
         }
         return totalLength
     }
+    
+    var liveEndDate: NSDate {
+        get {
+            return self.active ? NSDate() : self.endDate
+        }
+        set(date) {
+            self.endDate = date
+        }
+    }
+    
+    var nextBreakDate: NSDate? {
+        if let interval = self.activity?.breakDistance {
+            return self.startDate.dateByAddingTimeInterval(interval)
+        } else {
+            return nil
+        }
+    }
+}
+
+// Text Extensions
+
+extension Report {
     
     var lengthText: String {
         return Formatter.stringFromLength(self.length)

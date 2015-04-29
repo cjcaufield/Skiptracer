@@ -38,14 +38,14 @@ class ReportsViewController: SGCoreDataTableViewController {
     }
     
     override var headerHeight: CGFloat {
-        return (self.parent == nil) ? 22.0 : 0.0
+        return (self.parent == nil) ? 32.0 : 0.0
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configureView() // Currently needed for refreshing if the activity name changes.
-        let center = NSNotificationCenter.defaultCenter()
-        center.addObserver(self, selector: "userWasSwitched:", name: UserWasSwitchedNotification, object: nil)
+        Notifications.shared.registerUserObserver(self)
+        Notifications.shared.registerBreakObserver(self)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -108,20 +108,7 @@ class ReportsViewController: SGCoreDataTableViewController {
         
         if let statsCell = cell as? ReportsTableViewCell {
             
-            var label = "Untitled"
-            
-            if report != nil && report!.isBreak {
-                label = "Break"
-                if let breaks = self.fetchController.fetchedObjects as? [Report] {
-                    if let index = find(breaks, report!) {
-                        label += " \(breaks.count - index)"
-                    }
-                }
-            } else {
-                label = report?.activity?.name ?? "Untitled"
-            }
-            
-            statsCell.leftLabel?.text = label
+            statsCell.leftLabel?.text = self.nameForReport(report)
             statsCell.middleLabel?.text = report?.startAndEndText ?? ""
             statsCell.rightLabel?.text = report?.lengthWithoutBreaksText ?? ""
             
@@ -142,20 +129,38 @@ class ReportsViewController: SGCoreDataTableViewController {
         let newController = self.storyboard?.instantiateViewControllerWithIdentifier("Report") as! ReportViewController
         newController.showDoneButton = new
         newController.object = object
+        newController.title = self.nameForReport(object as? Report)
         
         self.navigationController?.pushViewController(newController, animated: true)
     }
     
-    override func canEditObject(object: AnyObject) -> Bool {
-        /*
-        if let report = object as? Report {
-            return report.active == false
+    func nameForReport(report: Report?) -> String {
+        
+        var name = "Untitled"
+        
+        if report != nil && report!.isBreak {
+            name = "Break"
+            if let breaks = self.fetchController.fetchedObjects as? [Report] {
+                if let index = find(breaks, report!) {
+                    name += " \(breaks.count - index)"
+                }
+            }
+        } else {
+            name = report?.activity?.name ?? "Untitled"
         }
-        */
-        return true
+        
+        return name
     }
     
     func userWasSwitched(note: NSNotification) {
         self.updateRequest()
+    }
+    
+    func autoBreakWasStarted(note: NSNotification) {
+        self.refreshData()
+    }
+    
+    func autoBreakWasEnded(note: NSNotification) {
+        self.refreshData()
     }
 }

@@ -13,6 +13,10 @@
 		3B40133C1AE93ABA0092F5CC /* PickerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B40133B1AE93ABA0092F5CC /* PickerCell.xib */; };
 		3B40133E1AE93CA80092F5CC /* TimePickerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B40133D1AE93CA80092F5CC /* TimePickerCell.xib */; };
 		3B4013401AE950140092F5CC /* TextFieldCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B40133F1AE950140092F5CC /* TextFieldCell.xib */; };
+		3B8139651AEC613A0007194E /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8139641AEC613A0007194E /* Notifications.swift */; };
+		3B8139671AEDC5320007194E /* ReportExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8139661AEDC5320007194E /* ReportExtensions.swift */; };
+		3B8139691AEDD03D0007194E /* ActivityExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8139681AEDD03D0007194E /* ActivityExtensions.swift */; };
+		3B81396B1AEE38CD0007194E /* StatusController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B81396A1AEE38CD0007194E /* StatusController.swift */; };
 		3B92BDD91AE057D30012B00E /* Skiptracer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3B92BDD71AE057D30012B00E /* Skiptracer.xcdatamodeld */; };
 		3B92BDDD1AE0F6280012B00E /* SGExpandableTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B92BDDC1AE0F6280012B00E /* SGExpandableTableViewController.swift */; };
 		3BAA1B121AE025F500FF21BE /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAA1B111AE025F500FF21BE /* InterfaceController.swift */; };
@@ -67,6 +71,10 @@
 		3B40133B1AE93ABA0092F5CC /* PickerCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PickerCell.xib; sourceTree = "<group>"; };
 		3B40133D1AE93CA80092F5CC /* TimePickerCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TimePickerCell.xib; sourceTree = "<group>"; };
 		3B40133F1AE950140092F5CC /* TextFieldCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextFieldCell.xib; sourceTree = "<group>"; };
+		3B8139641AEC613A0007194E /* Notifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
+		3B8139661AEDC5320007194E /* ReportExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportExtensions.swift; sourceTree = "<group>"; };
+		3B8139681AEDD03D0007194E /* ActivityExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityExtensions.swift; sourceTree = "<group>"; };
+		3B81396A1AEE38CD0007194E /* StatusController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusController.swift; sourceTree = "<group>"; };
 		3B92BDD81AE057D30012B00E /* Skiptracer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Skiptracer.xcdatamodel; sourceTree = "<group>"; };
 		3B92BDDC1AE0F6280012B00E /* SGExpandableTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SGExpandableTableViewController.swift; sourceTree = "<group>"; };
 		3BAA1B0C1AE025F500FF21BE /* Skiptracer WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Skiptracer WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -168,6 +176,19 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		3B4013411AE9AAE20092F5CC /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				3B4013351AE92CA40092F5CC /* DatePickerCell.xib */,
+				3B4013371AE9336C0092F5CC /* TextViewCell.xib */,
+				3B4013391AE939150092F5CC /* SwitchCell.xib */,
+				3B40133B1AE93ABA0092F5CC /* PickerCell.xib */,
+				3B40133D1AE93CA80092F5CC /* TimePickerCell.xib */,
+				3B40133F1AE950140092F5CC /* TextFieldCell.xib */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
 		3B84A4601AD09C4400F4ABD4 /* Additions */ = {
 			isa = PBXGroup;
 			children = (
@@ -175,12 +196,7 @@
 				3BC852B01AE0390C009031C0 /* SGViewController.swift */,
 				3BC852AF1AE0390C009031C0 /* SGCoreDataTableViewController.swift */,
 				3B92BDDC1AE0F6280012B00E /* SGExpandableTableViewController.swift */,
-				3B4013351AE92CA40092F5CC /* DatePickerCell.xib */,
-				3B4013371AE9336C0092F5CC /* TextViewCell.xib */,
-				3B4013391AE939150092F5CC /* SwitchCell.xib */,
-				3B40133B1AE93ABA0092F5CC /* PickerCell.xib */,
-				3B40133D1AE93CA80092F5CC /* TimePickerCell.xib */,
-				3B40133F1AE950140092F5CC /* TextFieldCell.xib */,
+				3B4013411AE9AAE20092F5CC /* Cells */,
 			);
 			name = Additions;
 			sourceTree = "<group>";
@@ -192,9 +208,10 @@
 				3BC852911AE0381A009031C0 /* AppData.swift */,
 				3BC852941AE0381A009031C0 /* User.swift */,
 				3BC852901AE0381A009031C0 /* Activity.swift */,
+				3B8139681AEDD03D0007194E /* ActivityExtensions.swift */,
 				3BC852921AE0381A009031C0 /* Report.swift */,
+				3B8139661AEDC5320007194E /* ReportExtensions.swift */,
 				3BC852931AE0381A009031C0 /* Settings.swift */,
-				3BDCC3DA1AE72CB7006D81EC /* Formatter.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -207,6 +224,7 @@
 				3BC852A41AE0389F009031C0 /* Main.storyboard */,
 				3BC8529C1AE03884009031C0 /* CustomTableViewCell.swift */,
 				3BC8529E1AE03884009031C0 /* StatisticsTableViewCell.swift */,
+				3BDCC3DA1AE72CB7006D81EC /* Formatter.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -217,6 +235,8 @@
 				3BC852B81AE03943009031C0 /* Constants.swift */,
 				3BC852B61AE03943009031C0 /* AppDelegate.swift */,
 				3BC852B71AE03943009031C0 /* AppStore.swift */,
+				3B8139641AEC613A0007194E /* Notifications.swift */,
+				3B81396A1AEE38CD0007194E /* StatusController.swift */,
 				3BC852B91AE03943009031C0 /* NowViewController.swift */,
 				3BC852B41AE03943009031C0 /* ActivitiesViewController.swift */,
 				3BC852B51AE03943009031C0 /* ActivityViewController.swift */,
@@ -408,6 +428,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BC852971AE0381A009031C0 /* Report.swift in Sources */,
+				3B8139691AEDD03D0007194E /* ActivityExtensions.swift in Sources */,
 				3BC852BD1AE03943009031C0 /* ActivitiesViewController.swift in Sources */,
 				3BDCC3DB1AE72CB7006D81EC /* Formatter.swift in Sources */,
 				3BC852951AE0381A009031C0 /* Activity.swift in Sources */,
@@ -418,14 +439,17 @@
 				3BC8529F1AE03884009031C0 /* CustomTableViewCell.swift in Sources */,
 				3BC852C01AE03943009031C0 /* AppStore.swift in Sources */,
 				3BC852C21AE03943009031C0 /* NowViewController.swift in Sources */,
+				3B8139671AEDC5320007194E /* ReportExtensions.swift in Sources */,
 				3BC852C11AE03943009031C0 /* Constants.swift in Sources */,
 				3BC852B11AE0390C009031C0 /* NSIndexPathAdditions.swift in Sources */,
+				3B81396B1AEE38CD0007194E /* StatusController.swift in Sources */,
 				3BC852C51AE03943009031C0 /* ReportsViewController.swift in Sources */,
 				3BC852981AE0381A009031C0 /* Settings.swift in Sources */,
 				3BC852A11AE03884009031C0 /* StatisticsTableViewCell.swift in Sources */,
 				3BC852BE1AE03943009031C0 /* ActivityViewController.swift in Sources */,
 				3BC852B21AE0390C009031C0 /* SGCoreDataTableViewController.swift in Sources */,
 				3BC852C31AE03943009031C0 /* ReportViewController.swift in Sources */,
+				3B8139651AEC613A0007194E /* Notifications.swift in Sources */,
 				3BC852991AE0381A009031C0 /* User.swift in Sources */,
 				3BC852B31AE0390C009031C0 /* SGViewController.swift in Sources */,
 				3B92BDD91AE057D30012B00E /* Skiptracer.xcdatamodeld in Sources */,

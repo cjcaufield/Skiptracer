@@ -4,25 +4,35 @@ Plan
 0.3 Alerts
 ----------
 
-- Make titles work again.
-- Enable/disable break/progress cells when appropriate.
+Filtering:
+* Handle app alert settings (remove entirely?)
+* Handle system alert settings
 
-Alerts:
-* Read https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Introduction.html#//apple_ref/doc/uid/TP40008194-CH1-SW1
-- Implement break alerts
+Scheduling:
 - Implement progress alerts
-- Background stay-alive thread?
+- Implement breakEnd alerts (only schedule when an auto-alert is accepted).
+- Reschedule notes when changing break/progress settings.
+- Schedule next date (or repeating), not just startDate + distance (which will often be in the past)
+- Schedule all notifications up to a certain period in the future?
+- Update/refresh notifications when needed
+- Delete notifications (with report delete, ...)
+
+0.X Workflow
+------------
+
+Workflow:
+- Join previously deactivated reports if a new one is started quickly?  HOW?
+- Auto-skip breaks when they are manually taken beforehand?
+- Implement atomic activities
+
+Now UI:
+- Now UI for atomic activities (checkbox, ding?)
+- Now UI for break countdown.
 
 0.X iCloud
 ----------
 
 - Read https://developer.apple.com/library/ios/documentation/DataManagement/Conceptual/UsingCoreDataWithiCloudPG/UsingSQLiteStoragewithiCloud/UsingSQLiteStoragewithiCloud.html#//apple_ref/doc/uid/TP40013491-CH3-SW1
-
-Workflow:
-- Join previously deactivated reports if a new one is started quickly?  HOW?
-- Implement atomic activities
-- Now UI for atomic activities (checkbox, ding?)
-- Now UI for break countdown.
 
 0.X In-App Purchases
 --------------------
@@ -36,6 +46,17 @@ Workflow:
 - SplitViewControllers
 - Rotation
 
+0.X UI Polish
+-------------
+
+- White on dark grey theme (like OSX notification center)
+- Today widget
+
+0.X Mac
+-------
+
+- Menulet
+
 0.X iWatch
 ----------
 
@@ -45,9 +66,14 @@ Workflow:
 0.X Graphs
 ----------
 
+0.X Testing
+-----------
+
+- Test for memory leaks. (timers, observers, etc)
+
 0.X Fun
 -------
 
-- Customizable intro sentence
+- Location based reports
 - Customizable sounds for breaks and progress
 - User images for activities

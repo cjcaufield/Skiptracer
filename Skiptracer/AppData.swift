@@ -207,7 +207,7 @@ class AppData: NSObject {
             
             coordinator = nil
             
-            // Report any error we got.
+            // Report any error.
             var dict = [String: AnyObject]()
             dict[NSLocalizedDescriptionKey] = "Failed to initialize the application's saved data"
             dict[NSLocalizedFailureReasonErrorKey] = failureReason
@@ -224,10 +224,12 @@ class AppData: NSObject {
     }()
     
     lazy var managedObjectContext: NSManagedObjectContext? = {
+        
         let coordinator = self.persistentStoreCoordinator
         if coordinator == nil {
             return nil
         }
+        
         var managedObjectContext = NSManagedObjectContext()
         managedObjectContext.persistentStoreCoordinator = coordinator
         return managedObjectContext

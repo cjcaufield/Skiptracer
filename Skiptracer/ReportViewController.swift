@@ -16,6 +16,14 @@ class ReportViewController: SGExpandableTableViewController {
     var activities = [Activity]()
     var endDateIndex = 2
     
+    override var titleString: String {
+        if self.report?.isBreak ?? false {
+            return super.titleString
+        } else {
+            return self.report?.activity?.name ?? "Untitled"
+        }
+    }
+    
     override func createCellData() -> [[SGCellData]] {
         
         var data = [
@@ -33,6 +41,11 @@ class ReportViewController: SGExpandableTableViewController {
         }
         
         return data
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        Notifications.shared.registerBreakObserver(self)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -116,6 +129,14 @@ class ReportViewController: SGExpandableTableViewController {
         return isNotes ? "Notes" : nil
     }
     
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        super.tableView(tableView, didSelectRowAtIndexPath: indexPath)
+        let info = self.dataForIndexPath(indexPath)
+        if info?.cellIdentifier == BREAKS_LABEL_CELL_ID {
+            self.performSegueWithIdentifier("ReportsSegue", sender: self)
+        }
+    }
+    
     override func configurePicker(picker: UIPickerView, forModelPath: String) {
         if let activity = self.report?.activity {
             if let index = find(self.activities, activity) {
@@ -145,6 +166,8 @@ class ReportViewController: SGExpandableTableViewController {
             if let cell = self.tableView.cellForRowAtIndexPath(path) {
                 self.configureCell(cell, atIndexPath: path)
             }
+            
+            self.refreshTitle()
         }
     }
     
@@ -154,5 +177,13 @@ class ReportViewController: SGExpandableTableViewController {
     
     override func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return self.activities.count
+    }
+    
+    func autoBreakWasStarted(note: NSNotification) {
+        self.refreshData()
+    }
+    
+    func autoBreakWasEnded(note: NSNotification) {
+        self.refreshData()
     }
 }

@@ -9,8 +9,6 @@
 import UIKit
 import CoreData
 
-let MINIMAL_DURATION = 0.0 // 5.0 // seconds
-
 class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
     
     @IBOutlet var picker: UIPickerView!
@@ -23,10 +21,15 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     var activities = [Activity]()
 
     override func viewDidLoad() {
+        
         super.viewDidLoad()
+        
         self.configureButton(self.stopButton)
         self.configureButton(self.breakButton)
+        
         self.refreshData(animated: false)
+        
+        Notifications.shared.registerBreakObserver(self)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -75,11 +78,6 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         let breakImage = UIImage(named: breakImageTitle)
         self.breakButton.setImage(breakImage, forState: .Normal)
         
-        //let breakText = inBreak ? "Resume" : "Break"
-        //self.breakButton.setTitle(breakText, forState: .Normal)
-        
-        //self.clockLabel.enabled = !inBreak
-        
         let alpha: CGFloat = (!stopEnabled || inBreak) ? 0.3 : 1.0
         self.setClockAlpha(alpha, animated: animated)
     }
@@ -95,7 +93,6 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         }
         
         if !animated {
-            //self.clockLabel.alpha = alpha
             setClockLabelAlpha()
             return
         }
@@ -131,37 +128,9 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     }
     
     func switchActivity(newActivity: Activity) {
-        
-        let data = AppData.shared
-        
-        if self.user?.currentBreak != nil {
-            endBreak()
-        }
-        
-        let oldReport = self.user?.currentReport
-        let oldActivity = oldReport?.activity
-        
-        if (oldActivity == newActivity) {
-            return
-        }
-        
-        if let report = oldReport {
-            self.endReport(report)
-        }
-        self.user?.currentReport = nil
-        
-        var newReport: Report?
-        
-        if !newActivity.silent {
-            newReport = data.createReport(newActivity, user: self.user, active: true)
-        }
-        
-        self.user?.currentReport = newReport
-        
+        StatusController.shared.switchActivity(newActivity)
         self.updateClock()
         self.updateClockControlStates()
-        
-        data.save()
     }
     
     @IBAction func finishActivity(sender: AnyObject) {
@@ -172,57 +141,33 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     }
     
     @IBAction func toggleBreak(sender: AnyObject) {
-        
-        let user = self.user!
-        let report = user.currentReport
-        let oldBreak = user.currentBreak
-        
-        if oldBreak == nil {
-            let newBreak = AppData.shared.createBreak(report, user: user, active: true)
-            user.currentBreak = newBreak
-        } else {
-            self.endBreak()
-        }
-        
+        StatusController.shared.toggleBreak()
         self.updateClock()
         self.updateClockControlStates()
-        
-        AppData.shared.save()
     }
     
     func endBreak() {
-        
-        if let report = self.user?.currentBreak {
-            self.endReport(report)
-        }
-        
-        self.user?.currentBreak = nil
-        
+        StatusController.shared.endBreak()
         self.updateClock()
         self.updateClockControlStates()
-        
-        AppData.shared.save()
     }
     
     func endReport(report: Report) {
-        
-        let data = AppData.shared
-        
-        report.endDate = NSDate()
-        report.active = false
-        
-        let atomic = report.activity?.atomic ?? false
-        
-        if !atomic && report.length < MINIMAL_DURATION {
-            data.managedObjectContext?.deleteObject(report)
-        }
-        
+        StatusController.shared.endReport(report)
         self.updateClock()
         self.updateClockControlStates()
-        
-        AppData.shared.save()
     }
-
+    
+    func autoBreakWasStarted(note: NSNotification) {
+        self.updateClock()
+        self.updateClockControlStates()
+    }
+    
+    func autoBreakWasEnded(note: NSNotification) {
+        self.updateClock()
+        self.updateClockControlStates()
+    }
+    
     func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
         if component != 0 {
             return ""
@@ -232,7 +177,6 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     }
     
     func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        
         if row >= self.activities.count { return }
         let newActivity = self.activities[row]
         self.switchActivity(newActivity)

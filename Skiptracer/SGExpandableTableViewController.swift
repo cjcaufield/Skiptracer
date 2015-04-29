@@ -38,7 +38,6 @@ class SGCellData {
 class SGExpandableTableViewController: UITableViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UITextViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
     
     var cellData = [[SGCellData]]()
-    
     var revealedCellIndexPath: NSIndexPath?
     var showDoneButton = false
     
@@ -48,6 +47,10 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
                 self.configureView()
             }
         }
+    }
+    
+    var titleString: String {
+        return self.title ?? "Untitled"
     }
     
     override func viewDidLoad() {
@@ -88,6 +91,12 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
         return control.superview?.superview as? UITableViewCell
     }
     
+    /*
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        return true
+    }
+    */
+    
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return false
@@ -107,20 +116,21 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
         }
     }
     
-    @IBAction func switchDidChange(toggle: UISwitch) {
+    func switchDidChange(toggle: UISwitch) {
         if let data = self.dataForControl(toggle) {
             self.object?.setValue(toggle.on, forKey: data.modelPath)
             AppData.shared.save()
         }
     }
     
-    @IBAction func timePickerDidChange(picker: UIDatePicker) {
+    func datePickerDidChange(picker: UIDatePicker) {
         
         // Update the model.
         
         if let data = self.dataForControl(picker) {
-            let length = picker.countDownDuration
-            self.object?.setValue(length, forKey: data.modelPath)
+            let countdown = (picker.datePickerMode == .CountDownTimer)
+            let value: AnyObject = (countdown) ? picker.countDownDuration : picker.date
+            self.object?.setValue(value, forKey: data.modelPath)
             AppData.shared.save()
         }
         
@@ -133,25 +143,7 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
         }
     }
     
-    @IBAction func datePickerDidChange(sender: AnyObject) {
-        
-        if let path = self.targetedCell() {
-            
-            var item = self.cellData[path.section][path.row]
-            
-            if let picker = sender as? UIDatePicker {
-                
-                self.object?.setValue(picker.date, forKey: item.modelPath)
-                AppData.shared.save()
-                
-                if let cell = self.tableView.cellForRowAtIndexPath(path) {
-                    self.configureCell(cell, atIndexPath: path)
-                }
-            }
-        }
-    }
-    
-    @IBAction func done(sender: AnyObject) {
+    func done(sender: AnyObject) {
         self.navigationController?.popViewControllerAnimated(true)
     }
     
@@ -159,8 +151,12 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
         //
     }
     
+    func refreshTitle() {
+        self.title = self.titleString ?? "Untitled"
+    }
+    
     func refreshData() {
-        self.title = self.object?.name ?? "Untitled"
+        self.refreshTitle()
         self.tableView.reloadData()
     }
     
@@ -203,8 +199,13 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
         var cellID = self.cellIdentifierForIndexPath(indexPath)
         var cell = self.tableView.dequeueReusableCellWithIdentifier(cellID) as? UITableViewCell
+        if cell == nil {
+            cell = UITableViewCell(style: .Value1, reuseIdentifier: cellID)
+        }
+        
         self.configureCell(cell!, atIndexPath: indexPath)
         return cell!
     }
@@ -313,6 +314,7 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
                 
                 cell.textLabel?.text = item.title
                 cell.detailTextLabel?.text = text
+                cell.accessoryType = .DisclosureIndicator
             
             case TEXT_FIELD_CELL_ID:
                 
@@ -361,7 +363,7 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
                 let picker = cell.viewWithTag(2) as! UIDatePicker
                 picker.countDownDuration = length
             
-                picker.addTarget(self, action: "timePickerDidChange:", forControlEvents: .ValueChanged)
+                picker.addTarget(self, action: "datePickerDidChange:", forControlEvents: .ValueChanged)
             
             default:
                 break

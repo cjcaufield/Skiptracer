@@ -6,4 +6,6 @@
 //  Copyright (c) 2015 Secret Geometry, Inc. All rights reserved.
 //
 
-let UserWasSwitchedNotification = "UserWasSwitchedNotification"
+let UserWasSwitchedNotification     = "UserWasSwitchedNotification"
+let AutoBreakWasStartedNotification = "AutoBreakWasStartedNotification"
+let AutoBreakWasEndedNotification   = "AutoBreakWasEndedNotification"

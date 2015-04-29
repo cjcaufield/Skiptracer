@@ -8,59 +8,54 @@
 
 import UIKit
 
-class SettingsViewController: UITableViewController {
+private var context = 0
 
-    @IBOutlet weak var testUserRow: UITableViewCell!
-    @IBOutlet weak var alertsSwitch: UISwitch!
-    @IBOutlet weak var testUserSwitch: UISwitch!
+class SettingsViewController: SGExpandableTableViewController {
     
-    let testUserPath = NSIndexPath(forRow: 0, inSection: 1)
+    var settings: Settings? { return self.object as? Settings }
+    let enableAlertsKey = "enableAlerts"
+    let enableTestUserKey = "enableTestUser"
+    
+    override var titleString: String {
+        return "Settings"
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.configureView()
+        self.object = AppData.shared.settings
+        //assert(self.object!.valueForKeyPath(self.enableAlertsKey) != nil)
+        //assert(self.object!.valueForKeyPath(self.enableTestUserKey) != nil)
+        self.refreshData()
     }
     
-    func configureView() {
-        self.alertsSwitch.on = AppData.shared.settings.enableAlerts
-        self.testUserSwitch.on = AppData.shared.settings.enableTestUser
-    }
-    
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func createCellData() -> [[SGCellData]] {
+        
+        var data = [
+            [ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Alerts",    modelPath: self.enableAlertsKey) ],
+            [ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Test User", modelPath: self.enableTestUserKey) ]
+        ]
         
         #if !DEBUG
-            if indexPath == self.testUserPath {
-                return 0.0
-            }
+            data.removeAtIndex(1)
         #endif
         
-        return super.tableView(tableView, heightForRowAtIndexPath: indexPath)
+        return data
     }
     
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+    override func switchDidChange(toggle: UISwitch) {
         
-        #if !DEBUG
-            if indexPath == self.testUserPath {
-                cell.hidden = true
-                cell.userInteractionEnabled = false
-            }
-        #endif
-    }
-    
-    @IBAction func setEnableAlerts(sender: UISwitch) {
-        AppData.shared.settings.enableAlerts = sender.on
-        AppData.shared.save()
-    }
-    
-    @IBAction func setEnableTestUser(sender: UISwitch) {
+        super.switchDidChange(toggle)
         
-        let data = AppData.shared
-        let settings = data.settings
-        settings.enableTestUser = sender.on
-        settings.currentUser = sender.on ? data.testUser : data.basicUser
-        data.save()
+        let info = self.dataForControl(toggle)
         
-        let center = NSNotificationCenter.defaultCenter()
-        center.postNotificationName(UserWasSwitchedNotification, object: nil)
+        if info?.modelPath == self.enableTestUserKey {
+            
+            let data = AppData.shared
+            self.settings?.currentUser = toggle.on ? data.testUser : data.basicUser
+            data.save()
+            
+            let center = NSNotificationCenter.defaultCenter()
+            center.postNotificationName(UserWasSwitchedNotification, object: nil)
+        }
     }
 }

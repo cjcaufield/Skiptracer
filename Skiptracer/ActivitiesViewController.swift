@@ -13,15 +13,20 @@ class ActivitiesViewController: SGCoreDataTableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let center = NSNotificationCenter.defaultCenter()
-        center.addObserver(self, selector: "userWasSwitched:", name: UserWasSwitchedNotification, object: nil)
+        Notifications.shared.registerUserObserver(self)
     }
     
-    override var entityName: String { return "Activity" }
+    override var entityName: String {
+        return "Activity"
+    }
     
-    override var fetchPredicate: NSPredicate? { return AppData.shared.currentUserPredicate() }
+    override var fetchPredicate: NSPredicate? {
+        return AppData.shared.currentUserPredicate()
+    }
     
-    override var sortDescriptors: [NSSortDescriptor] { return AppData.shared.activitySortDescriptors() }
+    override var sortDescriptors: [NSSortDescriptor] {
+        return AppData.shared.activitySortDescriptors()
+    }
     
     override func cellIdentifierForObject(object: AnyObject) -> String {
         return "Activity"
@@ -51,9 +56,11 @@ class ActivitiesViewController: SGCoreDataTableViewController {
     }
     
     override func canEditObject(object: AnyObject) -> Bool {
+        
         if let activity = object as? Activity {
             return activity.permanent == false
         }
+        
         return true
     }
     
