@@ -55,7 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
         // Handle notifications that arrived in the foreground.
         println("Foreground notification \(notification)")
-        Notifications.shared.handleBreakNotification(notification)
+        Notifications.shared.handleNotification(notification)
     }
 
     func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {

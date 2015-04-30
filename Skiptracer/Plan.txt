@@ -4,13 +4,11 @@ Plan
 0.3 Alerts
 ----------
 
-Filtering:
-* Handle app alert settings (remove entirely?)
-* Handle system alert settings
+Functionality:
+* Ignore progress alerts if within a certain range of a break.
+* Implement breakEnd alerts (only schedule when an auto-alert is accepted).
 
 Scheduling:
-- Implement progress alerts
-- Implement breakEnd alerts (only schedule when an auto-alert is accepted).
 - Reschedule notes when changing break/progress settings.
 - Schedule next date (or repeating), not just startDate + distance (which will often be in the past)
 - Schedule all notifications up to a certain period in the future?

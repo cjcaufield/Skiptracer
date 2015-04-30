@@ -58,7 +58,9 @@ class StatusController: NSObject {
         
         if !newActivity.silent {
             newReport = self.data.createReport(newActivity, user: self.user, active: true)
+            self.notes.cancelAllNotifications()
             self.notes.scheduleNextBreakNotificationForReport(newReport!)
+            self.notes.scheduleNextProgressNotificationForReport(newReport!)
         }
         
         self.user?.currentReport = newReport

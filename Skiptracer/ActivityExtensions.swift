@@ -24,8 +24,17 @@ extension Activity {
         return value
     }
     
+    var progressDistance: NSTimeInterval? {
+        
+        if !self.progress || self.progressInterval == 0.0 {
+            return nil
+        }
+        
+        return self.progressInterval
+    }
+    
     var breakMessage: String? {
-        let length = Formatter.stringFromLength(self.breakLength)
-        return "Time for a \(length) break."
+        let lengthText = Formatter.stringFromLength(self.breakLength)
+        return "Time for a \(lengthText) break."
     }
 }

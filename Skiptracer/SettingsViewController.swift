@@ -30,6 +30,9 @@ class SettingsViewController: SGExpandableTableViewController {
     
     override func createCellData() -> [[SGCellData]] {
         
+        return [[SGCellData]]()
+        
+        /*
         var data = [
             [ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Alerts",    modelPath: self.enableAlertsKey) ],
             [ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Test User", modelPath: self.enableTestUserKey) ]
@@ -40,6 +43,7 @@ class SettingsViewController: SGExpandableTableViewController {
         #endif
         
         return data
+        */
     }
     
     override func switchDidChange(toggle: UISwitch) {

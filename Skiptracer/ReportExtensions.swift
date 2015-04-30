@@ -41,6 +41,14 @@ extension Report {
             return nil
         }
     }
+    
+    var nextProgressDate: NSDate? {
+        if let interval = self.activity?.progressDistance {
+            return self.startDate.dateByAddingTimeInterval(interval)
+        } else {
+            return nil
+        }
+    }
 }
 
 // Text Extensions
@@ -76,6 +84,12 @@ extension Report {
     
     var monthText: String {
         return Formatter.monthStringFromDate(self.startDate).uppercaseString
+    }
+    
+    var progressMessage: String {
+        let lengthText = Formatter.stringFromLength(self.length)
+        let activityName = self.activity?.name ?? "Untitled"
+        return "You've spent \(lengthText) on \(activityName)."
     }
     
     /*
