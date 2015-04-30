@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 private var _shared: Notifications? = nil
 
@@ -28,7 +29,11 @@ class Notifications: NSObject {
     var breakEndAlerts = [UILocalNotification]()
     var progressAlerts = [UILocalNotification]()
     
-    //var nextNote: UILocalNotification?
+    var lastBreakStartDate = NSDate.distantPast() as! NSDate
+    var lastBreakEndDate = NSDate.distantPast() as! NSDate
+    var lastProgressDate = NSDate.distantPast() as! NSDate
+    
+    var player: AVAudioPlayer?
     
     class var shared: Notifications {
         
@@ -67,11 +72,17 @@ class Notifications: NSObject {
         
         let progressCategory = UIMutableUserNotificationCategory()
         progressCategory.identifier = PROGRESS_CATEGORY_TITLE
-        //progressCategory.setActions([], forContext: .Default)
         
-        let categories = Set<NSObject>([breakCategory/*, progressCategory*/])
+        let categories = Set<NSObject>([breakCategory, progressCategory])
         let settings = UIUserNotificationSettings(forTypes: .Alert | .Sound, categories: categories)
         self.app.registerUserNotificationSettings(settings)
+        
+        // Sound
+        
+        let path = NSBundle.mainBundle().pathForResource("Sounds/Klink", ofType: "wav")!
+        let url = NSURL(fileURLWithPath: path)
+        self.player = AVAudioPlayer(contentsOfURL: url, error: nil)
+        self.player?.prepareToPlay()
     }
     
     var app: UIApplication {
@@ -166,14 +177,16 @@ class Notifications: NSObject {
     
     func showProgressAlert(viewController: UIViewController, report: Report) {
         
+        self.player?.play()
+        
+        /*
         let message = report.progressMessage
-        
         let alert = UIAlertController(title: PROGRESS_CATEGORY_TITLE, message: message, preferredStyle: .Alert)
-        
         alert.addAction(UIAlertAction(title: OK_ACTION_TITLE, style: .Default, handler: nil))
         
         println("Showing progress alert view")
         viewController.presentViewController(alert, animated: true, completion: nil)
+        */
     }
     
     func showAlert(category: String) {
@@ -265,15 +278,15 @@ class Notifications: NSObject {
             switch self.app.applicationState {
                 
             case .Active:
-                println("handleBreakNotification (Active)")
+                println("handleProgressNotification (Active)")
                 self.showProgressAlert()
                 
             case .Inactive:
-                println("handleBreakNotification (Inactive)")
+                println("handleProgressNotification (Inactive)")
                 break
                 
             case .Background:
-                println("handleBreakNotification (Background)")
+                println("handleProgressNotification (Background)")
                 break
             }
         }

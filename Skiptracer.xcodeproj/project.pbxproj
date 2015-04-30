@@ -17,6 +17,7 @@
 		3B8139671AEDC5320007194E /* ReportExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8139661AEDC5320007194E /* ReportExtensions.swift */; };
 		3B8139691AEDD03D0007194E /* ActivityExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8139681AEDD03D0007194E /* ActivityExtensions.swift */; };
 		3B81396B1AEE38CD0007194E /* StatusController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B81396A1AEE38CD0007194E /* StatusController.swift */; };
+		3B81396E1AF2BE3D0007194E /* Sounds in Resources */ = {isa = PBXBuildFile; fileRef = 3B81396D1AF2BE3D0007194E /* Sounds */; };
 		3B92BDD91AE057D30012B00E /* Skiptracer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3B92BDD71AE057D30012B00E /* Skiptracer.xcdatamodeld */; };
 		3B92BDDD1AE0F6280012B00E /* SGExpandableTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B92BDDC1AE0F6280012B00E /* SGExpandableTableViewController.swift */; };
 		3BAA1B121AE025F500FF21BE /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAA1B111AE025F500FF21BE /* InterfaceController.swift */; };
@@ -75,6 +76,7 @@
 		3B8139661AEDC5320007194E /* ReportExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportExtensions.swift; sourceTree = "<group>"; };
 		3B8139681AEDD03D0007194E /* ActivityExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityExtensions.swift; sourceTree = "<group>"; };
 		3B81396A1AEE38CD0007194E /* StatusController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusController.swift; sourceTree = "<group>"; };
+		3B81396D1AF2BE3D0007194E /* Sounds */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sounds; sourceTree = "<group>"; };
 		3B92BDD81AE057D30012B00E /* Skiptracer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Skiptracer.xcdatamodel; sourceTree = "<group>"; };
 		3B92BDDC1AE0F6280012B00E /* SGExpandableTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SGExpandableTableViewController.swift; sourceTree = "<group>"; };
 		3BAA1B0C1AE025F500FF21BE /* Skiptracer WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Skiptracer WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -161,6 +163,7 @@
 				3BA64E171ACB4AC500D5AE92 /* Views */,
 				3BA64E181ACB4AD000D5AE92 /* Controllers */,
 				3B84A4601AD09C4400F4ABD4 /* Additions */,
+				3B81396D1AF2BE3D0007194E /* Sounds */,
 				3B13610E1ABE6E1100E0CBDC /* Supporting Files */,
 			);
 			path = Skiptracer;
@@ -394,6 +397,7 @@
 				3BC852A71AE0389F009031C0 /* Main.storyboard in Resources */,
 				3BC852A01AE03884009031C0 /* Images.xcassets in Resources */,
 				3B4013361AE92CA40092F5CC /* DatePickerCell.xib in Resources */,
+				3B81396E1AF2BE3D0007194E /* Sounds in Resources */,
 				3B40133C1AE93ABA0092F5CC /* PickerCell.xib in Resources */,
 				3B4013401AE950140092F5CC /* TextFieldCell.xib in Resources */,
 				3BC852AB1AE038D8009031C0 /* Bugs.txt in Resources */,

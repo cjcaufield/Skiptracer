@@ -5,7 +5,6 @@ Plan
 ----------
 
 Functionality:
-* Ignore progress alerts if within a certain range of a break.
 * Implement breakEnd alerts (only schedule when an auto-alert is accepted).
 
 Scheduling:
@@ -75,3 +74,4 @@ Now UI:
 - Location based reports
 - Customizable sounds for breaks and progress
 - User images for activities
+- Replace Now VC with a TableVC and footer?

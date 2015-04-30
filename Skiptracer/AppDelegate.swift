@@ -37,7 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
         // Handle notifications that arrived in the background.
-        let settings = self.app.currentUserNotificationSettings() // check before scheduling
+        let settings = self.app.currentUserNotificationSettings() // Check before scheduling.
         let localNote: AnyObject? = launchOptions?[UIApplicationLaunchOptionsLocalNotificationKey]
         
         if let note = localNote as? UILocalNotification {
@@ -48,9 +48,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
+    /*
     func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
         println("Did register for notification settings \(notificationSettings)")
     }
+    */
     
     func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
         // Handle notifications that arrived in the foreground.
