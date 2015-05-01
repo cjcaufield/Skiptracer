@@ -11,17 +11,22 @@ import AVFoundation
 
 private var _shared: Notifications? = nil
 
-private let SKIP_ACTION_ID = "Skip"
-private let SKIP_ACTION_TITLE = "Skip"
-private let START_ACTION_ID = "Start"
-private let START_ACTION_TITLE = "Start"
-private let OK_ACTION_ID = "OK"
-private let OK_ACTION_TITLE = "OK"
-private let BREAK_CATEGORY_ID = "Break"
-private let BREAK_CATEGORY_TITLE = "Break"
-private let PROGRESS_CATEGORY_ID = "Progress"
-private let PROGRESS_CATEGORY_TITLE = "Progress"
-private let ACTIVITY_URI_KEY = "ActivityURI"
+private let SKIP_ACTION_ID           = "Skip"
+private let SKIP_ACTION_TITLE        = "Skip"
+private let START_ACTION_ID          = "Start"
+private let START_ACTION_TITLE       = "Start"
+private let STOP_ACTION_ID           = "Stop"
+private let STOP_ACTION_TITLE        = "Resume"
+private let SNOOZE_ACTION_ID         = "Snooze"
+private let SNOOZE_ACTION_TITLE      = "Snooze"
+private let BREAK_CATEGORY_ID        = "Break"
+private let BREAK_CATEGORY_TITLE     = "Break"
+private let BREAK_END_CATEGORY_ID    = "BreakEnd"
+private let BREAK_END_CATEGORY_TITLE = "Resume"
+private let PROGRESS_CATEGORY_ID     = "Progress"
+private let PROGRESS_CATEGORY_TITLE  = "Progress"
+private let ACTIVITY_URI_KEY         = "ActivityURI"
+private let REPORT_URI_KEY           = "ReportURI"
 
 class Notifications: NSObject {
     
@@ -48,32 +53,54 @@ class Notifications: NSObject {
         
         super.init()
         
-        // Breaks
+        // Break begin notifications
         
         let skipAction = UIMutableUserNotificationAction()
-        skipAction.identifier = SKIP_ACTION_TITLE
+        skipAction.identifier = SKIP_ACTION_ID
         skipAction.title = SKIP_ACTION_TITLE
         skipAction.activationMode = .Background
         skipAction.destructive = false
         skipAction.authenticationRequired = false
         
         let startAction = UIMutableUserNotificationAction()
-        startAction.identifier = START_ACTION_TITLE
+        startAction.identifier = START_ACTION_ID
         startAction.title = START_ACTION_TITLE
         startAction.activationMode = .Background
         startAction.destructive = false
         startAction.authenticationRequired = false
         
         let breakCategory = UIMutableUserNotificationCategory()
-        breakCategory.identifier = BREAK_CATEGORY_TITLE
+        breakCategory.identifier = BREAK_CATEGORY_ID
         breakCategory.setActions([skipAction, startAction], forContext: .Default)
         
-        // Progress
+        // Break end notifications
+        
+        let snoozeAction = UIMutableUserNotificationAction()
+        snoozeAction.identifier = SNOOZE_ACTION_ID
+        snoozeAction.title = SNOOZE_ACTION_TITLE
+        snoozeAction.activationMode = .Background
+        snoozeAction.destructive = false
+        snoozeAction.authenticationRequired = false
+        
+        let stopAction = UIMutableUserNotificationAction()
+        stopAction.identifier = STOP_ACTION_ID
+        stopAction.title = STOP_ACTION_TITLE
+        stopAction.activationMode = .Background
+        stopAction.destructive = false
+        stopAction.authenticationRequired = false
+        
+        let breakEndCategory = UIMutableUserNotificationCategory()
+        breakCategory.identifier = BREAK_END_CATEGORY_ID
+        breakCategory.setActions([snoozeAction, stopAction], forContext: .Default)
+        
+        // Progress notifications
         
         let progressCategory = UIMutableUserNotificationCategory()
-        progressCategory.identifier = PROGRESS_CATEGORY_TITLE
+        progressCategory.identifier = PROGRESS_CATEGORY_ID
         
-        let categories = Set<NSObject>([breakCategory, progressCategory])
+        // Register notifications
+        
+        let categories = Set<NSObject>([breakCategory, breakEndCategory, progressCategory])
         let settings = UIUserNotificationSettings(forTypes: .Alert | .Sound, categories: categories)
         self.app.registerUserNotificationSettings(settings)
         
@@ -102,7 +129,7 @@ class Notifications: NSObject {
     }
     
     func registerUserObserver(observer: AnyObject) {
-        self.center.addObserver(self, selector: "userWasSwitched:", name: UserWasSwitchedNotification, object: nil)
+        self.center.addObserver(observer, selector: "userWasSwitched:", name: UserWasSwitchedNotification, object: nil)
     }
     
     func registerBreakObserver(observer: AnyObject) {
@@ -115,23 +142,73 @@ class Notifications: NSObject {
         return (types & .Alert) != nil
     }
     
-    func didFinishLaunchingWithNotification(note: UILocalNotification) {
-        self.handleNotification(note)
+    func infoForReport(report: Report) -> [NSObject: AnyObject]? {
+        
+        assert(!report.objectID.temporaryID)
+        assert(!report.activity!.objectID.temporaryID)
+        
+        if let activity = report.activity {
+            if let activityID = activity.uniqueString {
+                if let reportID = report.uniqueString {
+                    return [ACTIVITY_URI_KEY: activityID, REPORT_URI_KEY: reportID]
+                }
+            }
+        }
+        
+        return nil
+    }
+    
+    func noteIsForCurrentReport(note: UILocalNotification) -> Bool {
+        
+        if self.currentUser?.currentReport == nil {
+            println("Skipping notification due to no current report.")
+            return false
+        }
+        
+        let noteReportID = note.userInfo?[REPORT_URI_KEY] as? String
+        let currentReportID = self.currentReport?.uniqueString
+        
+        if noteReportID != currentReportID {
+            println("Skipping notification because of info mismatch.")
+            return false
+        }
+        
+        return true
+    }
+    
+    func scheduleAllNotificationsForReport(report: Report) {
+        self.scheduleNextBreakNotificationForReport(report)
+        self.scheduleNextBreakEndNotificationForReport(report)
+        self.scheduleNextProgressNotificationForReport(report)
     }
     
     func scheduleNextBreakNotificationForReport(report: Report) {
         if let date = report.nextBreakDate {
-            if let activity = report.activity {
-                if let message = activity.breakMessage {
-                    if let activityID = activity.objectID.URIRepresentation().absoluteString {
-                        self.scheduleNotification(
-                            date,
-                            title: BREAK_CATEGORY_ID,
-                            body: message,
-                            action: "OK",
-                            category: BREAK_CATEGORY_TITLE,
-                            info: [ACTIVITY_URI_KEY: activityID])
-                    }
+            if let message = report.activity?.breakMessage {
+                if let info = self.infoForReport(report) {
+                    self.scheduleNotification(
+                        date,
+                        title: BREAK_CATEGORY_TITLE,
+                        body: message,
+                        action: nil,
+                        category: BREAK_CATEGORY_ID,
+                        info: info)
+                }
+            }
+        }
+    }
+    
+    func scheduleNextBreakEndNotificationForReport(report: Report) {
+        if let date = report.nextBreakEndDate {
+            if let message = report.activity?.breakEndMessage {
+                if let info = self.infoForReport(report) {
+                    self.scheduleNotification(
+                        date,
+                        title: BREAK_END_CATEGORY_TITLE,
+                        body: message,
+                        action: nil,
+                        category: BREAK_END_CATEGORY_ID,
+                        info: info)
                 }
             }
         }
@@ -139,22 +216,24 @@ class Notifications: NSObject {
     
     func scheduleNextProgressNotificationForReport(report: Report) {
         if let date = report.nextProgressDate {
-            if let activity = report.activity {
-                if let activityID = activity.objectID.URIRepresentation().absoluteString {
-                    self.scheduleNotification(
-                        date,
-                        title: PROGRESS_CATEGORY_ID,
-                        body: report.progressMessage,
-                        action: "OK",
-                        category: PROGRESS_CATEGORY_TITLE,
-                        info: [ACTIVITY_URI_KEY: activityID])
-                }
+            if let info = self.infoForReport(report) {
+                self.scheduleNotification(
+                    date,
+                    title: PROGRESS_CATEGORY_TITLE,
+                    body: report.progressMessage,
+                    action: nil,
+                    category: PROGRESS_CATEGORY_ID,
+                    info: info)
             }
         }
     }
     
     func showBreakAlert() {
         self.showAlert(BREAK_CATEGORY_ID)
+    }
+    
+    func showBreakEndAlert() {
+        self.showAlert(BREAK_END_CATEGORY_ID)
     }
     
     func showBreakAlert(viewController: UIViewController, report: Report) {
@@ -171,22 +250,22 @@ class Notifications: NSObject {
         }
     }
     
-    func showProgressAlert() {
-        self.showAlert(PROGRESS_CATEGORY_ID)
+    func showBreakEndAlert(viewController: UIViewController, report: Report) {
+        
+        if let message = report.activity?.breakEndMessage {
+            
+            let alert = UIAlertController(title: BREAK_END_CATEGORY_TITLE, message: message, preferredStyle: .Alert)
+            
+            alert.addAction(UIAlertAction(title: SNOOZE_ACTION_TITLE, style: .Default, handler: handleBreakEndAlertWithSnooze))
+            alert.addAction(UIAlertAction(title: STOP_ACTION_TITLE, style: .Default, handler: handleBreakEndAlertWithStop))
+            
+            println("Showing break end alert view")
+            viewController.presentViewController(alert, animated: true, completion: nil)
+        }
     }
     
-    func showProgressAlert(viewController: UIViewController, report: Report) {
-        
+    func playProgressSound() {
         self.player?.play()
-        
-        /*
-        let message = report.progressMessage
-        let alert = UIAlertController(title: PROGRESS_CATEGORY_TITLE, message: message, preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: OK_ACTION_TITLE, style: .Default, handler: nil))
-        
-        println("Showing progress alert view")
-        viewController.presentViewController(alert, animated: true, completion: nil)
-        */
     }
     
     func showAlert(category: String) {
@@ -202,8 +281,11 @@ class Notifications: NSObject {
             case BREAK_CATEGORY_ID:
                 self.showBreakAlert(topController, report: report)
                 
+            case BREAK_END_CATEGORY_ID:
+                self.showBreakEndAlert(topController, report: report)
+                
             case PROGRESS_CATEGORY_ID:
-                self.showProgressAlert(topController, report: report)
+                self.playProgressSound()
             
             default:
                 break
@@ -217,23 +299,14 @@ class Notifications: NSObject {
             return
         }
         
-        if note.category == BREAK_CATEGORY_TITLE {
+        if note.category == BREAK_CATEGORY_ID {
             
-            if self.currentUser?.currentReport == nil {
-                println("Skipping notification due to no current report.")
+            if !self.noteIsForCurrentReport(note) {
                 return
             }
             
             if self.currentUser?.currentBreak != nil {
-                println("Skipping notification due to break already in progress.")
-                return
-            }
-            
-            let noteActivityID = note.userInfo?[ACTIVITY_URI_KEY] as? String
-            let currentActivityID = self.currentReport?.activity?.objectID.URIRepresentation().absoluteString
-            
-            if noteActivityID != currentActivityID {
-                println("Skipping notification because of activity mismatch.")
+                println("Skipping break begin notification due to break already in progress.")
                 return
             }
             
@@ -254,24 +327,49 @@ class Notifications: NSObject {
         }
     }
     
+    func handleBreakEndNotification(note: UILocalNotification) {
+        
+        if !self.shouldShowAlerts {
+            return
+        }
+        
+        if note.category == BREAK_END_CATEGORY_ID {
+            
+            if !self.noteIsForCurrentReport(note) {
+                return
+            }
+            
+            if self.currentUser?.currentBreak == nil {
+                println("Skipping break end notification due to no break in progress.")
+                return
+            }
+            
+            switch self.app.applicationState {
+                
+            case .Active:
+                println("handleBreakEndNotification (Active)")
+                self.showBreakEndAlert()
+                
+            case .Inactive:
+                println("handleBreakEndNotification (Inactive)")
+                self.handleBreakEndAlertWithStop()
+                
+            case .Background:
+                println("handleBreakEndNotification (Background)")
+                self.handleBreakEndAlertWithStop()
+            }
+        }
+    }
+    
     func handleProgressNotification(note: UILocalNotification) {
         
         if !self.shouldShowAlerts {
             return
         }
         
-        if note.category == PROGRESS_CATEGORY_TITLE {
+        if note.category == PROGRESS_CATEGORY_ID {
             
-            if self.currentUser?.currentReport == nil {
-                println("Skipping notification due to no current report.")
-                return
-            }
-            
-            let noteActivityID = note.userInfo?[ACTIVITY_URI_KEY] as? String
-            let currentActivityID = self.currentReport?.activity?.objectID.URIRepresentation().absoluteString
-            
-            if noteActivityID != currentActivityID {
-                println("Skipping notification because of activity mismatch.")
+            if !self.noteIsForCurrentReport(note) {
                 return
             }
             
@@ -279,15 +377,13 @@ class Notifications: NSObject {
                 
             case .Active:
                 println("handleProgressNotification (Active)")
-                self.showProgressAlert()
+                self.playProgressSound()
                 
             case .Inactive:
                 println("handleProgressNotification (Inactive)")
-                break
                 
             case .Background:
                 println("handleProgressNotification (Background)")
-                break
             }
         }
     }
@@ -302,6 +398,9 @@ class Notifications: NSObject {
             
         case BREAK_CATEGORY_ID:
             self.handleBreakNotification(note)
+            
+        case BREAK_END_CATEGORY_ID:
+            self.handleBreakEndNotification(note)
             
         case PROGRESS_CATEGORY_ID:
             self.handleProgressNotification(note)
@@ -319,6 +418,14 @@ class Notifications: NSObject {
         self.handleBreakAlertWithSkip()
     }
     
+    func handleBreakEndAlertWithStop(alert: UIAlertAction!) {
+        self.handleBreakEndAlertWithStop()
+    }
+    
+    func handleBreakEndAlertWithSnooze(alert: UIAlertAction!) {
+        self.handleBreakEndAlertWithSnooze()
+    }
+    
     func handleBreakAlertWithStart() {
         println("handleBreakAlertWithStart")
         StatusController.shared.beginBreak()
@@ -330,21 +437,37 @@ class Notifications: NSObject {
         // Do nothing.
     }
     
-    func handleAction(identifier: String?, note: UILocalNotification) {
+    func handleBreakEndAlertWithStop() {
+        println("handleBreakAlertWithStop")
+        StatusController.shared.endBreak()
+        self.center.postNotificationName(AutoBreakWasEndedNotification, object: nil)
+    }
+    
+    func handleBreakEndAlertWithSnooze() {
+        println("handleBreakAlertWithSnooze")
+        //StatusController.shared.snoozeBreak()
+        //self.center.postNotificationName(AutoBreakWasSnoozedNotification, object: nil)
+    }
+    
+    func handleNotification(notification: UILocalNotification, action: String?) {
         
-        println("Handle action \(identifier) for notification \(note)")
+        println("Handle action \(action) for notification \(notification)")
         
-        if identifier == nil { return }
+        if action == nil { return }
         
-        switch identifier! {
+        switch action! {
             
-        case START_ACTION_TITLE:
+        case START_ACTION_ID:
             self.handleBreakAlertWithStart()
-            break
             
-        case SKIP_ACTION_TITLE:
+        case SKIP_ACTION_ID:
             self.handleBreakAlertWithSkip()
-            break
+            
+        case STOP_ACTION_ID:
+            self.handleBreakEndAlertWithStop()
+            
+        case SNOOZE_ACTION_ID:
+            self.handleBreakEndAlertWithSnooze()
         
         default:
             break
@@ -363,16 +486,9 @@ class Notifications: NSObject {
     
     func scheduleNotification(date: NSDate, title: String, body: String? = nil, action: String? = nil, category: String? = nil, info: [NSObject: AnyObject]? = nil, badgeNumber: Int? = nil) {
         
-        //if let note = self.nextNote {
-        //    self.cancelNotification(note)
-        //}
-        
         if !self.shouldShowAlerts {
             return
         }
-        
-        //self.nextNote = UILocalNotification()
-        //let note = self.nextNote!
         
         let note = UILocalNotification()
         note.timeZone = NSTimeZone.systemTimeZone()

@@ -18,6 +18,9 @@
 		3B8139691AEDD03D0007194E /* ActivityExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8139681AEDD03D0007194E /* ActivityExtensions.swift */; };
 		3B81396B1AEE38CD0007194E /* StatusController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B81396A1AEE38CD0007194E /* StatusController.swift */; };
 		3B81396E1AF2BE3D0007194E /* Sounds in Resources */ = {isa = PBXBuildFile; fileRef = 3B81396D1AF2BE3D0007194E /* Sounds */; };
+		3B8139701AF30FB70007194E /* NSManagedObjectExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B81396F1AF30FB70007194E /* NSManagedObjectExtensions.swift */; };
+		3B8139771AF36EF40007194E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B8139761AF36EF40007194E /* StoreKit.framework */; };
+		3B81397A1AF381CF0007194E /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B8139791AF381CF0007194E /* CloudKit.framework */; };
 		3B92BDD91AE057D30012B00E /* Skiptracer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3B92BDD71AE057D30012B00E /* Skiptracer.xcdatamodeld */; };
 		3B92BDDD1AE0F6280012B00E /* SGExpandableTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B92BDDC1AE0F6280012B00E /* SGExpandableTableViewController.swift */; };
 		3BAA1B121AE025F500FF21BE /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAA1B111AE025F500FF21BE /* InterfaceController.swift */; };
@@ -39,7 +42,7 @@
 		3BC852A71AE0389F009031C0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3BC852A41AE0389F009031C0 /* Main.storyboard */; };
 		3BC852AB1AE038D8009031C0 /* Bugs.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3BC852A81AE038D8009031C0 /* Bugs.txt */; };
 		3BC852AD1AE038D8009031C0 /* Plan.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3BC852AA1AE038D8009031C0 /* Plan.txt */; };
-		3BC852B11AE0390C009031C0 /* NSIndexPathAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852AE1AE0390C009031C0 /* NSIndexPathAdditions.swift */; };
+		3BC852B11AE0390C009031C0 /* NSIndexPathExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852AE1AE0390C009031C0 /* NSIndexPathExtensions.swift */; };
 		3BC852B21AE0390C009031C0 /* SGCoreDataTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852AF1AE0390C009031C0 /* SGCoreDataTableViewController.swift */; };
 		3BC852B31AE0390C009031C0 /* SGViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852B01AE0390C009031C0 /* SGViewController.swift */; };
 		3BC852BD1AE03943009031C0 /* ActivitiesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC852B41AE03943009031C0 /* ActivitiesViewController.swift */; };
@@ -77,6 +80,10 @@
 		3B8139681AEDD03D0007194E /* ActivityExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityExtensions.swift; sourceTree = "<group>"; };
 		3B81396A1AEE38CD0007194E /* StatusController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusController.swift; sourceTree = "<group>"; };
 		3B81396D1AF2BE3D0007194E /* Sounds */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sounds; sourceTree = "<group>"; };
+		3B81396F1AF30FB70007194E /* NSManagedObjectExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSManagedObjectExtensions.swift; sourceTree = "<group>"; };
+		3B8139711AF363950007194E /* Skiptracer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Skiptracer.entitlements; sourceTree = "<group>"; };
+		3B8139761AF36EF40007194E /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		3B8139791AF381CF0007194E /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		3B92BDD81AE057D30012B00E /* Skiptracer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Skiptracer.xcdatamodel; sourceTree = "<group>"; };
 		3B92BDDC1AE0F6280012B00E /* SGExpandableTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SGExpandableTableViewController.swift; sourceTree = "<group>"; };
 		3BAA1B0C1AE025F500FF21BE /* Skiptracer WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Skiptracer WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -103,7 +110,7 @@
 		3BC852A81AE038D8009031C0 /* Bugs.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Bugs.txt; path = Skiptracer/Bugs.txt; sourceTree = SOURCE_ROOT; };
 		3BC852A91AE038D8009031C0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Skiptracer/Info.plist; sourceTree = SOURCE_ROOT; };
 		3BC852AA1AE038D8009031C0 /* Plan.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Plan.txt; path = Skiptracer/Plan.txt; sourceTree = SOURCE_ROOT; };
-		3BC852AE1AE0390C009031C0 /* NSIndexPathAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NSIndexPathAdditions.swift; path = Skiptracer/NSIndexPathAdditions.swift; sourceTree = SOURCE_ROOT; };
+		3BC852AE1AE0390C009031C0 /* NSIndexPathExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NSIndexPathExtensions.swift; path = Skiptracer/NSIndexPathExtensions.swift; sourceTree = SOURCE_ROOT; };
 		3BC852AF1AE0390C009031C0 /* SGCoreDataTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SGCoreDataTableViewController.swift; path = Skiptracer/SGCoreDataTableViewController.swift; sourceTree = SOURCE_ROOT; };
 		3BC852B01AE0390C009031C0 /* SGViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SGViewController.swift; path = Skiptracer/SGViewController.swift; sourceTree = SOURCE_ROOT; };
 		3BC852B41AE03943009031C0 /* ActivitiesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ActivitiesViewController.swift; path = Skiptracer/ActivitiesViewController.swift; sourceTree = SOURCE_ROOT; };
@@ -123,6 +130,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B8139771AF36EF40007194E /* StoreKit.framework in Frameworks */,
+				3B81397A1AF381CF0007194E /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,6 +148,7 @@
 		3B1361021ABE6E1100E0CBDC = {
 			isa = PBXGroup;
 			children = (
+				3B8139791AF381CF0007194E /* CloudKit.framework */,
 				3B13610D1ABE6E1100E0CBDC /* Skiptracer */,
 				3BAA1B1F1AE025F500FF21BE /* Watch */,
 				3BAA1B0D1AE025F500FF21BE /* Watch Extension */,
@@ -164,6 +174,7 @@
 				3BA64E181ACB4AD000D5AE92 /* Controllers */,
 				3B84A4601AD09C4400F4ABD4 /* Additions */,
 				3B81396D1AF2BE3D0007194E /* Sounds */,
+				3B8139781AF36F230007194E /* Frameworks */,
 				3B13610E1ABE6E1100E0CBDC /* Supporting Files */,
 			);
 			path = Skiptracer;
@@ -172,6 +183,7 @@
 		3B13610E1ABE6E1100E0CBDC /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				3B8139711AF363950007194E /* Skiptracer.entitlements */,
 				3BC852A91AE038D8009031C0 /* Info.plist */,
 				3BC852A81AE038D8009031C0 /* Bugs.txt */,
 				3BC852AA1AE038D8009031C0 /* Plan.txt */,
@@ -192,10 +204,19 @@
 			name = Cells;
 			sourceTree = "<group>";
 		};
+		3B8139781AF36F230007194E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3B8139761AF36EF40007194E /* StoreKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		3B84A4601AD09C4400F4ABD4 /* Additions */ = {
 			isa = PBXGroup;
 			children = (
-				3BC852AE1AE0390C009031C0 /* NSIndexPathAdditions.swift */,
+				3BC852AE1AE0390C009031C0 /* NSIndexPathExtensions.swift */,
+				3B81396F1AF30FB70007194E /* NSManagedObjectExtensions.swift */,
 				3BC852B01AE0390C009031C0 /* SGViewController.swift */,
 				3BC852AF1AE0390C009031C0 /* SGCoreDataTableViewController.swift */,
 				3B92BDDC1AE0F6280012B00E /* SGExpandableTableViewController.swift */,
@@ -356,6 +377,14 @@
 					3B13610A1ABE6E1100E0CBDC = {
 						CreatedOnToolsVersion = 6.1.1;
 						DevelopmentTeam = B55ZL2Y7PW;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
+						};
 					};
 					3BAA1B0B1AE025F500FF21BE = {
 						CreatedOnToolsVersion = 6.3;
@@ -445,10 +474,11 @@
 				3BC852C21AE03943009031C0 /* NowViewController.swift in Sources */,
 				3B8139671AEDC5320007194E /* ReportExtensions.swift in Sources */,
 				3BC852C11AE03943009031C0 /* Constants.swift in Sources */,
-				3BC852B11AE0390C009031C0 /* NSIndexPathAdditions.swift in Sources */,
+				3BC852B11AE0390C009031C0 /* NSIndexPathExtensions.swift in Sources */,
 				3B81396B1AEE38CD0007194E /* StatusController.swift in Sources */,
 				3BC852C51AE03943009031C0 /* ReportsViewController.swift in Sources */,
 				3BC852981AE0381A009031C0 /* Settings.swift in Sources */,
+				3B8139701AF30FB70007194E /* NSManagedObjectExtensions.swift in Sources */,
 				3BC852A11AE03884009031C0 /* StatisticsTableViewCell.swift in Sources */,
 				3BC852BE1AE03943009031C0 /* ActivityViewController.swift in Sources */,
 				3BC852B21AE0390C009031C0 /* SGCoreDataTableViewController.swift in Sources */,
@@ -592,6 +622,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Skiptracer/Skiptracer.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Skiptracer/Info.plist;
@@ -606,6 +637,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Skiptracer/Skiptracer.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Skiptracer/Info.plist;

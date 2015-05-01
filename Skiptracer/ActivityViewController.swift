@@ -49,11 +49,15 @@ class ActivityViewController: SGExpandableTableViewController {
         self.refreshData()
     }
     
-    override func enabledStateForModelPath(modelPath: String) -> Bool {
+    override func enabledStateForModelPath(modelPath: String?) -> Bool {
+        
+        if modelPath == nil {
+            return true
+        }
         
         if let activity = self.activity {
 
-            switch modelPath {
+            switch modelPath! {
                 
             case breakLengthKey: fallthrough
             case breakIntervalKey:

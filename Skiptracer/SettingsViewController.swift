@@ -23,27 +23,33 @@ class SettingsViewController: SGExpandableTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.object = AppData.shared.settings
-        //assert(self.object!.valueForKeyPath(self.enableAlertsKey) != nil)
-        //assert(self.object!.valueForKeyPath(self.enableTestUserKey) != nil)
         self.refreshData()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        AppData.shared.registerCloudObserver(self)
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        AppData.shared.unregisterCloudObserver(self)
     }
     
     override func createCellData() -> [[SGCellData]] {
         
-        return [[SGCellData]]()
-        
-        /*
         var data = [
-            [ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Alerts",    modelPath: self.enableAlertsKey) ],
-            [ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Test User", modelPath: self.enableTestUserKey) ]
+            [ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Alerts", modelPath: self.enableAlertsKey) ],
+            [ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Test User", modelPath: self.enableTestUserKey) ],
+            [ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Include breaks in totals", modelPath: nil) ],
+            [ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Automatically start/stop breaks", modelPath: nil) ]
         ]
         
-        #if !DEBUG
-            data.removeAtIndex(1)
-        #endif
+        //#if !DEBUG
+        //    data.removeAtIndex(1)
+        //#endif
         
         return data
-        */
     }
     
     override func switchDidChange(toggle: UISwitch) {
@@ -61,5 +67,9 @@ class SettingsViewController: SGExpandableTableViewController {
             let center = NSNotificationCenter.defaultCenter()
             center.postNotificationName(UserWasSwitchedNotification, object: nil)
         }
+    }
+    
+    func cloudDidChange(note: NSNotification) {
+        println("SettingsVC.cloudDidChange")
     }
 }

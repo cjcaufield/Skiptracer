@@ -37,31 +37,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
         // Handle notifications that arrived in the background.
-        let settings = self.app.currentUserNotificationSettings() // Check before scheduling.
         let localNote: AnyObject? = launchOptions?[UIApplicationLaunchOptionsLocalNotificationKey]
         
         if let note = localNote as? UILocalNotification {
-            Notifications.shared.didFinishLaunchingWithNotification(note)
+            Notifications.shared.handleNotification(note)
         }
         
         println("Launch options notification \(localNote)")
         return true
     }
     
-    /*
-    func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
-        println("Did register for notification settings \(notificationSettings)")
-    }
-    */
-    
     func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
-        // Handle notifications that arrived in the foreground.
-        println("Foreground notification \(notification)")
         Notifications.shared.handleNotification(notification)
     }
 
     func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
-        Notifications.shared.handleAction(identifier, note: notification)
+        Notifications.shared.handleNotification(notification, action: identifier)
         completionHandler()
     }
     

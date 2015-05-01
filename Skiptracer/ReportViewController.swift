@@ -93,11 +93,15 @@ class ReportViewController: SGExpandableTableViewController {
         self.updateClock()
     }
     
-    override func enabledStateForModelPath(modelPath: String) -> Bool {
+    override func enabledStateForModelPath(modelPath: String?) -> Bool {
+        
+        if modelPath == nil {
+            return true
+        }
         
         let inactive = (self.report?.active == false)
         
-        switch modelPath {
+        switch modelPath! {
             
             case "activity.name":
                 return inactive
@@ -137,7 +141,7 @@ class ReportViewController: SGExpandableTableViewController {
         }
     }
     
-    override func configurePicker(picker: UIPickerView, forModelPath: String) {
+    override func configurePicker(picker: UIPickerView, forModelPath path: String?) {
         if let activity = self.report?.activity {
             if let index = find(self.activities, activity) {
                 picker.reloadAllComponents()

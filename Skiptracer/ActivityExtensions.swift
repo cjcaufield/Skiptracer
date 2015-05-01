@@ -37,4 +37,9 @@ extension Activity {
         let lengthText = Formatter.stringFromLength(self.breakLength)
         return "Time for a \(lengthText) break."
     }
+    
+    var breakEndMessage: String? {
+        let lengthText = Formatter.stringFromLength(self.breakLength)
+        return "Time to continue \(self.name)."
+    }
 }

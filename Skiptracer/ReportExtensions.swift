@@ -35,8 +35,16 @@ extension Report {
     }
     
     var nextBreakDate: NSDate? {
-        if let interval = self.activity?.breakDistance {
-            return self.startDate.dateByAddingTimeInterval(interval)
+        if let distance = self.activity?.breakDistance {
+            return self.startDate.dateByAddingTimeInterval(distance)
+        } else {
+            return nil
+        }
+    }
+    
+    var nextBreakEndDate: NSDate? {
+        if let distance = self.activity?.breakInterval {
+            return self.startDate.dateByAddingTimeInterval(distance)
         } else {
             return nil
         }

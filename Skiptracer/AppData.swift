@@ -52,6 +52,16 @@ class AppData: NSObject {
         self.save()
     }
     
+    func registerCloudObserver(observer: AnyObject) {
+        let center = NSNotificationCenter.defaultCenter()
+        center.addObserver(observer, selector: "cloudDidChange:", name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: nil)
+    }
+    
+    func unregisterCloudObserver(observer: AnyObject) {
+        let center = NSNotificationCenter.defaultCenter()
+        center.removeObserver(observer, name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: nil)
+    }
+    
     func insertNewObject(entityName: String) -> AnyObject {
         return NSEntityDescription.insertNewObjectForEntityForName(entityName, inManagedObjectContext: self.managedObjectContext!)
     }
@@ -203,7 +213,15 @@ class AppData: NSObject {
         var error: NSError? = nil
         var failureReason = "There was an error creating or loading the application's saved data."
         
-        if coordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: nil, error: &error) == nil {
+        let options = [
+            NSMigratePersistentStoresAutomaticallyOption: true,
+            NSInferMappingModelAutomaticallyOption: true,
+            NSPersistentStoreUbiquitousContentNameKey: "Skiptracer"
+        ]
+        
+        let store = coordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: options, error: &error)
+        
+        if store == nil {
             
             coordinator = nil
             
@@ -219,6 +237,8 @@ class AppData: NSObject {
             NSLog("Unresolved error \(error), \(error!.userInfo)")
             abort()
         }
+        
+        println("Persistent store url is \(store!.URL)")
         
         return coordinator
     }()

@@ -8,27 +8,27 @@
 
 import UIKit
 
-let TEXT_FIELD_CELL_ID     = "TextFieldCell"
-let SWITCH_CELL_ID         = "SwitchCell"
-let TIME_LABEL_CELL_ID     = "TimeLabelCell"
-let TIME_PICKER_CELL_ID    = "TimePickerCell"
-let PICKER_LABEL_CELL_ID   = "PickerLabelCell"
-let PICKER_CELL_ID         = "PickerCell"
-let DATE_LABEL_CELL_ID     = "DateLabelCell"
-let DATE_PICKER_CELL_ID    = "DatePickerCell"
-let BREAKS_LABEL_CELL_ID   = "BreaksLabelCell"
-let TEXT_VIEW_CELL_ID      = "TextViewCell"
-let OTHER_CELL_ID          = "OtherCell"
+let TEXT_FIELD_CELL_ID   = "TextFieldCell"
+let SWITCH_CELL_ID       = "SwitchCell"
+let TIME_LABEL_CELL_ID   = "TimeLabelCell"
+let TIME_PICKER_CELL_ID  = "TimePickerCell"
+let PICKER_LABEL_CELL_ID = "PickerLabelCell"
+let PICKER_CELL_ID       = "PickerCell"
+let DATE_LABEL_CELL_ID   = "DateLabelCell"
+let DATE_PICKER_CELL_ID  = "DatePickerCell"
+let BREAKS_LABEL_CELL_ID = "BreaksLabelCell"
+let TEXT_VIEW_CELL_ID    = "TextViewCell"
+let OTHER_CELL_ID        = "OtherCell"
 
 class SGCellData {
     
     var cellIdentifier: String
     var title = ""
-    var modelPath = ""
+    var modelPath: String?
     var expandable = false
     var hidden = false
     
-    init(cellIdentifier: String, title: String, modelPath: String) {
+    init(cellIdentifier: String, title: String, modelPath: String?) {
         self.cellIdentifier = cellIdentifier
         self.title = title
         self.modelPath = modelPath
@@ -104,22 +104,28 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
     
     func textFieldDidEndEditing(textField: UITextField) {
         if let data = self.dataForControl(textField) {
-            self.object?.setValue(textField.text, forKey: data.modelPath)
-            AppData.shared.save()
+            if let path = data.modelPath {
+                self.object?.setValue(textField.text, forKeyPath: path)
+                AppData.shared.save()
+            }
         }
     }
     
     func textViewDidEndEditing(textView: UITextView) {
         if let data = self.dataForControl(textView) {
-            self.object?.setValue(textView.text, forKey: data.modelPath)
-            AppData.shared.save()
+            if let path = data.modelPath {
+                self.object?.setValue(textView.text, forKeyPath: path)
+                AppData.shared.save()
+            }
         }
     }
     
     func switchDidChange(toggle: UISwitch) {
         if let data = self.dataForControl(toggle) {
-            self.object?.setValue(toggle.on, forKey: data.modelPath)
-            AppData.shared.save()
+            if let path = data.modelPath {
+                self.object?.setValue(toggle.on, forKeyPath: path)
+                AppData.shared.save()
+            }
         }
     }
     
@@ -128,10 +134,12 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
         // Update the model.
         
         if let data = self.dataForControl(picker) {
-            let countdown = (picker.datePickerMode == .CountDownTimer)
-            let value: AnyObject = (countdown) ? picker.countDownDuration : picker.date
-            self.object?.setValue(value, forKey: data.modelPath)
-            AppData.shared.save()
+            if let path = data.modelPath {
+                let countdown = (picker.datePickerMode == .CountDownTimer)
+                let value: AnyObject = (countdown) ? picker.countDownDuration : picker.date
+                self.object?.setValue(value, forKeyPath: path)
+                AppData.shared.save()
+            }
         }
         
         // Update the cell above.
@@ -147,7 +155,7 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
         self.navigationController?.popViewControllerAnimated(true)
     }
     
-    func configurePicker(picker: UIPickerView, forModelPath: String) {
+    func configurePicker(picker: UIPickerView, forModelPath path: String?) {
         //
     }
     
@@ -283,23 +291,43 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
                 
             case PICKER_LABEL_CELL_ID:
             
-                let name = self.object?.valueForKeyPath(item.modelPath) as? String
-                
                 cell.textLabel?.text = item.title
-                cell.detailTextLabel?.text = name ?? "Untitled"
                 
+                var text = "Untitled"
+                
+                if let path = item.modelPath {
+                    if let name = self.object?.valueForKeyPath(path) as? String {
+                        text = name
+                    }
+                }
+            
+                cell.detailTextLabel?.text = text
+            
             case DATE_LABEL_CELL_ID:
                 
-                let date = self.object?.valueForKeyPath(item.modelPath) as! NSDate
-                
                 cell.textLabel?.text = item.title
+                
+                var date = NSDate()
+                
+                if let path = item.modelPath {
+                    if let value = self.object?.valueForKeyPath(path) as? NSDate {
+                        date = value
+                    }
+                }
+            
                 cell.detailTextLabel?.text = Formatter.dateStringFromDate(date)
             
             case TIME_LABEL_CELL_ID:
                 
                 cell.textLabel?.text = item.title
                 
-                let length = self.object?.valueForKeyPath(item.modelPath) as? NSTimeInterval ?? 0.0
+                var length = 0.0
+                if let path = item.modelPath {
+                    if let value = self.object?.valueForKeyPath(path) as? NSTimeInterval {
+                        length = value
+                    }
+                }
+                
                 let timeString = Formatter.stringFromLength(length)
                 
                 cell.detailTextLabel?.text = timeString
@@ -308,8 +336,10 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
                 
                 var text = ""
                 
-                if let value: AnyObject = self.object?.valueForKeyPath(item.modelPath) {
-                    text = "\(value)"
+                if let path = item.modelPath {
+                    if let value: AnyObject = self.object?.valueForKeyPath(path) {
+                        text = "\(value)"
+                    }
                 }
                 
                 cell.textLabel?.text = item.title
@@ -321,14 +351,28 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
                 let label = cell.viewWithTag(1) as! UILabel
                 label.text = item.title
                 
-                let value = self.object?.valueForKeyPath(item.modelPath) as? String
+                var text = "Untitled"
+                
+                if let path = item.modelPath {
+                    if let value = self.object?.valueForKeyPath(path) as? String {
+                        text = value
+                    }
+                }
+                
                 let textField = cell.viewWithTag(2) as! UITextField
-                textField.text = value ?? "Untitled"
+                textField.text = text
                 textField.delegate = self
             
             case TEXT_VIEW_CELL_ID:
                 
-                let text = self.object?.valueForKeyPath(item.modelPath) as? String ?? ""
+                var text = ""
+                
+                if let path = item.modelPath {
+                    if let value = self.object?.valueForKeyPath(path) as? String {
+                        text = value
+                    }
+                }
+                
                 let textView = cell.viewWithTag(2) as! UITextView
                 textView.text = text
                 textView.delegate = self
@@ -338,9 +382,16 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
                 let label = cell.viewWithTag(1) as! UILabel
                 label.text = item.title
                 
-                let value = self.object?.valueForKeyPath(item.modelPath) as? Bool
+                var on = false
+                
+                if let path = item.modelPath {
+                    if let value = self.object?.valueForKeyPath(path) as? Bool {
+                        on = value
+                    }
+                }
+                
                 let toggle = cell.viewWithTag(2) as! UISwitch
-                toggle.on = value ?? false
+                toggle.on = on
                 
                 toggle.addTarget(self, action: "switchDidChange:", forControlEvents: .ValueChanged)
                 
@@ -352,17 +403,32 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
             
             case DATE_PICKER_CELL_ID:
                 
-                let date = self.object?.valueForKeyPath(item.modelPath) as? NSDate ?? NSDate()
+                var date = NSDate()
+                
+                if let path = item.modelPath {
+                    if let value = self.object?.valueForKeyPath(path) as? NSDate {
+                        date = value
+                    }
+                }
+                
                 let picker = cell.viewWithTag(2) as! UIDatePicker
                 picker.setDate(date, animated: false)
+                
                 picker.addTarget(self, action: "datePickerDidChange:", forControlEvents: .ValueChanged)
                 
             case TIME_PICKER_CELL_ID:
                 
-                let length = self.object?.valueForKeyPath(item.modelPath) as? NSTimeInterval ?? 0.0
+                var length = 0.0
+                
+                if let path = item.modelPath {
+                    if let value = self.object?.valueForKeyPath(path) as? NSTimeInterval {
+                        length = value
+                    }
+                }
+                
                 let picker = cell.viewWithTag(2) as! UIDatePicker
                 picker.countDownDuration = length
-            
+                
                 picker.addTarget(self, action: "datePickerDidChange:", forControlEvents: .ValueChanged)
             
             default:
@@ -373,7 +439,7 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
         self.setEnabled(enabled, forCell: cell)
     }
     
-    func enabledStateForModelPath(modelPath: String) -> Bool {
+    func enabledStateForModelPath(modelPath: String?) -> Bool {
         return true
     }
     

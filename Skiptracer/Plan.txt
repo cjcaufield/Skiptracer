@@ -4,21 +4,24 @@ Plan
 0.3 Alerts
 ----------
 
-Functionality:
-* Implement breakEnd alerts (only schedule when an auto-alert is accepted).
-
 Scheduling:
-- Reschedule notes when changing break/progress settings.
-- Schedule next date (or repeating), not just startDate + distance (which will often be in the past)
-- Schedule all notifications up to a certain period in the future?
-- Update/refresh notifications when needed
-- Delete notifications (with report delete, ...)
+* Fix nextBreak/End/ProgressDate to always return future dates.
+* Schedule maximum number of notifications up to a certain period in the future.
+
+Lifespan:
+* Reschedule notes (when changing break/progress settings).
+* Delete notes (with report delete, ...)
+
+Times:
+- Handle 0s progress bug.
+- Handle invalid break interval/length values.
 
 0.X Workflow
 ------------
 
 Workflow:
 - Join previously deactivated reports if a new one is started quickly?  HOW?
+- Add background breaks when app resumes (keep a lastUpdate time)
 - Auto-skip breaks when they are manually taken beforehand?
 - Implement atomic activities
 
@@ -29,7 +32,10 @@ Now UI:
 0.X iCloud
 ----------
 
-- Read https://developer.apple.com/library/ios/documentation/DataManagement/Conceptual/UsingCoreDataWithiCloudPG/UsingSQLiteStoragewithiCloud/UsingSQLiteStoragewithiCloud.html#//apple_ref/doc/uid/TP40013491-CH3-SW1
+* Set up iTunes Connect.
+* Set up CoreData.
+- Handle change notifications.
+- Test with iPhone/iPad.
 
 0.X In-App Purchases
 --------------------

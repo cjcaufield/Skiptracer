@@ -1,5 +1,5 @@
 //
-//  NSIndexPathAdditions.swift
+//  NSIndexPathExtensions.swift
 //  Skiptracer
 //
 //  Created by Colin Caufield on 4/10/15.

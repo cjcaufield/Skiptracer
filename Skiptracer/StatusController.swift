@@ -57,10 +57,14 @@ class StatusController: NSObject {
         var newReport: Report?
         
         if !newActivity.silent {
+            
             newReport = self.data.createReport(newActivity, user: self.user, active: true)
-            self.notes.cancelAllNotifications()
-            self.notes.scheduleNextBreakNotificationForReport(newReport!)
-            self.notes.scheduleNextProgressNotificationForReport(newReport!)
+            
+            // It's important to save before scheduling notifications referring to this report.
+            // Otherwise, the report's ID will change on the next save, causing a mismatch.
+            self.data.save()
+            
+            self.notes.scheduleAllNotificationsForReport(newReport!)
         }
         
         self.user?.currentReport = newReport
@@ -101,6 +105,8 @@ class StatusController: NSObject {
     }
     
     func endReport(report: Report) {
+        
+        self.notes.cancelAllNotifications()
         
         report.endDate = NSDate()
         report.active = false
