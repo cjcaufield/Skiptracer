@@ -16,6 +16,15 @@ Times:
 - Handle 0s progress bug.
 - Handle invalid break interval/length values.
 
+0.4 iCloud
+----------
+
+* Fix missing Relaxing bug.
+* Initial objects.
+* Handle change notifications.
+- Test sync between iPhone/iPad.
+- Test first run, iCloud setting on/off, network failure, etc.
+
 0.X Workflow
 ------------
 
@@ -28,14 +37,6 @@ Workflow:
 Now UI:
 - Now UI for atomic activities (checkbox, ding?)
 - Now UI for break countdown.
-
-0.X iCloud
-----------
-
-* Set up iTunes Connect.
-* Set up CoreData.
-- Handle change notifications.
-- Test with iPhone/iPad.
 
 0.X In-App Purchases
 --------------------

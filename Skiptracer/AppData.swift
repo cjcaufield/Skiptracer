@@ -10,12 +10,15 @@ import UIKit
 import CoreData
 
 private var _shared: AppData? = nil
+private var index = 0
+
+let USE_ICLOUD = false
 
 class AppData: NSObject {
     
-    var settings: Settings!
+    var settings:  Settings!
     var basicUser: User!
-    var testUser: User!
+    var testUser:  User!
     
     class var shared: AppData {
         
@@ -27,19 +30,39 @@ class AppData: NSObject {
     }
     
     override init() {
-        
         super.init()
+        self.registerCloudObserver(self)
+        self.refreshProperties()
+        self.save()
+    }
+    
+    deinit {
+        self.unregisterCloudObserver(self)
+    }
+    
+    var center: NSNotificationCenter {
+        return NSNotificationCenter.defaultCenter()
+    }
+    
+    func refreshProperties() {
+        
+        println("AppData.refreshProperties")
         
         self.settings = self.fetchSettings() ?? self.createSettings()
         self.basicUser = self.fetchUser() ?? self.createUser()
         self.testUser = self.fetchUser(testUser: true) ?? self.createUser(testUser: true)
         
+        let dateString = NSDate().description
+        self.basicUser.name = "Basic \(index) - \(dateString)"
+        self.testUser.name = "Test \(index) - \(dateString)"
+        index++
+        
         self.settings.currentUser = self.settings.enableTestUser ? self.testUser : self.basicUser
         
         for user in [self.basicUser, self.testUser] {
-            
+        
             if user.activities.count == 0 {
-                
+            
                 let relaxing = self.createActivity("Relaxing", user: user)
                 relaxing.permanent = true
                 relaxing.silent = true
@@ -48,20 +71,75 @@ class AppData: NSObject {
                 self.createActivity("Playing", user: user)
             }
         }
-        
-        self.save()
     }
     
     func registerCloudObserver(observer: AnyObject) {
-        let center = NSNotificationCenter.defaultCenter()
-        center.addObserver(observer, selector: "cloudDidChange:", name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: nil)
+        
+        if !USE_ICLOUD { return }
+        
+        self.center.addObserver(
+            observer,
+            selector: "cloudStoreWillChange:",
+            name: NSPersistentStoreCoordinatorStoresWillChangeNotification,
+            object: self.persistentStoreCoordinator)
+        
+        self.center.addObserver(
+            observer,
+            selector: "cloudStoreDidChange:",
+            name: NSPersistentStoreCoordinatorStoresDidChangeNotification,
+            object: self.persistentStoreCoordinator)
+        
+        self.center.addObserver(
+            observer,
+            selector: "cloudStoreDidImport:",
+            name: NSPersistentStoreDidImportUbiquitousContentChangesNotification,
+            object: self.persistentStoreCoordinator)
     }
     
     func unregisterCloudObserver(observer: AnyObject) {
-        let center = NSNotificationCenter.defaultCenter()
-        center.removeObserver(observer, name: NSPersistentStoreCoordinatorStoresDidChangeNotification, object: nil)
+        
+        if !USE_ICLOUD { return }
+        
+        self.center.removeObserver(
+            observer,
+            name: NSPersistentStoreCoordinatorStoresWillChangeNotification,
+            object: self.persistentStoreCoordinator)
+        
+        self.center.removeObserver(
+            observer,
+            name: NSPersistentStoreCoordinatorStoresDidChangeNotification,
+            object: self.persistentStoreCoordinator)
+        
+        self.center.removeObserver(
+            observer,
+            name: NSPersistentStoreDidImportUbiquitousContentChangesNotification,
+            object: self.persistentStoreCoordinator)
     }
     
+    func cloudStoreWillChange(note: NSNotification) {
+        println("AppData.cloudStoreWillChange \(note)")
+        UIApplication.sharedApplication().beginIgnoringInteractionEvents()
+        self.managedObjectContext?.performBlock({
+            self.save()
+            self.managedObjectContext?.reset()
+        })
+    }
+    
+    func cloudStoreDidChange(note: NSNotification) {
+        println("AppData.cloudStoreDidChange \(note)")
+        self.refreshProperties()
+        // CJC revisit: make other VC refreshes happen before reenabling interaction.
+        UIApplication.sharedApplication().endIgnoringInteractionEvents()
+    }
+    
+    func cloudStoreDidImport(note: NSNotification) {
+        println("AppData.cloudStoreDidImport \(note)")
+        let context = self.managedObjectContext!
+        context.performBlock({
+            context.mergeChangesFromContextDidSaveNotification(note)
+        })
+    }
+
     func insertNewObject(entityName: String) -> AnyObject {
         return NSEntityDescription.insertNewObjectForEntityForName(entityName, inManagedObjectContext: self.managedObjectContext!)
     }
@@ -196,8 +274,22 @@ class AppData: NSObject {
     }
     
     lazy var applicationDocumentsDirectory: NSURL = {
+        
         let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
-        return urls[urls.count - 1] as! NSURL
+        return urls[0] as! NSURL
+        
+        //return NSFileManager.defaultManager().URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: true, error: nil) as! NSURL
+    }()
+    
+    lazy var cloudDirectory: NSURL = {
+        
+        let fileManager = NSFileManager.defaultManager()
+        let bundleID = NSBundle.mainBundle().bundleIdentifier!
+        
+        let cloudRoot = "iCloud.\(bundleID)"
+        let cloudRootURL = fileManager.URLForUbiquityContainerIdentifier(nil) //(cloudRoot)
+        
+        return cloudRootURL!
     }()
     
     lazy var managedObjectModel: NSManagedObjectModel = {
@@ -213,11 +305,17 @@ class AppData: NSObject {
         var error: NSError? = nil
         var failureReason = "There was an error creating or loading the application's saved data."
         
-        let options = [
+        var options = [NSObject: AnyObject]()
+        
+        options = [
             NSMigratePersistentStoresAutomaticallyOption: true,
-            NSInferMappingModelAutomaticallyOption: true,
-            NSPersistentStoreUbiquitousContentNameKey: "Skiptracer"
+            NSInferMappingModelAutomaticallyOption: true
         ]
+        
+        if USE_ICLOUD {
+            options[NSPersistentStoreUbiquitousContentNameKey] = "Skiptracer"
+            options[NSPersistentStoreUbiquitousContentURLKey] = self.cloudDirectory
+        }
         
         let store = coordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: options, error: &error)
         
@@ -250,8 +348,9 @@ class AppData: NSObject {
             return nil
         }
         
-        var managedObjectContext = NSManagedObjectContext()
-        managedObjectContext.persistentStoreCoordinator = coordinator
-        return managedObjectContext
+        var context = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType) //.PrivateQueueConcurrencyType)
+        context.persistentStoreCoordinator = coordinator
+        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        return context
     }()
 }

@@ -11,9 +11,10 @@ import CoreData
 
 class User: NSManagedObject {
 
+    @NSManaged var name:          String?
     @NSManaged var currentReport: Report?
-    @NSManaged var currentBreak: Report?
-    @NSManaged var activities: NSSet
-    @NSManaged var reports: NSSet
-    @NSManaged var isTestUser: Bool
+    @NSManaged var currentBreak:  Report?
+    @NSManaged var activities:    NSSet
+    @NSManaged var reports:       NSSet
+    @NSManaged var isTestUser:    Bool
 }

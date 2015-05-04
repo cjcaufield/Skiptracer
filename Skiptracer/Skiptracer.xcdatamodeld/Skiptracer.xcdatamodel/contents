@@ -34,6 +34,7 @@
     </entity>
     <entity name="User" representedClassName="Skiptracer.User" syncable="YES">
         <attribute name="isTestUser" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="activities" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Activity" inverseName="user" inverseEntity="Activity" syncable="YES"/>
         <relationship name="currentBreak" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Report" inverseName="userOfThisBreak" inverseEntity="Report" syncable="YES"/>
         <relationship name="currentReport" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Report" inverseName="userOfThisReport" inverseEntity="Report" syncable="YES"/>
@@ -44,6 +45,6 @@
         <element name="Activity" positionX="160" positionY="192" width="128" height="210"/>
         <element name="Report" positionX="160" positionY="192" width="128" height="225"/>
         <element name="Settings" positionX="160" positionY="192" width="128" height="90"/>
-        <element name="User" positionX="160" positionY="192" width="128" height="135"/>
+        <element name="User" positionX="160" positionY="192" width="128" height="150"/>
     </elements>
 </model>

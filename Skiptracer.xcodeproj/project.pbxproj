@@ -20,7 +20,6 @@
 		3B81396E1AF2BE3D0007194E /* Sounds in Resources */ = {isa = PBXBuildFile; fileRef = 3B81396D1AF2BE3D0007194E /* Sounds */; };
 		3B8139701AF30FB70007194E /* NSManagedObjectExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B81396F1AF30FB70007194E /* NSManagedObjectExtensions.swift */; };
 		3B8139771AF36EF40007194E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B8139761AF36EF40007194E /* StoreKit.framework */; };
-		3B81397A1AF381CF0007194E /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B8139791AF381CF0007194E /* CloudKit.framework */; };
 		3B92BDD91AE057D30012B00E /* Skiptracer.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3B92BDD71AE057D30012B00E /* Skiptracer.xcdatamodeld */; };
 		3B92BDDD1AE0F6280012B00E /* SGExpandableTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B92BDDC1AE0F6280012B00E /* SGExpandableTableViewController.swift */; };
 		3BAA1B121AE025F500FF21BE /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAA1B111AE025F500FF21BE /* InterfaceController.swift */; };
@@ -83,7 +82,6 @@
 		3B81396F1AF30FB70007194E /* NSManagedObjectExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSManagedObjectExtensions.swift; sourceTree = "<group>"; };
 		3B8139711AF363950007194E /* Skiptracer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Skiptracer.entitlements; sourceTree = "<group>"; };
 		3B8139761AF36EF40007194E /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		3B8139791AF381CF0007194E /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		3B92BDD81AE057D30012B00E /* Skiptracer.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Skiptracer.xcdatamodel; sourceTree = "<group>"; };
 		3B92BDDC1AE0F6280012B00E /* SGExpandableTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SGExpandableTableViewController.swift; sourceTree = "<group>"; };
 		3BAA1B0C1AE025F500FF21BE /* Skiptracer WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Skiptracer WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -131,7 +129,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3B8139771AF36EF40007194E /* StoreKit.framework in Frameworks */,
-				3B81397A1AF381CF0007194E /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,7 +145,6 @@
 		3B1361021ABE6E1100E0CBDC = {
 			isa = PBXGroup;
 			children = (
-				3B8139791AF381CF0007194E /* CloudKit.framework */,
 				3B13610D1ABE6E1100E0CBDC /* Skiptracer */,
 				3BAA1B1F1AE025F500FF21BE /* Watch */,
 				3BAA1B0D1AE025F500FF21BE /* Watch Extension */,
