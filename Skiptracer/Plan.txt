@@ -20,17 +20,23 @@ Times:
 ----------
 
 iCloud UI:
-* Append (n) to names when creating, and editing, etc.
+* Always append (n) to names when creating, and editing, etc.
 * Properly update VC cached objects (including NSFetchedResultsController.deleteCacheWithName)
-* Handle dropped objects by going back to root VC.
+- Handle dropped objects by going back to root VC.
 
-Issues:
+Bugs:
 - Solve fail on first launch after clean (non-production builds only?)
 - Solve sync error messages (not a problem?)
-- Solve occasional sync failures between iPhone/iPad.
+
+Testing:
 - Test turning network on/off
 - Test turning iCloud on/off
+
+Other:
 - Cancel notifications for reports stopped on other devices.  HOW!?!
+
+Merges:
+- Merge properties of Settings/Activities/Reports based on change date.
 
 0.X Workflow
 ------------
@@ -39,6 +45,7 @@ Workflow:
 - Require/allow reports to be manually started?
 - Join previously deactivated reports if a new one is started quickly?
 - Add background breaks when app resumes? (keep a lastUpdate time)
+- Prevent reports from being deleted when their activity is deleted.
 
 Model:
 - Separate break and progress settings into separate objects.

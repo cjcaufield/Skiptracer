@@ -116,13 +116,14 @@ class AppData: Data {
             }
         }
         
-        //self.save() // CJC: problem?
+        self.save()
     }
     
     override func deduplicate() {
         let settings = self.fetchSettings()
         if settings.count > 1 {
             self.mergeSettings(settings[0], with: settings[1])
+            self.save()
         }
     }
     
@@ -233,35 +234,43 @@ class AppData: Data {
     }
     
     func fetchOrderedActivities(user: User) -> [Activity] {
-        return self.fetchObjects(self.orderedActivitiesRequest(user)) as! [Activity]
+        let request = self.orderedActivitiesRequest(user)
+        return self.fetchObjects(request) as! [Activity]
     }
     
     func fetchOrganizedActivities(user: User) -> [Activity] {
-        return self.fetchObjects(self.organizedActivitiesRequest(user)) as! [Activity]
+        let request = self.organizedActivitiesRequest(user)
+        return self.fetchObjects(request) as! [Activity]
     }
     
     func fetchOrderedReportsForParent(parent: Report?, user: User) -> [Report] {
-        return self.fetchObjects(self.orderedReportsRequestForParent(parent, user: user)) as! [Report]
+        let request = self.orderedReportsRequestForParent(parent, user: user)
+        return self.fetchObjects(request) as! [Report]
     }
     
     func fetchOrganizedReportsForParent(parent: Report?, user: User) -> [Report] {
-        return self.fetchObjects(self.organizedReportsRequestForParent(parent, user: user)) as! [Report]
+        let request = self.organizedReportsRequestForParent(parent, user: user)
+        return self.fetchObjects(request) as! [Report]
     }
     
     func fetchOrderedReportsForActivity(activity: Activity?, user: User) -> [Report] {
-        return self.fetchObjects(self.orderedReportsRequestForActivity(activity, user: user)) as! [Report]
+        let request = self.orderedReportsRequestForActivity(activity, user: user)
+        return self.fetchObjects(request) as! [Report]
     }
     
     func fetchOrganizedReportsForActivity(activity: Activity?, user: User) -> [Report] {
-        return self.fetchObjects(self.organizedReportsRequestForActivity(activity, user: user)) as! [Report]
+        let request = self.organizedReportsRequestForActivity(activity, user: user)
+        return self.fetchObjects(request) as! [Report]
     }
     
     func fetchActiveReports(user: User) -> [Report] {
-        return self.fetchObjects(self.orderedActiveReportsRequest(user)) as! [Report]
+        let request = self.orderedActiveReportsRequest(user)
+        return self.fetchObjects(request) as! [Report]
     }
     
     func fetchActiveBreaks(user: User) -> [Report] {
-        return self.fetchObjects(self.orderedActiveBreaksRequest(user)) as! [Report]
+        let request = self.orderedActiveBreaksRequest(user)
+        return self.fetchObjects(request) as! [Report]
     }
     
     // MARK: - Fetch Requests

@@ -120,6 +120,7 @@ class Data: NSObject {
         if let context = self.context {
             context.performBlockAndWait({
                 context.mergeChangesFromContextDidSaveNotification(note)
+                self.deduplicate()
                 self.refreshProperties()
             })
         }
