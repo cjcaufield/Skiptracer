@@ -11,17 +11,19 @@ import CoreData
 
 class Activity: NSManagedObject {
 
-    @NSManaged var user: User?
-    @NSManaged var name: String
-    @NSManaged var permanent: Bool
-    @NSManaged var silent: Bool
-    @NSManaged var atomic: Bool
-    @NSManaged var breakInterval: Double
-    @NSManaged var breakLength: Double
+    @NSManaged var user:             User?
+    @NSManaged var name:             String
+    @NSManaged var uniqueName:       String
+    @NSManaged var creationDate:     NSDate
+    @NSManaged var permanent:        Bool
+    @NSManaged var silent:           Bool
+    @NSManaged var atomic:           Bool
+    @NSManaged var breakInterval:    Double
+    @NSManaged var breakLength:      Double
     @NSManaged var progressInterval: Double
-    @NSManaged var breaks: Bool
-    @NSManaged var progress: Bool
-    @NSManaged var reports: NSSet
+    @NSManaged var breaks:           Bool
+    @NSManaged var progress:         Bool
+    @NSManaged var reports:          NSSet
     
     /*
     override func validateForDelete(error: NSErrorPointer) -> Bool {

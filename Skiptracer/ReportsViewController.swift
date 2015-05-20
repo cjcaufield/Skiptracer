@@ -24,13 +24,11 @@ class ReportsViewController: SGCoreDataTableViewController {
     
     override var fetchPredicate: NSPredicate? {
         let data = AppData.shared
-        let userPredicate = data.currentUserPredicate()
-        let parentPredicate = data.parentReportPredicate(self.parent)
-        return NSCompoundPredicate.andPredicateWithSubpredicates([userPredicate, parentPredicate])
+        return data.reportsPredicateForParent(self.parent, user: data.settings.currentUser!)
     }
     
     override var sortDescriptors: [NSSortDescriptor] {
-        return [NSSortDescriptor(key: "startDate", ascending: false)]
+        return AppData.shared.reportSortDescriptors()
     }
     
     override var sectionKey: String? {

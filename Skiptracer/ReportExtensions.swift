@@ -100,10 +100,8 @@ extension Report {
         return "You've spent \(lengthText) on \(activityName)."
     }
     
-    /*
     override func validateForDelete(error: NSErrorPointer) -> Bool {
         println("Deleting \(self)")
         return true
     }
-    */
 }

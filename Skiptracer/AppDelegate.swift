@@ -36,6 +36,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
+        AppData.shared // Force the database to be created early.
+        
         // Handle notifications that arrived in the background.
         let localNote: AnyObject? = launchOptions?[UIApplicationLaunchOptionsLocalNotificationKey]
         

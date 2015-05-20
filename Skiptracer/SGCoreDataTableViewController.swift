@@ -216,7 +216,7 @@ class SGCoreDataTableViewController: UITableViewController, NSFetchedResultsCont
     }
     
     var context: NSManagedObjectContext? {
-        return AppData.shared.managedObjectContext
+        return AppData.shared.context
     }
     
     func updateRequest() {

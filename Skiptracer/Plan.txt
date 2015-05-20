@@ -16,59 +16,73 @@ Times:
 - Handle 0s progress bug.
 - Handle invalid break interval/length values.
 
-0.4 iCloud
-----------
-
-* Fix missing Relaxing bug.
-* Initial objects.
-* Handle change notifications.
-- Test sync between iPhone/iPad.
-- Test first run, iCloud setting on/off, network failure, etc.
-
 0.X Workflow
 ------------
 
 Workflow:
-- Join previously deactivated reports if a new one is started quickly?  HOW?
-- Add background breaks when app resumes (keep a lastUpdate time)
-- Auto-skip breaks when they are manually taken beforehand?
+- Require reports to be manually started?
+- Join previously deactivated reports if a new one is started quickly?
+- Add background breaks when app resumes? (keep a lastUpdate time)
+
+Model:
+- Separate break and progress settings into separate objects.
 - Implement atomic activities
 
 Now UI:
 - Now UI for atomic activities (checkbox, ding?)
 - Now UI for break countdown.
 
-0.X In-App Purchases
---------------------
-
-- Add UI
-- Test with servers
-
-0.X iPad
---------
-
-- SplitViewControllers
-- Rotation
-
 0.X UI Polish
 -------------
 
+- iPad SplitViewControllers
+- Device rotation
 - White on dark grey theme (like OSX notification center)
 - Today widget
+
+0.X In-App Purchases
+--------------------
+
+- Add UI (Settings sub?)
+- Test with Apple servers
+
+0.X iWatch
+----------
+
+0.X Graphs
+----------
+
+0.X iCloud
+----------
+
+Seeding:
+- Make macro to disable iCloud.
+- Make KV store boolean work on simulator (find a hack)
+- Handle case where iCloud data is deleted, but HAS_SEEDED_DATA is still true.
+- Handle zero Settings, Users, or Activity objects.
+
+Merges:
+- Make merges work (developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CoreData/Articles/cdChangeManagement.html)
+- Handle deduplication.
+- Solve sync error messages (merge related?)
+- Handle sync between iPhone/iPad.
+
+UI:
+- Properly update VC cached objects (including NSFetchedResultsController.deleteCacheWithName)
+- Handle dropped objects by going back to root VC.
+- Cancel notifications for reports stopped on other devices.
+
+Errors:
+- Handle turning network on/off
+- Handle turning iCloud on/off
 
 0.X Mac
 -------
 
 - Menulet
 
-0.X iWatch
-----------
-
 0.X Internationalization
 ------------------------
-
-0.X Graphs
-----------
 
 0.X Testing
 -----------

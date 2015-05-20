@@ -8,7 +8,7 @@
 
 import UIKit
 
-private let MINIMAL_DURATION = 0.0 // 5.0 // seconds
+//private let MINIMAL_DURATION = 0.0 // 5.0 // seconds
 
 private var _shared: StatusController? = nil
 
@@ -38,7 +38,7 @@ class StatusController: NSObject {
     func switchActivity(newActivity: Activity) {
         
         if self.user?.currentBreak != nil {
-            endBreak()
+            self.endCurrentBreak()
         }
         
         let oldReport = self.user?.currentReport
@@ -76,7 +76,7 @@ class StatusController: NSObject {
         if self.user!.currentBreak == nil {
             self.beginBreak()
         } else {
-            self.endBreak()
+            self.endCurrentBreak()
         }
     }
     
@@ -93,7 +93,7 @@ class StatusController: NSObject {
         self.data.save()
     }
     
-    func endBreak() {
+    func endCurrentBreak() {
         
         if let report = self.user?.currentBreak {
             self.endReport(report)
@@ -104,19 +104,21 @@ class StatusController: NSObject {
         self.data.save()
     }
     
-    func endReport(report: Report) {
+    func endReport(report: Report, save: Bool = true) {
         
         self.notes.cancelAllNotifications()
         
         report.endDate = NSDate()
         report.active = false
         
-        let atomic = report.activity?.atomic ?? false
+        //let atomic = report.activity?.atomic ?? false
+        //
+        //if !atomic && report.length < MINIMAL_DURATION {
+        //    self.data.context?.deleteObject(report)
+        //}
         
-        if !atomic && report.length < MINIMAL_DURATION {
-            self.data.managedObjectContext?.deleteObject(report)
+        if save {
+            self.data.save()
         }
-        
-        self.data.save()
     }
 }

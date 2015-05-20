@@ -86,7 +86,7 @@ class ReportViewController: SGExpandableTableViewController {
         
         let data = AppData.shared
         self.user = data.settings.currentUser
-        self.activities = data.fetchOrderedActivities()
+        self.activities = data.fetchOrderedActivities(self.user!)
         
         super.refreshData()
         

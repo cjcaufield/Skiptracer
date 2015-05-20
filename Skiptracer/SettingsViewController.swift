@@ -12,7 +12,10 @@ private var context = 0
 
 class SettingsViewController: SGExpandableTableViewController {
     
-    var settings: Settings? { return self.object as? Settings }
+    var settings: Settings? {
+        return self.object as? Settings
+    }
+    
     let enableAlertsKey = "enableAlerts"
     let enableTestUserKey = "enableTestUser"
     

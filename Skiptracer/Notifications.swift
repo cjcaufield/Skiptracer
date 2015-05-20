@@ -439,7 +439,7 @@ class Notifications: NSObject {
     
     func handleBreakEndAlertWithStop() {
         println("handleBreakAlertWithStop")
-        StatusController.shared.endBreak()
+        StatusController.shared.endCurrentBreak()
         self.center.postNotificationName(AutoBreakWasEndedNotification, object: nil)
     }
     

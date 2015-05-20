@@ -44,33 +44,29 @@ class ActivitiesViewController: SGCoreDataTableViewController {
     
     override func createNewObject() -> AnyObject {
         let data = AppData.shared
-        return data.createActivity(nil, user: data.settings.currentUser)
+        let user = data.settings.currentUser
+        let name = data.nextAvailableName("Untitled", entityName: "Activity", predicate: nil)
+        return data.createActivity(name, user: user)
     }
     
     override func configureCell(cell: UITableViewCell, withObject object: AnyObject) {
-        
         let activity = object as? Activity
-        
         if let name = activity?.name {
             cell.textLabel!.text = name
         }
     }
     
     override func didSelectObject(object: AnyObject, new: Bool = false) {
-        
         let newController = self.storyboard?.instantiateViewControllerWithIdentifier("Activity") as! ActivityViewController
         newController.showDoneButton = new
         newController.object = object
-        
         self.navigationController?.pushViewController(newController, animated: true)
     }
     
     override func canEditObject(object: AnyObject) -> Bool {
-        
         if let activity = object as? Activity {
             return activity.permanent == false
         }
-        
         return true
     }
     

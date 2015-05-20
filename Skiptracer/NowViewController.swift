@@ -110,7 +110,7 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         
         let data = AppData.shared
         self.user = data.settings.currentUser
-        self.activities = data.fetchOrderedActivities()
+        self.activities = data.fetchOrderedActivities(self.user!)
         
         var row = 0
         
@@ -145,9 +145,9 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         self.updateClock()
         self.updateClockControlStates()
     }
-    
-    func endBreak() {
-        StatusController.shared.endBreak()
+    /*
+    func endCurrentBreak() {
+        StatusController.shared.endCurrentBreak()
         self.updateClock()
         self.updateClockControlStates()
     }
@@ -157,7 +157,7 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         self.updateClock()
         self.updateClockControlStates()
     }
-    
+    */
     func autoBreakWasStarted(note: NSNotification) {
         self.updateClock()
         self.updateClockControlStates()

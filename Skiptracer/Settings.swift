@@ -12,6 +12,15 @@ import CoreData
 class Settings: NSManagedObject {
     
     @NSManaged var enableTestUser: Bool
-    @NSManaged var enableAlerts: Bool
-    @NSManaged var currentUser: User?
+    @NSManaged var enableAlerts:   Bool
+    @NSManaged var basicUser:      User?
+    @NSManaged var testUser:       User?
+    @NSManaged var currentUser:    User?
+    @NSManaged var uniqueName:     String
+    @NSManaged var creationDate:   NSDate
+    
+    override func validateForDelete(error: NSErrorPointer) -> Bool {
+        println("Deleting \(self)")
+        return true
+    }
 }
