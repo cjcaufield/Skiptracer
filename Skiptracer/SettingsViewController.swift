@@ -79,4 +79,8 @@ class SettingsViewController: SGExpandableTableViewController {
     func cloudStoreDidChange(note: NSNotification) {
         println("SettingsVC.cloudStoreDidChange")
     }
+    
+    func cloudStoreDidImport(note: NSNotification) {
+        println("SettingsVC.cloudStoreDidImport")
+    }
 }

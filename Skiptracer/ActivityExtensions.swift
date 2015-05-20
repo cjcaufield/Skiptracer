@@ -42,9 +42,4 @@ extension Activity {
         let lengthText = Formatter.stringFromLength(self.breakLength)
         return "Time to continue \(self.name)."
     }
-    
-    override func validateForDelete(error: NSErrorPointer) -> Bool {
-        println("Deleting \(self)")
-        return true
-    }
 }

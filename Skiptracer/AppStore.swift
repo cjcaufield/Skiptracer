@@ -14,11 +14,9 @@ private var _shared: AppStore? = nil
 class AppStore: NSObject, SKRequestDelegate, SKProductsRequestDelegate {
     
     class var shared: AppStore {
-        
         if _shared == nil {
             _shared = AppStore()
         }
-        
         return _shared!
     }
     

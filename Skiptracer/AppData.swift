@@ -11,6 +11,12 @@ import CoreData
 
 private var _shared: AppData? = nil
 
+private var settingsIndex = 0
+private var userIndex = 0
+private var activityIndex = 0
+private var reportIndex = 0
+private var breakIndex = 0
+
 class AppData: Data {
     
     var settings:  Settings!
@@ -24,8 +30,8 @@ class AppData: Data {
         return _shared!
     }
     
-    override init() {
-        super.init()
+    init() {
+        super.init(name: "Skiptracer", useCloud: true)
         assert(_shared == nil)
         _shared = self
     }
@@ -38,7 +44,10 @@ class AppData: Data {
         self.basicUser = self.fetchBasicUsers().first ?? self.createBasicUser()
         self.testUser  = self.fetchTestUsers().first ?? self.createTestUser()
         
-        println("*** SETTING USER: \(self.basicUser.uniqueName)")
+        self.settings.basicUser = self.basicUser
+        self.settings.testUser = self.testUser
+        
+        println("*** SETTING USER - \(self.basicUser.uniqueName)")
         
         self.settings.currentUser = self.settings.enableTestUser ? self.testUser : self.basicUser
         
@@ -61,16 +70,20 @@ class AppData: Data {
     
     func refreshCurrentReportAndBreak(user: User) {
         
+        println("AppData.refreshCurrentReportAndBreak")
+        
         let activeReports = self.fetchActiveReports(user)
         let activeBreaks = self.fetchActiveBreaks(user)
         
         if activeReports.count == 0 {
             
+            println("setting current report and break to nil")
             user.currentReport = nil
             user.currentBreak = nil
             
         } else {
             
+            println("setting current report to \(activeReports.first)")
             user.currentReport = activeReports.first
             
             var validBreak: Report?
@@ -81,10 +94,13 @@ class AppData: Data {
                 }
             }
             
+            println("setting current break to \(validBreak)")
             user.currentBreak = validBreak
         }
         
         // Make sure only the current report and break are active.
+        
+        println("ending other reports")
         
         for report in activeReports {
             if report != user.currentReport {
@@ -92,40 +108,50 @@ class AppData: Data {
             }
         }
         
+        println("ending other breaks")
+        
         for abreak in activeBreaks {
             if abreak != user.currentBreak {
                 StatusController.shared.endReport(abreak, save: false)
             }
         }
         
-        self.save()
+        //self.save() // CJC: problem?
+    }
+    
+    override func deduplicate() {
+        let settings = self.fetchSettings()
+        if settings.count > 1 {
+            self.mergeSettings(settings[0], with: settings[1])
+        }
     }
     
     // MARK: - Creation
     
     func createSettings() -> Settings {
         
-        println("*** CREATING SETTINGS")
-        
         var settings = self.insertNewObject("Settings") as! Settings
         
-        settings.uniqueName = "Settings - \(self.uniqueString())"
-        settings.creationDate = NSDate()
+        let now = NSDate()
+        settings.creationDate = now
+        settings.uniqueName = "Settings - \(settingsIndex++) - \(now) - \(self.uniqueDeviceString())"
         
+        println("*** CREATED SETTINGS - \(settings.uniqueName)")
         return settings
     }
     
     func createUser(testUser: Bool = false) -> User {
         
-        println("*** CREATING USER")
-        
         var user = self.insertNewObject("User") as! User
         user.isTestUser = testUser
         
-        let typeName = (testUser) ? "Basic" : "Test"
-        user.uniqueName = "User - \(typeName) - \(self.uniqueString())"
+        let now = NSDate()
+        let typeName = (testUser) ? "Test" : "Basic"
         user.creationDate = NSDate()
+        user.uniqueName = "User - \(userIndex++) - \(typeName) - \(now) - \(self.uniqueDeviceString())"
         
+        
+        println("*** CREATED USER - \(user.uniqueName)")
         return user
     }
     
@@ -139,23 +165,22 @@ class AppData: Data {
     
     func createActivity(name: String?, user: User?) -> Activity {
         
-        println("*** CREATING ACTIVITY")
-        
         var activity = self.insertNewObject("Activity") as! Activity
         if name != nil {
             activity.name = name!
         }
         
-        activity.uniqueName = "Activity - \(self.uniqueString())"
-        activity.creationDate = NSDate()
-        
         activity.user = user
+        
+        let now = NSDate()
+        activity.creationDate = now
+        activity.uniqueName = "Activity - \(activityIndex++) - \(now) - \(self.uniqueDeviceString())"
+        
+        println("*** CREATED ACTIVITY - \(activity.uniqueName)")
         return activity
     }
     
     func createReport(activity: Activity?, parent: Report?, user: User?, active: Bool, isBreak: Bool) -> Report {
-        
-        println("*** CREATING REPORT")
         
         var report = self.insertNewObject("Report") as! Report
         report.active = active
@@ -166,9 +191,15 @@ class AppData: Data {
         report.endDate = NSDate()
         report.user = user
         
-        report.uniqueName = "Report - \(self.uniqueString())"
-        report.creationDate = NSDate()
+        let now = NSDate()
+        report.creationDate = now
+        if isBreak {
+            report.uniqueName = "Break - \(breakIndex++) - \(now) - \(self.uniqueDeviceString())"
+        } else {
+            report.uniqueName = "Report - \(reportIndex++) - \(now) - \(self.uniqueDeviceString())"
+        }
         
+        println("*** CREATED REPORT - \(report.uniqueName)")
         return report
     }
     
@@ -381,6 +412,8 @@ class AppData: Data {
     
     func mergeSettings(settings1: Settings, with settings2: Settings) {
         
+        println("### mergeSettings \(settings1) --- \(settings2)")
+        
         // Merge the basic user.
         if let basic1 = settings1.basicUser, basic2 = settings2.basicUser {
             self.mergeUser(basic1, with: basic2)
@@ -397,41 +430,45 @@ class AppData: Data {
     
     func mergeUser(user1: User, with user2: User) {
         
-        // Cache some objects before merging.
-        
-        let currentReport1 = user1.currentReport
-        let currentReport2 = user2.currentReport
-        let currentBreak1 = user1.currentBreak
-        let currentBreak2 = user2.currentBreak
+        println("###  mergeUser \(user1) --- \(user2)")
         
         // Change user for activities.
         
         var activities = user1.activities as! NSMutableSet
+        
+        println("###    there were \(activities.count) activities")
         
         for activity in user2.activities.allObjects as! [Activity] {
             activity.user = user1
             activities.addObject(activity)
         }
         
+        println("###    there are now \(activities.count) activities")
+        
         // Change user for reports.
         
         var reports = user1.reports as! NSMutableSet
+        
+        println("###    there were \(reports.count) reports")
         
         for report in user2.reports.allObjects as! [Report] {
             report.user = user1
             reports.addObject(report)
         }
         
+        println("###    there are now \(reports.count) reports")
+        
         // Merge duplicate activities.
         
         let organizedActivities = self.fetchOrganizedActivities(user1)
         
-        for i in 0 ..< organizedActivities.count - 1 {
+        for var i = 0; i < organizedActivities.count - 1; i++ {
             
             let a = organizedActivities[i]
             let b = organizedActivities[i + 1]
             
             if a.uniqueName == b.uniqueName {
+                println("###    merging activities with the same uniqueName: \(a.uniqueName)")
                 self.mergeActivity(a, with: b, user: user1)
             }
         }
@@ -440,12 +477,13 @@ class AppData: Data {
         
         let orderedActivities = self.fetchOrderedActivities(user1)
         
-        for i in 0 ..< orderedActivities.count - 1 {
+        for var i = 0; i < orderedActivities.count - 1; i++ {
             
             let a = orderedActivities[i]
             let b = orderedActivities[i + 1]
             
             if a.name == b.name {
+                println("###      merging activities with the same name: \(a.name)")
                 self.mergeActivity(a, with: b, user: user1)
             }
         }
@@ -456,25 +494,32 @@ class AppData: Data {
     
     func mergeActivity(activity1: Activity, with activity2: Activity, user: User) {
         
+        println("###      mergeActivity \(activity1) --- \(activity2)")
+        
         // Change activity for reports
         
         var reports = activity1.reports as! NSMutableSet
+        
+        println("###        there were \(reports.count) reports")
         
         for report in activity2.reports.allObjects as! [Report] {
             report.activity = activity1
             reports.addObject(report)
         }
         
+        println("###        there are now \(reports.count) reports")
+        
         // Merge duplicate reports
         
         let orderedReports = self.fetchOrganizedReportsForActivity(activity1, user: user)
         
-        for i in 0 ..< orderedReports.count - 1 {
+        for var i = 0; i < orderedReports.count - 1; i++ {
             
             let a = orderedReports[i]
             let b = orderedReports[i + 1]
             
             if a.uniqueName == b.uniqueName {
+                println("###        merging reports with the same uniqueName: \(a.uniqueName)")
                 self.mergeReport(a, with: b, user: user)
             }
         }
@@ -485,25 +530,32 @@ class AppData: Data {
     
     func mergeReport(report1: Report, with report2: Report, user: User) {
         
+        println("###        mergeReport \(report1) --- \(report2)")
+        
         // Change parent for breaks
         
         var breaks = report1.breaks as! NSMutableSet
+        
+        println("###          there were \(breaks.count) breaks")
         
         for abreak in report2.breaks.allObjects as! [Report] {
             abreak.parent = report1
             breaks.addObject(abreak)
         }
         
+        println("###          there were \(breaks.count) breaks")
+        
         // Merge duplicate breaks.
         
         let orderedBreaks = self.fetchOrganizedReportsForParent(report1, user: user)
         
-        for i in 0 ..< orderedBreaks.count - 1 {
+        for var i = 0; i < orderedBreaks.count - 1; i++ {
             
             let a = orderedBreaks[i]
             let b = orderedBreaks[i + 1]
             
             if a.uniqueName == b.uniqueName {
+                println("###          merging breaks with the same uniqueName: \(a.uniqueName)")
                 self.mergeReport(a, with: b, user: user)
             }
         }

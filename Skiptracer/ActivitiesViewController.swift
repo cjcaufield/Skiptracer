@@ -81,4 +81,8 @@ class ActivitiesViewController: SGCoreDataTableViewController {
     func cloudStoreDidChange(note: NSNotification) {
         println("ActivitiesVC.cloudStoreDidChange")
     }
+    
+    func cloudStoreDidImport(note: NSNotification) {
+        println("ActivitiesVC.cloudStoreDidImport")
+    }
 }

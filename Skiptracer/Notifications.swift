@@ -41,11 +41,9 @@ class Notifications: NSObject {
     var player: AVAudioPlayer?
     
     class var shared: Notifications {
-        
         if _shared == nil {
             _shared = Notifications()
         }
-        
         return _shared!
     }
     
@@ -128,6 +126,10 @@ class Notifications: NSObject {
         return self.currentUser?.currentReport
     }
     
+    var currentBreak: Report? {
+        return self.currentUser?.currentBreak
+    }
+    
     func registerUserObserver(observer: AnyObject) {
         self.center.addObserver(observer, selector: "userWasSwitched:", name: UserWasSwitchedNotification, object: nil)
     }
@@ -148,8 +150,8 @@ class Notifications: NSObject {
         assert(!report.activity!.objectID.temporaryID)
         
         if let activity = report.activity {
-            if let activityID = activity.uniqueString {
-                if let reportID = report.uniqueString {
+            if let activityID = activity.objectIDString {
+                if let reportID = report.objectIDString {
                     return [ACTIVITY_URI_KEY: activityID, REPORT_URI_KEY: reportID]
                 }
             }
@@ -166,10 +168,10 @@ class Notifications: NSObject {
         }
         
         let noteReportID = note.userInfo?[REPORT_URI_KEY] as? String
-        let currentReportID = self.currentReport?.uniqueString
+        let currentReportID = self.currentReport?.objectIDString
         
         if noteReportID != currentReportID {
-            println("Skipping notification because of info mismatch.")
+            println("Skipping notification because of objectIDString mismatch.")
             return false
         }
         

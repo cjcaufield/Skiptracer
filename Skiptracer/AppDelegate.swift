@@ -25,13 +25,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     override init() {
-        
         super.init()
-        
         assert(_shared == nil)
         _shared = self
-        
-        Notifications.shared // Initialize notifications
+        Notifications.shared // Force the notification system to be created early.
     }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {

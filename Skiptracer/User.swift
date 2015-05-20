@@ -20,6 +20,10 @@ class User: NSManagedObject {
     @NSManaged var reports:       NSSet
     @NSManaged var isTestUser:    Bool
     
+    override var description: String {
+        return "<\(self.uniqueName)>"
+    }
+    
     override func validateForDelete(error: NSErrorPointer) -> Bool {
         println("Deleting \(self)")
         return true

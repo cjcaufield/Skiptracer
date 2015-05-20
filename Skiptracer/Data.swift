@@ -11,21 +11,22 @@ import CoreData
 
 private var _shared: Data? = nil
 
-private let USE_ICLOUD = /*false*/ true
-
 class Data: NSObject {
     
+    var name = "Data"
+    var useCloud = false
+    
     class var shared: Data {
-        if _shared == nil {
-            _shared = Data()
-        }
+        assert(_shared != nil)
         return _shared!
     }
     
-    override init() {
+    init(name: String, useCloud: Bool) {
         super.init()
         assert(_shared == nil)
         _shared = self
+        self.name = name
+        self.useCloud = useCloud
         self.registerCloudObserver(self)
         self.refreshProperties()
     }
@@ -40,7 +41,7 @@ class Data: NSObject {
     
     func registerCloudObserver(observer: AnyObject) {
         
-        if !USE_ICLOUD { return }
+        if !self.useCloud { return }
         
         self.center.addObserver(
             observer,
@@ -63,7 +64,7 @@ class Data: NSObject {
     
     func unregisterCloudObserver(observer: AnyObject) {
         
-        if !USE_ICLOUD { return }
+        if !self.useCloud { return }
         
         self.center.removeObserver(
             observer,
@@ -82,8 +83,10 @@ class Data: NSObject {
     }
     
     func cloudStoreWillChange(note: NSNotification) {
+        
         println("Data.cloudStoreWillChange \(note)")
         //UIApplication.sharedApplication().beginIgnoringInteractionEvents()
+        
         if let context = self.context {
             context.performBlockAndWait({
                 if context.hasChanges {
@@ -96,20 +99,29 @@ class Data: NSObject {
     }
     
     func cloudStoreDidChange(note: NSNotification) {
+        
         println("Data.cloudStoreDidChange \(note)")
-        self.deduplicate()
-        self.refreshProperties()
+        
+        if let context = self.context {
+            context.performBlockAndWait({
+                self.deduplicate()
+                self.refreshProperties()
+            })
+        }
+        
         // CJC revisit: make other VC refreshes happen before reenabling interaction.
         //UIApplication.sharedApplication().endIgnoringInteractionEvents()
     }
     
     func cloudStoreDidImport(note: NSNotification) {
+        
         println("Data.cloudStoreDidImport \(note)")
+        
         if let context = self.context {
             context.performBlockAndWait({
                 context.mergeChangesFromContextDidSaveNotification(note)
+                self.refreshProperties()
             })
-            self.refreshProperties()
         }
     }
 
@@ -117,7 +129,7 @@ class Data: NSObject {
         return NSEntityDescription.insertNewObjectForEntityForName(entityName, inManagedObjectContext: self.context!)
     }
     
-    func uniqueString() -> String {
+    func uniqueDeviceString() -> String {
         let idiomName = (UIDevice.currentDevice().userInterfaceIdiom == .Phone) ? "iPhone" : "iPad"
         let deviceID = UIDevice.currentDevice().identifierForVendor.UUIDString
         return "\(idiomName) - \(deviceID)"
@@ -141,7 +153,7 @@ class Data: NSObject {
                 if context.hasChanges && !context.save(&error) {
                     // CJC: Replace this with something shipable.
                     NSLog("Unresolved error \(error), \(error!.userInfo)")
-                    abort()
+                    //abort()
                 }
             })
         }
@@ -247,14 +259,15 @@ class Data: NSObject {
     }()
     
     lazy var managedObjectModel: NSManagedObjectModel = {
-        let modelURL = NSBundle.mainBundle().URLForResource("Skiptracer", withExtension: "momd")!
+        let modelURL = NSBundle.mainBundle().URLForResource(self.name, withExtension: "momd")!
         return NSManagedObjectModel(contentsOfURL: modelURL)!
     }()
     
     lazy var persistentStoreCoordinator: NSPersistentStoreCoordinator? = {
         
         var coordinator: NSPersistentStoreCoordinator? = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
-        let url = self.applicationDocumentsDirectory.URLByAppendingPathComponent("Skiptracer.sqlite")
+        let filename = self.name + ".sqlite"
+        let url = self.applicationDocumentsDirectory.URLByAppendingPathComponent(filename)
         
         var error: NSError? = nil
         var failureReason = "There was an error creating or loading the application's saved data."
@@ -266,9 +279,9 @@ class Data: NSObject {
             NSInferMappingModelAutomaticallyOption: true
         ]
         
-        if USE_ICLOUD {
+        if self.useCloud {
             if let cloudDir = self.cloudDirectory {
-                options[NSPersistentStoreUbiquitousContentNameKey] = "Skiptracer"
+                options[NSPersistentStoreUbiquitousContentNameKey] = self.name
             }
         }
         
