@@ -11,8 +11,9 @@ import CoreData
 
 class Settings: NSManagedObject {
     
-    @NSManaged var enableTestUser: Bool
+    @NSManaged var enableICloud:   Bool
     @NSManaged var enableAlerts:   Bool
+    @NSManaged var enableTestUser: Bool
     @NSManaged var basicUser:      User?
     @NSManaged var testUser:       User?
     @NSManaged var currentUser:    User?

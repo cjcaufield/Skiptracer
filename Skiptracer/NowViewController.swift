@@ -34,12 +34,14 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        AppData.shared.registerCloudDataObserver(self)
         self.refreshData(animated: false)
         self.timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: "updateClock", userInfo: nil, repeats: true)
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
+        AppData.shared.unregisterCloudDataObserver(self)
         self.timer?.invalidate()
         self.timer = nil
     }
@@ -188,6 +190,10 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
     
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return self.activities.count
+    }
+    
+    func cloudDataDidChange(note: NSNotification) {
+        self.refreshData(animated: true)
     }
 }
 

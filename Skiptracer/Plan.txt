@@ -5,28 +5,27 @@ Plan
 ----------
 
 Scheduling:
-* Fix nextBreak/End/ProgressDate to always return future dates.
-* Schedule maximum number of notifications up to a certain period in the future.
-
-Lifespan:
-* Reschedule notes (when changing break/progress settings).
-* Delete notes (with report delete, ...)
-
-Times:
-* Handle 0s progress bug.
-* Handle invalid break interval/length values.
+* Schedule all 64 notifications whenever possible. (in handleNotification?)
+* Reschedule notifications (when changing break/progress settings).
+* Delete notifications (with activity/report delete, alerts on/off switch, other times?)
+* Alert on/off switch (should change settings switch too)
 
 0.X iCloud
 ----------
 
 iCloud UI:
-* Always append (n) to names when creating, and editing, etc.
-* Properly update VC cached objects (including NSFetchedResultsController.deleteCacheWithName)
-- Handle dropped objects by going back to root VC.
+* Use iCloud switch (should change settings switch too)
+* Always append (n) to names when creating, and editing, etc
+
+Browser:
+* Handle deleted objects by going back to root VC
+- Handle merged objects by refetching, or something
 
 Bugs:
+- Handle NSMergeConflicts (especially common when changing Now picker) (use NSMergePolicy?)
+- Sometimes new reports aren't imported. (seen many times) (only reports generated in NowVC UI?) (see AppData refreshProperties and refreshCurrentReportAndBreak?)
+- Sometimes all reports disappear. (seen once)
 - Solve fail on first launch after clean (non-production builds only?)
-- Solve sync error messages (not a problem?)
 
 Testing:
 - Test turning network on/off
@@ -34,9 +33,6 @@ Testing:
 
 Other:
 - Cancel notifications for reports stopped on other devices.  HOW!?!
-
-Merges:
-- Merge properties of Settings/Activities/Reports based on change date.
 
 0.X Workflow
 ------------

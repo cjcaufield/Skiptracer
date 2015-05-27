@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B2344481B129DF60014D546 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2344471B129DF60014D546 /* Utilities.swift */; };
 		3B4013361AE92CA40092F5CC /* DatePickerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B4013351AE92CA40092F5CC /* DatePickerCell.xib */; };
 		3B4013381AE9336C0092F5CC /* TextViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B4013371AE9336C0092F5CC /* TextViewCell.xib */; };
 		3B40133A1AE939150092F5CC /* SwitchCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B4013391AE939150092F5CC /* SwitchCell.xib */; };
@@ -69,6 +70,7 @@
 
 /* Begin PBXFileReference section */
 		3B13610B1ABE6E1100E0CBDC /* Skiptracer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skiptracer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3B2344471B129DF60014D546 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		3B4013351AE92CA40092F5CC /* DatePickerCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DatePickerCell.xib; sourceTree = "<group>"; };
 		3B4013371AE9336C0092F5CC /* TextViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextViewCell.xib; sourceTree = "<group>"; };
 		3B4013391AE939150092F5CC /* SwitchCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SwitchCell.xib; sourceTree = "<group>"; };
@@ -213,6 +215,7 @@
 		3B84A4601AD09C4400F4ABD4 /* Additions */ = {
 			isa = PBXGroup;
 			children = (
+				3B2344471B129DF60014D546 /* Utilities.swift */,
 				3BC852AE1AE0390C009031C0 /* NSIndexPathExtensions.swift */,
 				3B81396F1AF30FB70007194E /* NSManagedObjectExtensions.swift */,
 				3BC852B01AE0390C009031C0 /* SGViewController.swift */,
@@ -232,8 +235,8 @@
 				3BC852931AE0381A009031C0 /* Settings.swift */,
 				3BC852941AE0381A009031C0 /* User.swift */,
 				3BC852901AE0381A009031C0 /* Activity.swift */,
-				3B8139681AEDD03D0007194E /* ActivityExtensions.swift */,
 				3BC852921AE0381A009031C0 /* Report.swift */,
+				3B8139681AEDD03D0007194E /* ActivityExtensions.swift */,
 				3B8139661AEDC5320007194E /* ReportExtensions.swift */,
 			);
 			name = Models;
@@ -472,6 +475,7 @@
 				3BC852C01AE03943009031C0 /* AppStore.swift in Sources */,
 				3BC852C21AE03943009031C0 /* NowViewController.swift in Sources */,
 				3B8139671AEDC5320007194E /* ReportExtensions.swift in Sources */,
+				3B2344481B129DF60014D546 /* Utilities.swift in Sources */,
 				3BC852C11AE03943009031C0 /* Constants.swift in Sources */,
 				3BC852B11AE0390C009031C0 /* NSIndexPathExtensions.swift in Sources */,
 				3B81396B1AEE38CD0007194E /* StatusController.swift in Sources */,

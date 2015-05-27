@@ -16,6 +16,7 @@ class SettingsViewController: SGExpandableTableViewController {
         return self.object as? Settings
     }
     
+    let enableICloudKey = "enableICloud"
     let enableAlertsKey = "enableAlerts"
     let enableTestUserKey = "enableTestUser"
     
@@ -25,34 +26,39 @@ class SettingsViewController: SGExpandableTableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.object = AppData.shared.settings
         self.refreshData()
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        AppData.shared.registerCloudObserver(self)
+        AppData.shared.registerCloudDataObserver(self)
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        AppData.shared.unregisterCloudObserver(self)
+        AppData.shared.unregisterCloudDataObserver(self)
     }
     
     override func createCellData() -> [[SGCellData]] {
         
         var data = [
+            [ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "iCloud", modelPath: self.enableICloudKey) ],
             [ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Alerts", modelPath: self.enableAlertsKey) ],
             [ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Test User", modelPath: self.enableTestUserKey) ],
-            [ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Include breaks in totals", modelPath: nil) ],
-            [ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Automatically start/stop breaks", modelPath: nil) ]
+            //[ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Include breaks in totals", modelPath: nil) ],
+            //[ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Automatically start/stop breaks", modelPath: nil) ]
         ]
         
-        //#if !DEBUG
-        //    data.removeAtIndex(1)
-        //#endif
+        #if !DEBUG
+            data.removeLast()
+        #endif
         
         return data
+    }
+    
+    override func refreshData() {
+        self.object = AppData.shared.settings
+        super.refreshData()
     }
     
     override func switchDidChange(toggle: UISwitch) {
@@ -72,15 +78,7 @@ class SettingsViewController: SGExpandableTableViewController {
         }
     }
     
-    func cloudStoreWillChange(note: NSNotification) {
-        println("SettingsVC.cloudStoreWillChange")
-    }
-    
-    func cloudStoreDidChange(note: NSNotification) {
-        println("SettingsVC.cloudStoreDidChange")
-    }
-    
-    func cloudStoreDidImport(note: NSNotification) {
-        println("SettingsVC.cloudStoreDidImport")
+    func cloudDataDidChange(note: NSNotification) {
+        self.refreshData()
     }
 }

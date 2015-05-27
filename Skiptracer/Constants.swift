@@ -9,3 +9,4 @@
 let UserWasSwitchedNotification     = "UserWasSwitchedNotification"
 let AutoBreakWasStartedNotification = "AutoBreakWasStartedNotification"
 let AutoBreakWasEndedNotification   = "AutoBreakWasEndedNotification"
+let CloudDataDidChangeNotification  = "CloudDataDidChangeNotification"

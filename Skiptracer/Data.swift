@@ -27,19 +27,19 @@ class Data: NSObject {
         _shared = self
         self.name = name
         self.useCloud = useCloud
-        self.registerCloudObserver(self)
+        self.registerCloudStoreObserver(self)
         self.refreshProperties()
     }
     
     deinit {
-        self.unregisterCloudObserver(self)
+        self.unregisterCloudStoreObserver(self)
     }
     
     var center: NSNotificationCenter {
         return NSNotificationCenter.defaultCenter()
     }
     
-    func registerCloudObserver(observer: AnyObject) {
+    func registerCloudStoreObserver(observer: AnyObject) {
         
         if !self.useCloud { return }
         
@@ -62,7 +62,7 @@ class Data: NSObject {
             object: self.persistentStoreCoordinator)
     }
     
-    func unregisterCloudObserver(observer: AnyObject) {
+    func unregisterCloudStoreObserver(observer: AnyObject) {
         
         if !self.useCloud { return }
         
@@ -80,6 +80,21 @@ class Data: NSObject {
             observer,
             name: NSPersistentStoreDidImportUbiquitousContentChangesNotification,
             object: self.persistentStoreCoordinator)
+    }
+    
+    func registerCloudDataObserver(observer: AnyObject) {
+        self.center.addObserver(
+            observer,
+            selector: "cloudDataDidChange:",
+            name: CloudDataDidChangeNotification,
+            object: nil)
+    }
+    
+    func unregisterCloudDataObserver(observer: AnyObject) {
+        self.center.removeObserver(
+            observer,
+            name: CloudDataDidChangeNotification,
+            object: nil)
     }
     
     func cloudStoreWillChange(note: NSNotification) {
@@ -106,6 +121,7 @@ class Data: NSObject {
             context.performBlockAndWait({
                 self.deduplicate()
                 self.refreshProperties()
+                self.center.postNotificationName(CloudDataDidChangeNotification, object: nil)
             })
         }
         
@@ -122,6 +138,7 @@ class Data: NSObject {
                 context.mergeChangesFromContextDidSaveNotification(note)
                 self.deduplicate()
                 self.refreshProperties()
+                self.center.postNotificationName(CloudDataDidChangeNotification, object: nil)
             })
         }
     }

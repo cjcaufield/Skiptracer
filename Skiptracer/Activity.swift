@@ -24,13 +24,4 @@ class Activity: NSManagedObject {
     @NSManaged var breaks:           Bool
     @NSManaged var progress:         Bool
     @NSManaged var reports:          NSSet
-    
-    override var description: String {
-        return "<\(self.uniqueName)>"
-    }
-    
-    override func validateForDelete(error: NSErrorPointer) -> Bool {
-        println("Deleting \(self)")
-        return true
-    }
 }

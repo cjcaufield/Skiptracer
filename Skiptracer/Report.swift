@@ -22,13 +22,4 @@ class Report: NSManagedObject {
     @NSManaged var notes:        String?
     @NSManaged var active:       Bool
     @NSManaged var isBreak:      Bool
-    
-    override var description: String {
-        return "<\(self.uniqueName)>"
-    }
-    
-    override func validateForDelete(error: NSErrorPointer) -> Bool {
-        println("Deleting \(self)")
-        return true
-    }
 }

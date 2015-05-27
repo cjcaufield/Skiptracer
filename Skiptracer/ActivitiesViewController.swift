@@ -16,16 +16,6 @@ class ActivitiesViewController: SGCoreDataTableViewController {
         Notifications.shared.registerUserObserver(self)
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        AppData.shared.registerCloudObserver(self)
-    }
-    
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
-        AppData.shared.unregisterCloudObserver(self)
-    }
-    
     override var entityName: String {
         return "Activity"
     }
@@ -72,17 +62,5 @@ class ActivitiesViewController: SGCoreDataTableViewController {
     
     func userWasSwitched(note: NSNotification) {
         self.updateRequest()
-    }
-    
-    func cloudStoreWillChange(note: NSNotification) {
-        println("ActivitiesVC.cloudStoreWillChange")
-    }
-    
-    func cloudStoreDidChange(note: NSNotification) {
-        println("ActivitiesVC.cloudStoreDidChange")
-    }
-    
-    func cloudStoreDidImport(note: NSNotification) {
-        println("ActivitiesVC.cloudStoreDidImport")
     }
 }

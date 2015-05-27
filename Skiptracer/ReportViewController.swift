@@ -50,12 +50,14 @@ class ReportViewController: SGExpandableTableViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        AppData.shared.registerCloudDataObserver(self)
         self.refreshData()
         self.timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "updateClock", userInfo: nil, repeats: true)
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
+        AppData.shared.unregisterCloudDataObserver(self)
         self.timer?.invalidate()
         self.timer = nil
     }
@@ -188,6 +190,10 @@ class ReportViewController: SGExpandableTableViewController {
     }
     
     func autoBreakWasEnded(note: NSNotification) {
+        self.refreshData()
+    }
+    
+    func cloudDataDidChange(note: NSNotification) {
         self.refreshData()
     }
 }

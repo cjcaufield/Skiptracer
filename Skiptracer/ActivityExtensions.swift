@@ -10,36 +10,64 @@ import UIKit
 
 extension Activity {
     
-    var breakDistance: NSTimeInterval? {
-        
-        if !self.breaks || self.breakInterval == 0.0 || self.breakLength == 0.0 {
-            return nil
-        }
-        
-        let value = self.breakInterval - self.breakLength
-        if value < 0.0 {
-            return nil
-        }
-        
-        return value
+    //
+    // Validity
+    //
+    
+    var breakSettingsAreValid: Bool {
+        return self.breaks && self.breakLength > 0.0 && self.breakInterval > self.breakLength
     }
     
-    var progressDistance: NSTimeInterval? {
-        
-        if !self.progress || self.progressInterval == 0.0 {
-            return nil
-        }
-        
-        return self.progressInterval
+    var progressSettingsAreValid: Bool {
+        return self.progress && self.progressInterval > 0.0
     }
     
-    var breakMessage: String? {
+    var validBreakOffset: NSTimeInterval? {
+        return (self.breakSettingsAreValid) ? self.breakInterval - self.breakLength : nil
+    }
+    
+    var validBreakEndOffset: NSTimeInterval? {
+        return (self.breakSettingsAreValid) ? self.breakInterval : nil
+    }
+    
+    var validBreakInterval: NSTimeInterval? {
+        return (self.breakSettingsAreValid) ? self.breakInterval : nil
+    }
+    
+    var validProgressInterval: NSTimeInterval? {
+        return (self.progressSettingsAreValid) ? self.progressInterval : nil
+    }
+    
+    //
+    // Text
+    //
+    
+    var breakMessage: String {
         let lengthText = Formatter.stringFromLength(self.breakLength)
         return "Time for a \(lengthText) break."
     }
     
-    var breakEndMessage: String? {
-        let lengthText = Formatter.stringFromLength(self.breakLength)
-        return "Time to continue \(self.name)."
+    var breakEndMessage: String {
+        //return "Time to continue \(self.name)."
+        return "Time to continue."
+    }
+    
+    func progressMessageForIndex(index: Int) -> String {
+        let lengthText = Formatter.stringFromLength(self.progressInterval * Double(index))
+        let activityName = self.name ?? "Untitled"
+        return "You've spent \(lengthText) on \(activityName)."
+    }
+    
+    //
+    // Debugging
+    //
+    
+    override var description: String {
+        return "<\(self.uniqueName)>"
+    }
+    
+    override func validateForDelete(error: NSErrorPointer) -> Bool {
+        println("Deleting \(self)")
+        return true
     }
 }

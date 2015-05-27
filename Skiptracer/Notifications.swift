@@ -28,15 +28,18 @@ private let PROGRESS_CATEGORY_TITLE  = "Progress"
 private let ACTIVITY_URI_KEY         = "ActivityURI"
 private let REPORT_URI_KEY           = "ReportURI"
 
+enum NoteType {
+    
+    case Break
+    case BreakEnd
+    case Progress
+}
+
 class Notifications: NSObject {
     
-    var breakStartAlerts = [UILocalNotification]()
-    var breakEndAlerts = [UILocalNotification]()
-    var progressAlerts = [UILocalNotification]()
-    
-    var lastBreakStartDate = NSDate.distantPast() as! NSDate
-    var lastBreakEndDate = NSDate.distantPast() as! NSDate
-    var lastProgressDate = NSDate.distantPast() as! NSDate
+    var nextBreakNoteIndex: Int? = nil
+    var nextBreakEndNoteIndex: Int? = nil
+    var nextProgressNoteIndex: Int? = nil
     
     var player: AVAudioPlayer?
     
@@ -176,58 +179,6 @@ class Notifications: NSObject {
         }
         
         return true
-    }
-    
-    func scheduleAllNotificationsForReport(report: Report) {
-        self.scheduleNextBreakNotificationForReport(report)
-        self.scheduleNextBreakEndNotificationForReport(report)
-        self.scheduleNextProgressNotificationForReport(report)
-    }
-    
-    func scheduleNextBreakNotificationForReport(report: Report) {
-        if let date = report.nextBreakDate {
-            if let message = report.activity?.breakMessage {
-                if let info = self.infoForReport(report) {
-                    self.scheduleNotification(
-                        date,
-                        title: BREAK_CATEGORY_TITLE,
-                        body: message,
-                        action: nil,
-                        category: BREAK_CATEGORY_ID,
-                        info: info)
-                }
-            }
-        }
-    }
-    
-    func scheduleNextBreakEndNotificationForReport(report: Report) {
-        if let date = report.nextBreakEndDate {
-            if let message = report.activity?.breakEndMessage {
-                if let info = self.infoForReport(report) {
-                    self.scheduleNotification(
-                        date,
-                        title: BREAK_END_CATEGORY_TITLE,
-                        body: message,
-                        action: nil,
-                        category: BREAK_END_CATEGORY_ID,
-                        info: info)
-                }
-            }
-        }
-    }
-    
-    func scheduleNextProgressNotificationForReport(report: Report) {
-        if let date = report.nextProgressDate {
-            if let info = self.infoForReport(report) {
-                self.scheduleNotification(
-                    date,
-                    title: PROGRESS_CATEGORY_TITLE,
-                    body: report.progressMessage,
-                    action: nil,
-                    category: PROGRESS_CATEGORY_ID,
-                    info: info)
-            }
-        }
     }
     
     func showBreakAlert() {
@@ -476,14 +427,120 @@ class Notifications: NSObject {
         }
     }
     
+    /*
     func cancelNotification(note: UILocalNotification) {
         self.app.cancelLocalNotification(note)
         println("Cancelled notification \(note)")
     }
+    */
     
     func cancelAllNotifications() {
+        
         self.app.cancelAllLocalNotifications()
         println("Cancelled all notifications")
+        
+        self.nextBreakNoteIndex = 0
+        self.nextBreakEndNoteIndex = 0
+        self.nextProgressNoteIndex = 0
+    }
+    
+    func scheduleAllNotificationsForReport(report: Report) {
+        
+        if let activity = report.activity {
+            
+            let now = NSDate()
+            var count = self.app.scheduledLocalNotifications.count
+            
+            self.nextBreakNoteIndex = safeMax(self.nextBreakNoteIndex, report.nextBreakIndex(now))
+            self.nextBreakEndNoteIndex = safeMax(self.nextBreakEndNoteIndex, report.nextBreakEndIndex(now))
+            self.nextProgressNoteIndex = safeMax(self.nextProgressNoteIndex, report.nextProgressIndex(now))
+            
+            assert(self.nextBreakNoteIndex >= 0)
+            assert(self.nextBreakEndNoteIndex >= 0)
+            
+            while count < 64 { // The docs state that 64 is the limit.
+                
+                var nextBreakDate = report.breakDateForIndex(self.nextBreakNoteIndex)
+                var nextBreakEndDate = report.breakEndDateForIndex(self.nextBreakEndNoteIndex)
+                var nextProgressDate = report.progressDateForIndex(self.nextProgressNoteIndex)
+                
+                let earliest = safeEarliestDate([nextBreakDate, nextBreakEndDate, nextProgressDate])
+                if earliest == nil { return }
+                
+                let progressMessage = activity.progressMessageForIndex(self.nextProgressNoteIndex!)
+                
+                if earliest == nextBreakDate {
+                    
+                    // Combine with a progress message, if necessary.
+                    var message = activity.breakMessage
+                    if nextBreakDate == nextProgressDate {
+                        message = progressMessage + "\n" + message
+                        self.nextProgressNoteIndex!++
+                    }
+                    
+                    self.scheduleBreakNotificationForReport(report, date: nextBreakDate!, message: message)
+                    println("Scheduled break note \(self.nextBreakNoteIndex!) for \(nextBreakDate!)")
+                    self.nextBreakNoteIndex!++
+                }
+                else if earliest == nextBreakEndDate {
+                    
+                    // Combine with a progress message, if necessary.
+                    var message = activity.breakEndMessage
+                    if nextBreakEndDate == nextProgressDate {
+                        message = progressMessage + "\n" + message
+                        self.nextProgressNoteIndex!++
+                    }
+                    
+                    self.scheduleBreakEndNotificationForReport(report, date: nextBreakEndDate!, message: message)
+                    println("Scheduled break end note \(self.nextBreakEndNoteIndex!) for \(nextBreakEndDate!)")
+                    self.nextBreakEndNoteIndex!++
+                }
+                else if earliest == nextProgressDate {
+                    
+                    self.scheduleProgressNotificationForReport(report, date: nextProgressDate!, message: progressMessage, index: self.nextProgressNoteIndex!)
+                    println("Scheduled progress note \(self.nextProgressNoteIndex!) for \(nextProgressDate!)")
+                    self.nextProgressNoteIndex!++
+                }
+                
+                count++
+            }
+        }
+    }
+    
+    func scheduleBreakNotificationForReport(report: Report, date: NSDate, message: String) {
+        if let info = self.infoForReport(report) {
+            self.scheduleNotification(
+                date,
+                title: BREAK_CATEGORY_TITLE,
+                body: message,
+                action: nil,
+                category: BREAK_CATEGORY_ID,
+                info: info)
+        }
+    }
+    
+    func scheduleBreakEndNotificationForReport(report: Report, date: NSDate, message: String) {
+        if let info = self.infoForReport(report) {
+            self.scheduleNotification(
+                date,
+                title: BREAK_END_CATEGORY_TITLE,
+                body: message,
+                action: nil,
+                category: BREAK_END_CATEGORY_ID,
+                info: info)
+        }
+    }
+    
+    func scheduleProgressNotificationForReport(report: Report, date: NSDate, message: String, index: Int) {
+        if let info = self.infoForReport(report) {
+            self.scheduleNotification(
+                date,
+                title: PROGRESS_CATEGORY_TITLE,
+                body: message,
+                action: nil,
+                category: PROGRESS_CATEGORY_ID,
+                info: info)
+        }
     }
     
     func scheduleNotification(date: NSDate, title: String, body: String? = nil, action: String? = nil, category: String? = nil, info: [NSObject: AnyObject]? = nil, badgeNumber: Int? = nil) {
@@ -505,6 +562,6 @@ class Notifications: NSObject {
         
         self.app.scheduleLocalNotification(note)
         
-        println("Scheduled notification \(note)")
+        //println("Scheduled notification \(note)")
     }
 }

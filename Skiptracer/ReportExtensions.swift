@@ -8,12 +8,14 @@
 
 import UIKit
 
-// Date and Time Extensions
-
 extension Report {
     
+    //
+    // Lengths
+    //
+    
     var length: Double {
-        return self.liveEndDate.timeIntervalSinceDate(self.startDate)
+        return max(0.0, self.liveEndDate.timeIntervalSinceDate(self.startDate))
     }
     
     var lengthWithoutBreaks: Double {
@@ -34,34 +36,106 @@ extension Report {
         }
     }
     
-    var nextBreakDate: NSDate? {
-        if let distance = self.activity?.breakDistance {
-            return self.startDate.dateByAddingTimeInterval(distance)
-        } else {
-            return nil
+    //
+    // Dates For Indices
+    //
+    
+    func breakDateForIndex(index: Int?) -> NSDate? {
+        
+        let offset = self.activity?.validBreakOffset
+        let interval = self.activity?.validBreakInterval
+        
+        if index != nil && offset != nil && interval != nil {
+            let length = Double(index!) * interval! + offset!
+            return self.startDate.dateByAddingTimeInterval(length)
         }
+        
+        return nil
     }
     
-    var nextBreakEndDate: NSDate? {
-        if let distance = self.activity?.breakInterval {
-            return self.startDate.dateByAddingTimeInterval(distance)
-        } else {
-            return nil
-        }
+    func breakEndDateForIndex(index: Int?) -> NSDate?  {
+        return self.breakDateForIndex(index)?.dateByAddingTimeInterval(self.activity!.breakLength)
     }
     
-    var nextProgressDate: NSDate? {
-        if let interval = self.activity?.progressDistance {
-            return self.startDate.dateByAddingTimeInterval(interval)
-        } else {
-            return nil
+    func progressDateForIndex(index: Int?) -> NSDate?  {
+        
+        let interval = self.activity?.validProgressInterval
+        
+        if index != nil && interval != nil {
+            return self.startDate.dateByAddingTimeInterval(Double(index! + 1) * interval!)
         }
+        
+        return nil
     }
-}
-
-// Text Extensions
-
-extension Report {
+    
+    //
+    // Next Indices
+    //
+    
+    func nextBreakIndex(date: NSDate) -> Int? {
+        
+        let offset = self.activity?.validBreakOffset
+        let interval = self.activity?.validBreakInterval
+        
+        if offset != nil && interval != nil {
+            let distance = max(0.0, date.timeIntervalSinceDate(self.startDate) - offset!)
+            return Int(floor(distance / interval!))
+        }
+        
+        return nil
+    }
+    
+    func nextBreakEndIndex(date: NSDate) -> Int? {
+        
+        let offset = self.activity?.validBreakEndOffset
+        let interval = self.activity?.validBreakInterval
+        
+        if offset != nil && interval != nil {
+            let distance = max(0.0, date.timeIntervalSinceDate(self.startDate) - offset!)
+            return Int(floor(distance / interval!))
+        }
+        
+        return nil
+    }
+    
+    func nextProgressIndex(date: NSDate) -> Int? {
+        
+        if let interval = self.activity?.validProgressInterval {
+            let distance = max(0.0, date.timeIntervalSinceDate(self.startDate))
+            return Int(floor(distance / interval))
+        }
+        
+        return nil
+    }
+    
+    //
+    // Next Dates
+    //
+    
+    func nextBreakDateAfter(date: NSDate) -> NSDate? {
+        if let index = self.nextBreakIndex(date) {
+            return self.breakDateForIndex(index)
+        }
+        return nil
+    }
+    
+    func nextBreakEndDateAfter(date: NSDate) -> NSDate? {
+        if let index = self.nextBreakEndIndex(date) {
+            return self.breakEndDateForIndex(index)
+        }
+        return nil
+    }
+    
+    func nextProgressDateAfter(date: NSDate) -> NSDate? {
+        if let index = self.nextProgressIndex(date) {
+            return self.progressDateForIndex(index)
+        }
+        return nil
+    }
+    
+    //
+    // Text
+    //
     
     var lengthText: String {
         return Formatter.stringFromLength(self.length)
@@ -94,9 +168,16 @@ extension Report {
         return Formatter.monthStringFromDate(self.startDate).uppercaseString
     }
     
-    var progressMessage: String {
-        let lengthText = Formatter.stringFromLength(self.length)
-        let activityName = self.activity?.name ?? "Untitled"
-        return "You've spent \(lengthText) on \(activityName)."
+    //
+    // Debugging
+    //
+    
+    override var description: String {
+        return "<\(self.uniqueName)>"
+    }
+    
+    override func validateForDelete(error: NSErrorPointer) -> Bool {
+        println("Deleting \(self)")
+        return true
     }
 }

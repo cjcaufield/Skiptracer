@@ -44,9 +44,14 @@ class ActivityViewController: SGExpandableTableViewController {
         ]
     }
     
-    override func switchDidChange(toggle: UISwitch) {
-        super.switchDidChange(toggle)
-        self.refreshData()
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        AppData.shared.registerCloudDataObserver(self)
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        AppData.shared.unregisterCloudDataObserver(self)
     }
     
     override func enabledStateForModelPath(modelPath: String?) -> Bool {
@@ -77,5 +82,14 @@ class ActivityViewController: SGExpandableTableViewController {
     override func textFieldDidEndEditing(textField: UITextField) {
         super.textFieldDidEndEditing(textField)
         self.refreshTitle()
+    }
+    
+    override func switchDidChange(toggle: UISwitch) {
+        super.switchDidChange(toggle)
+        self.refreshData()
+    }
+    
+    func cloudDataDidChange(note: NSNotification) {
+        self.refreshData()
     }
 }
