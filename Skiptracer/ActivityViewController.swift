@@ -86,7 +86,26 @@ class ActivityViewController: SGExpandableTableViewController {
     
     override func switchDidChange(toggle: UISwitch) {
         super.switchDidChange(toggle)
-        self.refreshData()
+        self.refreshData() // Update enabled/disabled state for other controls.
+        if self.activityIsCurrent {
+            Notifications.shared.rescheduleAllNotificationsForCurrentReport()
+        }
+    }
+    
+    override func datePickerDidChange(picker: UIDatePicker) {
+        super.datePickerDidChange(picker)
+        if self.activityIsCurrent {
+            Notifications.shared.rescheduleAllNotificationsForCurrentReport()
+        }
+    }
+    
+    var activityIsCurrent: Bool {
+        if let currentActivity = Notifications.shared.currentReport?.activity {
+            if self.activity == currentActivity {
+                return true
+            }
+        }
+        return false
     }
     
     func cloudDataDidChange(note: NSNotification) {

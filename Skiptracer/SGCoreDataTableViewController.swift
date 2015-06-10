@@ -56,8 +56,13 @@ class SGCoreDataTableViewController: UITableViewController, NSFetchedResultsCont
         return ""
     }
     
-    func createNewObject() -> AnyObject {
-        return NSEntityDescription.insertNewObjectForEntityForName(self.entityName, inManagedObjectContext: self.context!)
+    func createNewObject() -> NSManagedObject {
+        return NSEntityDescription.insertNewObjectForEntityForName(self.entityName, inManagedObjectContext: self.context!) as NSManagedObject
+    }
+    
+    func deleteObject(object: NSManagedObject) {
+        self.context!.deleteObject(object)
+        AppData.shared.save()
     }
     
     func prepareNewObject(object: AnyObject) {
@@ -80,7 +85,7 @@ class SGCoreDataTableViewController: UITableViewController, NSFetchedResultsCont
     
     @IBAction func add(sender: AnyObject?) {
         
-        let object: AnyObject = self.createNewObject()
+        let object = self.createNewObject()
         self.prepareNewObject(object)
         
         if self.autoSelectAddedObjects {
@@ -103,19 +108,19 @@ class SGCoreDataTableViewController: UITableViewController, NSFetchedResultsCont
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let sectionInfo = self.fetchController.sections![section] as! NSFetchedResultsSectionInfo
+        let sectionInfo = self.fetchController.sections![section] as NSFetchedResultsSectionInfo
         return sectionInfo.name
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let sectionInfo = self.fetchController.sections![section] as! NSFetchedResultsSectionInfo
+        let sectionInfo = self.fetchController.sections![section] as NSFetchedResultsSectionInfo
         return sectionInfo.numberOfObjects
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let object: AnyObject = self.fetchController.objectAtIndexPath(indexPath)
         let identifier = self.cellIdentifierForObject(object)
-        let cell = tableView.dequeueReusableCellWithIdentifier(identifier, forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(identifier, forIndexPath: indexPath) as UITableViewCell
         self.configureCell(cell, withObject: object)
         return cell
     }
@@ -132,9 +137,8 @@ class SGCoreDataTableViewController: UITableViewController, NSFetchedResultsCont
     
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
-            let object = self.fetchController.objectAtIndexPath(indexPath) as! NSManagedObject
-            self.context!.deleteObject(object)
-            AppData.shared.save()
+            let object = self.fetchController.objectAtIndexPath(indexPath) as NSManagedObject
+            self.deleteObject(object)
         }
     }
     
@@ -146,7 +150,7 @@ class SGCoreDataTableViewController: UITableViewController, NSFetchedResultsCont
             return self.fetchedResultsController!
         }
         
-        var request = NSFetchRequest(entityName: self.entityName)
+        let request = NSFetchRequest(entityName: self.entityName)
         self.configureRequest(request)
         
         self.fetchedResultsController = NSFetchedResultsController(fetchRequest: request,
@@ -179,7 +183,7 @@ class SGCoreDataTableViewController: UITableViewController, NSFetchedResultsCont
         }
     }
     
-    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: NSManagedObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         
         switch type {
             
@@ -198,9 +202,6 @@ class SGCoreDataTableViewController: UITableViewController, NSFetchedResultsCont
             case .Move:
                 self.tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
                 self.tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
-            
-            default:
-                return
         }
     }
     
@@ -232,8 +233,13 @@ class SGCoreDataTableViewController: UITableViewController, NSFetchedResultsCont
     }
     
     func refreshData() {
-        var error: NSError?
-        self.fetchController.performFetch(&error)
+        do {
+            try self.fetchController.performFetch()
+        }
+        catch let error as NSError {
+            assert(false)
+            print(error) // CJC: handle error better
+        }
         self.tableView.reloadData()
     }
     

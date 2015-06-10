@@ -145,14 +145,14 @@ class ReportViewController: SGExpandableTableViewController {
     
     override func configurePicker(picker: UIPickerView, forModelPath path: String?) {
         if let activity = self.report?.activity {
-            if let index = find(self.activities, activity) {
+            if let index = self.activities.indexOf(activity) {
                 picker.reloadAllComponents()
                 picker.selectRow(index, inComponent: 0, animated: false)
             }
         }
     }
     
-    override func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
+    override func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         if component != 0 {
             return ""
         } else {

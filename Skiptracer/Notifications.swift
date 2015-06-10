@@ -11,6 +11,7 @@ import AVFoundation
 
 private var _shared: Notifications? = nil
 
+private let MAX_NOTIFICATION_COUNT   = 64
 private let SKIP_ACTION_ID           = "Skip"
 private let SKIP_ACTION_TITLE        = "Skip"
 private let START_ACTION_ID          = "Start"
@@ -37,10 +38,10 @@ enum NoteType {
 
 class Notifications: NSObject {
     
-    var nextBreakNoteIndex: Int? = nil
-    var nextBreakEndNoteIndex: Int? = nil
-    var nextProgressNoteIndex: Int? = nil
-    
+    var nextBreakNoteIndex: Int?
+    var nextBreakEndNoteIndex: Int?
+    var nextProgressNoteIndex: Int?
+    var categories = Set<UIUserNotificationCategory>()
     var player: AVAudioPlayer?
     
     class var shared: Notifications {
@@ -101,16 +102,30 @@ class Notifications: NSObject {
         
         // Register notifications
         
-        let categories = Set<NSObject>([breakCategory, breakEndCategory, progressCategory])
-        let settings = UIUserNotificationSettings(forTypes: .Alert | .Sound, categories: categories)
+        self.categories = Set([breakCategory, breakEndCategory, progressCategory])
+        
+        let settings = UIUserNotificationSettings(forTypes: [.Alert, .Sound], categories: self.categories)
+        
         self.app.registerUserNotificationSettings(settings)
         
         // Sound
         
         let path = NSBundle.mainBundle().pathForResource("Sounds/Klink", ofType: "wav")!
         let url = NSURL(fileURLWithPath: path)
-        self.player = AVAudioPlayer(contentsOfURL: url, error: nil)
+        do {
+            self.player = try AVAudioPlayer(contentsOfURL: url)
+        } catch {
+            self.player = nil
+        }
         self.player?.prepareToPlay()
+    }
+    
+    func enableNotifications(value: Bool) {
+        if value {
+            self.scheduleAllNotificationsForCurrentReport()
+        } else {
+            self.cancelAllNotifications()
+        }
     }
     
     var app: UIApplication {
@@ -143,8 +158,17 @@ class Notifications: NSObject {
     }
     
     var shouldShowAlerts: Bool {
-        let types = self.app.currentUserNotificationSettings().types
-        return (types & .Alert) != nil
+        return self.shouldAllowAlertTypes(.Alert)
+    }
+    
+    var shouldPlaySounds: Bool {
+        return self.shouldAllowAlertTypes(.Sound)
+    }
+    
+    func shouldAllowAlertTypes(types: UIUserNotificationType) -> Bool {
+        let systemSetting = self.app.currentUserNotificationSettings()?.types.contains(types) ?? false
+        let dataSetting = AppData.shared.settings.enableAlerts
+        return systemSetting && dataSetting
     }
     
     func infoForReport(report: Report) -> [NSObject: AnyObject]? {
@@ -166,7 +190,7 @@ class Notifications: NSObject {
     func noteIsForCurrentReport(note: UILocalNotification) -> Bool {
         
         if self.currentUser?.currentReport == nil {
-            println("Skipping notification due to no current report.")
+            print("Skipping notification due to no current report.")
             return false
         }
         
@@ -174,7 +198,7 @@ class Notifications: NSObject {
         let currentReportID = self.currentReport?.objectIDString
         
         if noteReportID != currentReportID {
-            println("Skipping notification because of objectIDString mismatch.")
+            print("Skipping notification because of objectIDString mismatch.")
             return false
         }
         
@@ -195,10 +219,19 @@ class Notifications: NSObject {
             
             let alert = UIAlertController(title: BREAK_CATEGORY_TITLE, message: message, preferredStyle: .Alert)
             
-            alert.addAction(UIAlertAction(title: SKIP_ACTION_TITLE, style: .Default, handler: handleBreakAlertWithSkip))
-            alert.addAction(UIAlertAction(title: START_ACTION_TITLE, style: .Default, handler: handleBreakAlertWithStart))
+            alert.addAction(
+                UIAlertAction(
+                    title: SKIP_ACTION_TITLE,
+                    style: .Default,
+                    handler: { action in self.handleBreakAlertWithSkip() }))
             
-            println("Showing break alert view")
+            alert.addAction(
+                UIAlertAction(
+                    title: START_ACTION_TITLE,
+                    style: .Default,
+                    handler: { action in self.handleBreakAlertWithStart() }))
+            
+            print("Showing break alert view")
             viewController.presentViewController(alert, animated: true, completion: nil)
         }
     }
@@ -209,33 +242,48 @@ class Notifications: NSObject {
             
             let alert = UIAlertController(title: BREAK_END_CATEGORY_TITLE, message: message, preferredStyle: .Alert)
             
-            alert.addAction(UIAlertAction(title: SNOOZE_ACTION_TITLE, style: .Default, handler: handleBreakEndAlertWithSnooze))
-            alert.addAction(UIAlertAction(title: STOP_ACTION_TITLE, style: .Default, handler: handleBreakEndAlertWithStop))
-            
-            println("Showing break end alert view")
+            alert.addAction(
+                UIAlertAction(
+                    title: SNOOZE_ACTION_TITLE,
+                    style: .Default,
+                    handler: { action in self.handleBreakEndAlertWithSnooze() }))
+                
+            alert.addAction(
+                UIAlertAction(
+                    title: STOP_ACTION_TITLE,
+                    style: .Default,
+                    handler: { action in self.handleBreakEndAlertWithStop() }))
+                
+            print("Showing break end alert view")
             viewController.presentViewController(alert, animated: true, completion: nil)
         }
     }
     
     func playProgressSound() {
-        self.player?.play()
+        if self.shouldPlaySounds {
+            self.player?.play()
+        }
     }
     
     func showAlert(category: String) {
+        
+        if !self.shouldShowAlerts {
+            return
+        }
         
         let tabController = AppDelegate.shared.window!.rootViewController! as! UITabBarController
         let navigationController = tabController.selectedViewController as! UINavigationController
         let topController = navigationController.topViewController
         
-        if let report = self.currentReport {
+        if let report = self.currentReport, let controller = topController {
             
             switch category {
                 
             case BREAK_CATEGORY_ID:
-                self.showBreakAlert(topController, report: report)
+                self.showBreakAlert(controller, report: report)
                 
             case BREAK_END_CATEGORY_ID:
-                self.showBreakEndAlert(topController, report: report)
+                self.showBreakEndAlert(controller, report: report)
                 
             case PROGRESS_CATEGORY_ID:
                 self.playProgressSound()
@@ -259,22 +307,22 @@ class Notifications: NSObject {
             }
             
             if self.currentUser?.currentBreak != nil {
-                println("Skipping break begin notification due to break already in progress.")
+                print("Skipping break begin notification due to break already in progress.")
                 return
             }
             
             switch self.app.applicationState {
             
             case .Active:
-                println("handleBreakNotification (Active)")
+                print("handleBreakNotification (Active)")
                 self.showBreakAlert()
             
             case .Inactive:
-                println("handleBreakNotification (Inactive)")
+                print("handleBreakNotification (Inactive)")
                 self.handleBreakAlertWithStart()
             
             case .Background:
-                println("handleBreakNotification (Background)")
+                print("handleBreakNotification (Background)")
                 self.handleBreakAlertWithStart()
             }
         }
@@ -293,22 +341,22 @@ class Notifications: NSObject {
             }
             
             if self.currentUser?.currentBreak == nil {
-                println("Skipping break end notification due to no break in progress.")
+                print("Skipping break end notification due to no break in progress.")
                 return
             }
             
             switch self.app.applicationState {
                 
             case .Active:
-                println("handleBreakEndNotification (Active)")
+                print("handleBreakEndNotification (Active)")
                 self.showBreakEndAlert()
                 
             case .Inactive:
-                println("handleBreakEndNotification (Inactive)")
+                print("handleBreakEndNotification (Inactive)")
                 self.handleBreakEndAlertWithStop()
                 
             case .Background:
-                println("handleBreakEndNotification (Background)")
+                print("handleBreakEndNotification (Background)")
                 self.handleBreakEndAlertWithStop()
             }
         }
@@ -329,14 +377,14 @@ class Notifications: NSObject {
             switch self.app.applicationState {
                 
             case .Active:
-                println("handleProgressNotification (Active)")
+                print("handleProgressNotification (Active)")
                 self.playProgressSound()
                 
             case .Inactive:
-                println("handleProgressNotification (Inactive)")
+                print("handleProgressNotification (Inactive)")
                 
             case .Background:
-                println("handleProgressNotification (Background)")
+                print("handleProgressNotification (Background)")
             }
         }
     }
@@ -361,50 +409,36 @@ class Notifications: NSObject {
         default:
             break
         }
-    }
-    
-    func handleBreakAlertWithStart(alert: UIAlertAction!) {
-        self.handleBreakAlertWithStart()
-    }
-    
-    func handleBreakAlertWithSkip(alert: UIAlertAction!) {
-        self.handleBreakAlertWithSkip()
-    }
-    
-    func handleBreakEndAlertWithStop(alert: UIAlertAction!) {
-        self.handleBreakEndAlertWithStop()
-    }
-    
-    func handleBreakEndAlertWithSnooze(alert: UIAlertAction!) {
-        self.handleBreakEndAlertWithSnooze()
+        
+        self.scheduleAllNotificationsForCurrentReport()
     }
     
     func handleBreakAlertWithStart() {
-        println("handleBreakAlertWithStart")
+        print("handleBreakAlertWithStart")
         StatusController.shared.beginBreak()
         self.center.postNotificationName(AutoBreakWasStartedNotification, object: nil)
     }
     
     func handleBreakAlertWithSkip() {
-        println("handleBreakAlertWithSkip")
+        print("handleBreakAlertWithSkip")
         // Do nothing.
     }
     
     func handleBreakEndAlertWithStop() {
-        println("handleBreakAlertWithStop")
+        print("handleBreakAlertWithStop")
         StatusController.shared.endCurrentBreak()
         self.center.postNotificationName(AutoBreakWasEndedNotification, object: nil)
     }
     
     func handleBreakEndAlertWithSnooze() {
-        println("handleBreakAlertWithSnooze")
+        print("handleBreakAlertWithSnooze")
         //StatusController.shared.snoozeBreak()
         //self.center.postNotificationName(AutoBreakWasSnoozedNotification, object: nil)
     }
     
     func handleNotification(notification: UILocalNotification, action: String?) {
         
-        println("Handle action \(action) for notification \(notification)")
+        print("Handle action \(action) for notification \(notification)")
         
         if action == nil { return }
         
@@ -425,44 +459,56 @@ class Notifications: NSObject {
         default:
             break
         }
+        
+        self.scheduleAllNotificationsForCurrentReport()
     }
-    
-    /*
-    func cancelNotification(note: UILocalNotification) {
-        self.app.cancelLocalNotification(note)
-        println("Cancelled notification \(note)")
-    }
-    */
     
     func cancelAllNotifications() {
         
         self.app.cancelAllLocalNotifications()
-        println("Cancelled all notifications")
+        print("Cancelled all notifications")
         
         self.nextBreakNoteIndex = 0
         self.nextBreakEndNoteIndex = 0
         self.nextProgressNoteIndex = 0
     }
     
+    func rescheduleAllNotificationsForCurrentReport() {
+        self.cancelAllNotifications()
+        self.scheduleAllNotificationsForCurrentReport()
+    }
+    
+    func scheduleAllNotificationsForCurrentReport() {
+        if let report = self.currentReport {
+            self.scheduleAllNotificationsForReport(report)
+        } else {
+            self.cancelAllNotifications()
+        }
+    }
+    
     func scheduleAllNotificationsForReport(report: Report) {
+        
+        if !self.shouldShowAlerts {
+            return
+        }
         
         if let activity = report.activity {
             
             let now = NSDate()
-            var count = self.app.scheduledLocalNotifications.count
+            var count = self.app.scheduledLocalNotifications?.count ?? 0
             
-            self.nextBreakNoteIndex = safeMax(self.nextBreakNoteIndex, report.nextBreakIndex(now))
-            self.nextBreakEndNoteIndex = safeMax(self.nextBreakEndNoteIndex, report.nextBreakEndIndex(now))
-            self.nextProgressNoteIndex = safeMax(self.nextProgressNoteIndex, report.nextProgressIndex(now))
+            self.nextBreakNoteIndex = safeMax(self.nextBreakNoteIndex, b: report.nextBreakIndex(now))
+            self.nextBreakEndNoteIndex = safeMax(self.nextBreakEndNoteIndex, b: report.nextBreakEndIndex(now))
+            self.nextProgressNoteIndex = safeMax(self.nextProgressNoteIndex, b: report.nextProgressIndex(now))
             
             assert(self.nextBreakNoteIndex >= 0)
             assert(self.nextBreakEndNoteIndex >= 0)
             
-            while count < 64 { // The docs state that 64 is the limit.
+            while count < MAX_NOTIFICATION_COUNT { // The docs state that 64 is the limit.
                 
-                var nextBreakDate = report.breakDateForIndex(self.nextBreakNoteIndex)
-                var nextBreakEndDate = report.breakEndDateForIndex(self.nextBreakEndNoteIndex)
-                var nextProgressDate = report.progressDateForIndex(self.nextProgressNoteIndex)
+                let nextBreakDate = report.breakDateForIndex(self.nextBreakNoteIndex)
+                let nextBreakEndDate = report.breakEndDateForIndex(self.nextBreakEndNoteIndex)
+                let nextProgressDate = report.progressDateForIndex(self.nextProgressNoteIndex)
                 
                 let earliest = safeEarliestDate([nextBreakDate, nextBreakEndDate, nextProgressDate])
                 if earliest == nil { return }
@@ -479,7 +525,7 @@ class Notifications: NSObject {
                     }
                     
                     self.scheduleBreakNotificationForReport(report, date: nextBreakDate!, message: message)
-                    println("Scheduled break note \(self.nextBreakNoteIndex!) for \(nextBreakDate!)")
+                    print("Scheduled break note \(self.nextBreakNoteIndex!) for \(nextBreakDate!)")
                     self.nextBreakNoteIndex!++
                 }
                 else if earliest == nextBreakEndDate {
@@ -492,13 +538,13 @@ class Notifications: NSObject {
                     }
                     
                     self.scheduleBreakEndNotificationForReport(report, date: nextBreakEndDate!, message: message)
-                    println("Scheduled break end note \(self.nextBreakEndNoteIndex!) for \(nextBreakEndDate!)")
+                    print("Scheduled break end note \(self.nextBreakEndNoteIndex!) for \(nextBreakEndDate!)")
                     self.nextBreakEndNoteIndex!++
                 }
                 else if earliest == nextProgressDate {
                     
                     self.scheduleProgressNotificationForReport(report, date: nextProgressDate!, message: progressMessage, index: self.nextProgressNoteIndex!)
-                    println("Scheduled progress note \(self.nextProgressNoteIndex!) for \(nextProgressDate!)")
+                    print("Scheduled progress note \(self.nextProgressNoteIndex!) for \(nextProgressDate!)")
                     self.nextProgressNoteIndex!++
                 }
                 

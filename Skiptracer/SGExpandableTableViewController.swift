@@ -35,7 +35,7 @@ class SGCellData {
     }
 }
 
-class SGExpandableTableViewController: UITableViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UITextViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
+class SGExpandableTableViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
     
     var cellData = [[SGCellData]]()
     var revealedCellIndexPath: NSIndexPath?
@@ -90,12 +90,6 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
     func cellForControl(control: UIView) -> UITableViewCell? {
         return control.superview?.superview as? UITableViewCell
     }
-    
-    /*
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        return true
-    }
-    */
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
@@ -208,8 +202,8 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        var cellID = self.cellIdentifierForIndexPath(indexPath)
-        var cell = self.tableView.dequeueReusableCellWithIdentifier(cellID) as? UITableViewCell
+        let cellID = self.cellIdentifierForIndexPath(indexPath)
+        var cell = self.tableView.dequeueReusableCellWithIdentifier(cellID)
         if cell == nil {
             cell = UITableViewCell(style: .Value1, reuseIdentifier: cellID)
         }
@@ -543,7 +537,7 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
         if let path = self.revealedCellIndexPath {
             return path.previous()
         } else {
-            return self.tableView.indexPathForSelectedRow()
+            return self.tableView.indexPathForSelectedRow
         }
     }
     
@@ -551,7 +545,7 @@ class SGExpandableTableViewController: UITableViewController, UITableViewDelegat
         return self.revealedCellIndexPath != nil
     }
     
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
+    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return ""
     }
     

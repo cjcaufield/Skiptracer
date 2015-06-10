@@ -53,7 +53,7 @@ extension Activity {
     }
     
     func progressMessageForIndex(index: Int) -> String {
-        let lengthText = Formatter.stringFromLength(self.progressInterval * Double(index))
+        let lengthText = Formatter.stringFromLength(self.progressInterval * Double(index + 1))
         let activityName = self.name ?? "Untitled"
         return "You've spent \(lengthText) on \(activityName)."
     }
@@ -66,8 +66,7 @@ extension Activity {
         return "<\(self.uniqueName)>"
     }
     
-    override func validateForDelete(error: NSErrorPointer) -> Bool {
-        println("Deleting \(self)")
-        return true
+    override func validateForDelete() throws {
+        print("Deleting \(self)")
     }
 }

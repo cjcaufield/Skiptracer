@@ -108,7 +108,7 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         )
     }
     
-    func refreshData(#animated: Bool) {
+    func refreshData(animated animated: Bool) {
         
         let data = AppData.shared
         self.user = data.settings.currentUser
@@ -117,7 +117,7 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         var row = 0
         
         if let activity = self.user?.currentReport?.activity {
-            if let index = find(self.activities, activity) {
+            if let index = self.activities.indexOf(activity) {
                 row = index
             }
         }
@@ -126,7 +126,7 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         self.picker.selectRow(row, inComponent: 0, animated: false)
         
         self.updateClock()
-        self.updateClockControlStates(animated: animated)
+        self.updateClockControlStates(animated)
     }
     
     func switchActivity(newActivity: Activity) {
@@ -170,7 +170,7 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         self.updateClockControlStates()
     }
     
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
+    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         if component != 0 {
             return ""
         } else {

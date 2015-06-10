@@ -20,7 +20,7 @@ func removeNils<T>(array: [T?]) -> [T] {
 
 func safeCompare<T>(a: T?, b: T?, fn: (T, T) -> T) -> T? {
     let items = removeNils([a, b])
-    switch count(items) {
+    switch items.count {
     case 1: return items[0]
     case 2: return fn(a!, b!)
     default: return items.first
@@ -28,11 +28,11 @@ func safeCompare<T>(a: T?, b: T?, fn: (T, T) -> T) -> T? {
 }
 
 func safeMin<T: Comparable>(a: T?, b: T?) -> T? {
-    return safeCompare(a, b, min)
+    return safeCompare(a, b: b, fn: min)
 }
 
 func safeMax<T: Comparable>(a: T?, b: T?) -> T? {
-    return safeCompare(a, b, max)
+    return safeCompare(a, b: b, fn: max)
 }
 
 func safeEarliestDate(dates: [NSDate?]) -> NSDate? {

@@ -41,7 +41,7 @@ class ReportsViewController: SGCoreDataTableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.configureView() // Currently needed for refreshing if the activity name changes.
+        self.configureView() // Currently needed for refreshing if a report's activity name changes.
         Notifications.shared.registerUserObserver(self)
         Notifications.shared.registerBreakObserver(self)
     }
@@ -66,7 +66,7 @@ class ReportsViewController: SGCoreDataTableViewController {
     func updateClock() {
         
         let user = AppData.shared.settings.currentUser
-        var activeReports = [user?.currentReport, user?.currentBreak]
+        let activeReports = [user?.currentReport, user?.currentBreak]
         
         for report in activeReports {
             if report != nil && report!.active {
@@ -81,11 +81,11 @@ class ReportsViewController: SGCoreDataTableViewController {
     
     override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let header = view as! UITableViewHeaderFooterView
-        header.textLabel.textColor = UIColor(white: 0.6, alpha: 1.0)
-        header.textLabel.font = UIFont.systemFontOfSize(12.0)
-        header.textLabel.frame = header.frame
+        header.textLabel?.textColor = UIColor(white: 0.6, alpha: 1.0)
+        header.textLabel?.font = UIFont.systemFontOfSize(12.0)
+        header.textLabel?.frame = header.frame
         if self.centerHeaderText {
-            header.textLabel.textAlignment = NSTextAlignment.Center
+            header.textLabel?.textAlignment = NSTextAlignment.Center
         }
     }
     
@@ -93,11 +93,18 @@ class ReportsViewController: SGCoreDataTableViewController {
         return "Report"
     }
     
-    override func createNewObject() -> AnyObject {
+    override func createNewObject() -> NSManagedObject {
         let data = AppData.shared
         let user = data.settings.currentUser
         let isBreak = (self.parent != nil)
         return data.createReport(nil, parent: parent, user: user, active: false, isBreak: isBreak)
+    }
+    
+    override func deleteObject(object: NSManagedObject) {
+        if AppData.shared.settings.currentUser?.currentReport != nil {
+            Notifications.shared.cancelAllNotifications()
+        }
+        super.deleteObject(object)
     }
     
     override func configureCell(cell: UITableViewCell, withObject object: AnyObject) {
@@ -139,7 +146,7 @@ class ReportsViewController: SGCoreDataTableViewController {
         if report != nil && report!.isBreak {
             name = "Break"
             if let breaks = self.fetchController.fetchedObjects as? [Report] {
-                if let index = find(breaks, report!) {
+                if let index = breaks.indexOf(report!) {
                     name += " \(breaks.count - index)"
                 }
             }

@@ -68,6 +68,19 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		3B2344671B15BF910014D546 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		3B13610B1ABE6E1100E0CBDC /* Skiptracer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skiptracer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B2344471B129DF60014D546 /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
@@ -152,6 +165,7 @@
 				3B13610D1ABE6E1100E0CBDC /* Skiptracer */,
 				3BAA1B1F1AE025F500FF21BE /* Watch */,
 				3BAA1B0D1AE025F500FF21BE /* Watch Extension */,
+				3B2344681B15C0390014D546 /* External Projects */,
 				3B13610C1ABE6E1100E0CBDC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -189,6 +203,13 @@
 				3BC852AA1AE038D8009031C0 /* Plan.txt */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		3B2344681B15C0390014D546 /* External Projects */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "External Projects";
 			sourceTree = "<group>";
 		};
 		3B4013411AE9AAE20092F5CC /* Cells */ = {
@@ -324,6 +345,7 @@
 				3B1361071ABE6E1100E0CBDC /* Sources */,
 				3B1361081ABE6E1100E0CBDC /* Frameworks */,
 				3B1361091ABE6E1100E0CBDC /* Resources */,
+				3B2344671B15BF910014D546 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -373,7 +395,8 @@
 		3B1361031ABE6E1100E0CBDC /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Secret Geometry, Inc.";
 				TargetAttributes = {
 					3B13610A1ABE6E1100E0CBDC = {
@@ -562,6 +585,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -632,6 +656,7 @@
 				INFOPLIST_FILE = Skiptracer/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.secretgeometry.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Skiptracer;
 				PROVISIONING_PROFILE = "";
 			};
@@ -647,6 +672,7 @@
 				INFOPLIST_FILE = Skiptracer/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.secretgeometry.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Skiptracer;
 				PROVISIONING_PROFILE = "";
 			};
@@ -665,6 +691,7 @@
 				IBSC_MODULE = Skiptracer_WatchKit_Extension;
 				INFOPLIST_FILE = "Skiptracer WatchKit App/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				PRODUCT_BUNDLE_IDENTIFIER = com.secretgeometry.Skiptracer.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -682,6 +709,7 @@
 				IBSC_MODULE = Skiptracer_WatchKit_Extension;
 				INFOPLIST_FILE = "Skiptracer WatchKit App/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				PRODUCT_BUNDLE_IDENTIFIER = com.secretgeometry.Skiptracer.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -703,6 +731,7 @@
 				INFOPLIST_FILE = "Skiptracer WatchKit Extension/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.secretgeometry.Skiptracer.watchkitextension;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SKIP_INSTALL = YES;
 			};
@@ -719,6 +748,7 @@
 				INFOPLIST_FILE = "Skiptracer WatchKit Extension/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.secretgeometry.Skiptracer.watchkitextension;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SKIP_INSTALL = YES;
 			};

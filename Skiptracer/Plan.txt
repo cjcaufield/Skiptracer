@@ -1,15 +1,6 @@
 Plan
 ====
 
-0.3 Alerts
-----------
-
-Scheduling:
-* Schedule all 64 notifications whenever possible. (in handleNotification?)
-* Reschedule notifications (when changing break/progress settings).
-* Delete notifications (with activity/report delete, alerts on/off switch, other times?)
-* Alert on/off switch (should change settings switch too)
-
 0.X iCloud
 ----------
 
@@ -18,7 +9,7 @@ iCloud UI:
 * Always append (n) to names when creating, and editing, etc
 
 Browser:
-* Handle deleted objects by going back to root VC
+- Handle deleted objects by going back to root VC
 - Handle merged objects by refetching, or something
 
 Bugs:
@@ -31,17 +22,14 @@ Testing:
 - Test turning network on/off
 - Test turning iCloud on/off
 
-Other:
-- Cancel notifications for reports stopped on other devices.  HOW!?!
-
 0.X Workflow
 ------------
 
 Workflow:
 - Require/allow reports to be manually started?
 - Join previously deactivated reports if a new one is started quickly?
-- Add background breaks when app resumes? (keep a lastUpdate time)
-- Prevent reports from being deleted when their activity is deleted.
+- Add background breaks when app resumes? (is this even possible?  keep a lastUpdate time?)
+- Prevent reports from being deleted when their activity is deleted?
 
 Model:
 - Separate break and progress settings into separate objects.
@@ -50,6 +38,17 @@ Model:
 Now UI:
 - Now UI for atomic activities (checkbox, ding?)
 - Now UI for break countdown.
+
+0.X Sub-Activities
+------------------
+
+- Change UIPicker to a UITableView.
+- Double tap to start/stop.
+- Activity Type: Timed, Checkbox, Group.
+- Make group rows push a new NowView.
+- Shared footer with controls for pushed views.
+- Fix up deduplication logic.
+- Change activity parent.
 
 0.X UI Polish
 -------------
@@ -71,10 +70,20 @@ Now UI:
 0.X Graphs
 ----------
 
+- Combo control for chart type.
+- Pie chart for activities (all, or parent) for Day/Week/Month/Year/Life
+- Bar chart for " (use tableview rows for bars?)
+- Calendar chart (dots for day highlights only) (use tableview rows for weeks?)
+- Color picker algorithm
+- Color picker UI
+- Chart configuration UI
+- Link from Now (and Detail) views to relevant charts.
+
 0.X Mac
 -------
 
 - Menulet
+- App
 
 0.X Internationalization
 ------------------------

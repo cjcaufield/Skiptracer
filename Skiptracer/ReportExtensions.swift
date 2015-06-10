@@ -147,8 +147,8 @@ extension Report {
     
     var startAndEndText: String {
         
-        var startText = Formatter.clockStringFromDate(self.startDate)
-        var endText = Formatter.clockStringFromDate(self.liveEndDate)
+        let startText = Formatter.clockStringFromDate(self.startDate)
+        let endText = Formatter.clockStringFromDate(self.liveEndDate)
         
         /*
         if self.active {
@@ -176,8 +176,7 @@ extension Report {
         return "<\(self.uniqueName)>"
     }
     
-    override func validateForDelete(error: NSErrorPointer) -> Bool {
-        println("Deleting \(self)")
-        return true
+    override func validateForDelete() throws {
+        print("Deleting \(self)")
     }
 }

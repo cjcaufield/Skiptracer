@@ -20,8 +20,7 @@ class Settings: NSManagedObject {
     @NSManaged var uniqueName:     String
     @NSManaged var creationDate:   NSDate
     
-    override func validateForDelete(error: NSErrorPointer) -> Bool {
-        println("Deleting \(self)")
-        return true
+    override func validateForDelete() throws {
+        print("Deleting \(self)")
     }
 }

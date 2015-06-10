@@ -41,17 +41,17 @@ class SettingsViewController: SGExpandableTableViewController {
     
     override func createCellData() -> [[SGCellData]] {
         
-        var data = [
-            [ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "iCloud", modelPath: self.enableICloudKey) ],
+        let data = [
             [ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Alerts", modelPath: self.enableAlertsKey) ],
-            [ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Test User", modelPath: self.enableTestUserKey) ],
+            //[ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "iCloud", modelPath: self.enableICloudKey) ],
+            //[ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Test User", modelPath: self.enableTestUserKey) ],
             //[ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Include breaks in totals", modelPath: nil) ],
             //[ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Automatically start/stop breaks", modelPath: nil) ]
         ]
         
-        #if !DEBUG
-            data.removeLast()
-        #endif
+        //#if !DEBUG
+        //    data.removeLast()
+        //#endif
         
         return data
     }
@@ -65,12 +65,19 @@ class SettingsViewController: SGExpandableTableViewController {
         
         super.switchDidChange(toggle)
         
+        let data = AppData.shared
+        let notes = Notifications.shared
         let info = self.dataForControl(toggle)
+        
+        if info?.modelPath == self.enableAlertsKey {
+            
+            let wantsNotes = data.settings.enableAlerts
+            notes.enableNotifications(wantsNotes)
+        }
         
         if info?.modelPath == self.enableTestUserKey {
             
-            let data = AppData.shared
-            self.settings?.currentUser = toggle.on ? data.testUser : data.basicUser
+            data.settings.currentUser = (toggle.on) ? data.testUser : data.basicUser
             data.save()
             
             let center = NSNotificationCenter.defaultCenter()

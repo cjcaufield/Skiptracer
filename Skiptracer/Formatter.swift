@@ -20,7 +20,7 @@ class Formatter: NSObject {
         
         if lengthFormatter == nil {
             lengthFormatter = NSDateComponentsFormatter()
-            lengthFormatter?.allowedUnits = (.CalendarUnitDay | .CalendarUnitHour | .CalendarUnitMinute | .CalendarUnitSecond)
+            lengthFormatter?.allowedUnits = ([.Day, .Hour, .Minute, .Second])
             lengthFormatter?.maximumUnitCount = 2
             lengthFormatter?.unitsStyle = .Abbreviated
             lengthFormatter?.zeroFormattingBehavior = .DropAll

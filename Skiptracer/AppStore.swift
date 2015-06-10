@@ -44,8 +44,8 @@ class AppStore: NSObject, SKRequestDelegate, SKProductsRequestDelegate {
             return false
         }
         
-        var productIDs = Set<NSObject>(arrayLiteral: [productID])
-        var request = SKProductsRequest(productIdentifiers: productIDs)
+        let productIDs = Set<String>([productID])
+        let request = SKProductsRequest(productIdentifiers: productIDs)
         request.delegate = self
         request.start()
         return true
@@ -66,13 +66,13 @@ class AppStore: NSObject, SKRequestDelegate, SKProductsRequestDelegate {
         
         if response.products.count > 0 {
             
-            var product = response.products[0] as! SKProduct
+            let product = response.products[0] as SKProduct
             
             if product.productIdentifier == self.proUpgradeProductID {
                 
-                let title = product.localizedTitle
-                let description = product.localizedDescription
-                let price = product.price
+                //let title = product.localizedTitle
+                //let description = product.localizedDescription
+                //let price = product.price
                 
                 completePurchase(product)
             }
@@ -103,7 +103,7 @@ class AppStore: NSObject, SKRequestDelegate, SKProductsRequestDelegate {
         }
     }
     
-    func request(request: SKRequest!, didFailWithError error: NSError!) {
+    func request(request: SKRequest, didFailWithError error: NSError) {
         // handle error
     }
 }

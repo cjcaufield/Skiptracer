@@ -99,7 +99,7 @@ class Data: NSObject {
     
     func cloudStoreWillChange(note: NSNotification) {
         
-        println("Data.cloudStoreWillChange \(note)")
+        print("Data.cloudStoreWillChange \(note)")
         //UIApplication.sharedApplication().beginIgnoringInteractionEvents()
         
         if let context = self.context {
@@ -115,7 +115,7 @@ class Data: NSObject {
     
     func cloudStoreDidChange(note: NSNotification) {
         
-        println("Data.cloudStoreDidChange \(note)")
+        print("Data.cloudStoreDidChange \(note)")
         
         if let context = self.context {
             context.performBlockAndWait({
@@ -131,7 +131,7 @@ class Data: NSObject {
     
     func cloudStoreDidImport(note: NSNotification) {
         
-        println("Data.cloudStoreDidImport \(note)")
+        print("Data.cloudStoreDidImport \(note)")
         
         if let context = self.context {
             context.performBlockAndWait({
@@ -149,7 +149,8 @@ class Data: NSObject {
     
     func uniqueDeviceString() -> String {
         let idiomName = (UIDevice.currentDevice().userInterfaceIdiom == .Phone) ? "iPhone" : "iPad"
-        let deviceID = UIDevice.currentDevice().identifierForVendor.UUIDString
+        let deviceID = UIDevice.currentDevice().identifierForVendor?.UUIDString
+        assert(deviceID != nil)
         return "\(idiomName) - \(deviceID)"
     }
     
@@ -163,24 +164,33 @@ class Data: NSObject {
     
     func save() {
         
-        println("*** SAVING")
+        print("*** SAVING")
         
         if let context = self.context {
-            context.performBlockAndWait({
-                var error: NSError? = nil
-                if context.hasChanges && !context.save(&error) {
-                    // CJC: Replace this with something shipable.
-                    NSLog("Unresolved error \(error), \(error!.userInfo)")
-                    //abort()
-                }
-            })
+            if context.hasChanges {
+                context.performBlockAndWait({
+                    do {
+                        try context.save()
+                    }
+                    catch let error as NSError {
+                        // CJC: Replace this with something shipable.
+                        NSLog("Unresolved error \(error), \(error.userInfo)")
+                        //abort()
+                    }
+                    catch {
+                        // CJC: Replace this with something shipable.
+                        NSLog("Unknown")
+                        //abort()
+                    }
+                })
+            }
         }
             
-        println("*** SAVED")
+        print("*** SAVED")
     }
     
     func fetchRequest(entityName: String, predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor] = []) -> NSFetchRequest {
-        var request = NSFetchRequest(entityName: entityName)
+        let request = NSFetchRequest(entityName: entityName)
         request.predicate = predicate
         request.sortDescriptors = sortDescriptors
         return request
@@ -203,8 +213,15 @@ class Data: NSObject {
     }
     
     func fetchObjects(request: NSFetchRequest) -> [AnyObject] {
-        var error: NSError? = nil
-        let objects = self.context!.executeFetchRequest(request, error: &error)
+        let objects: [AnyObject]?
+        do {
+            objects = try self.context!.executeFetchRequest(request)
+        }
+        catch let error as NSError {
+            objects = nil
+            assert(false)
+            print(error) // CJC: handle error better
+        }
         return objects ?? []
     }
     
@@ -219,7 +236,7 @@ class Data: NSObject {
         var index = 1
         var existingObject: AnyObject? = nil
         
-        do {
+        repeat {
             let suffix = (index == 1) ? "" : " " + String(index)
             name = desiredName + suffix
             existingObject = self.fetchObjectNamed(name, entityName: entityName, predicate: predicate) as AnyObject?
@@ -269,7 +286,7 @@ class Data: NSObject {
     
     lazy var applicationDocumentsDirectory: NSURL = {
         let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
-        return urls[urls.count - 1] as! NSURL
+        return urls[urls.count - 1] as NSURL
     }()
     
     lazy var cloudDirectory: NSURL? = {
@@ -303,7 +320,12 @@ class Data: NSObject {
             }
         }
         
-        let store = coordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: options, error: &error)
+        let store: NSPersistentStore?
+        do {
+            store = try coordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: options)
+        } catch {
+            fatalError() // CJC: handle error better
+        }
         
         if store == nil {
             
@@ -321,7 +343,7 @@ class Data: NSObject {
             abort()
         }
         
-        println("Persistent store url is \(store!.URL)")
+        print("Persistent store url is \(store!.URL)")
         
         return coordinator
     }()

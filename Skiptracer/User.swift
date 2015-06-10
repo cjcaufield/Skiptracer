@@ -24,8 +24,7 @@ class User: NSManagedObject {
         return "<\(self.uniqueName)>"
     }
     
-    override func validateForDelete(error: NSErrorPointer) -> Bool {
-        println("Deleting \(self)")
-        return true
+    override func validateForDelete() throws {
+        print("Deleting \(self)")
     }
 }

@@ -1,4 +1,10 @@
 Bugs
 ====
 
+UI:
 - Lots of autolayout warnings.
+
+Alerts:
+- Breaks started from a delayed user reaction to a note don't send break end notes at the correct time.  Reschedule them.
+- Breaks started with a note, and then manually ended, will still send a break end notification.
+- Cancel notifications for reports stopped on other devices. (How?  Use Remote notifications?)

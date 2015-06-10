@@ -63,12 +63,10 @@ class StatusController: NSObject {
             // It's important to save before scheduling notifications referring to this report.
             // Otherwise, the report's ID will change on the next save, causing a mismatch.
             self.data.save()
-            
-            self.notes.scheduleAllNotificationsForReport(newReport!)
         }
         
         self.user?.currentReport = newReport
-        
+        self.notes.scheduleAllNotificationsForCurrentReport()
         self.data.save()
     }
     
@@ -106,7 +104,9 @@ class StatusController: NSObject {
     
     func endReport(report: Report, save: Bool = true) {
         
-        self.notes.cancelAllNotifications()
+        if !report.isBreak {
+            self.notes.cancelAllNotifications()
+        }
         
         report.endDate = NSDate()
         report.active = false

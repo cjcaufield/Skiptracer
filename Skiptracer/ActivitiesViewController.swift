@@ -32,7 +32,7 @@ class ActivitiesViewController: SGCoreDataTableViewController {
         return "Activity"
     }
     
-    override func createNewObject() -> AnyObject {
+    override func createNewObject() -> NSManagedObject {
         let data = AppData.shared
         let user = data.settings.currentUser
         let name = data.nextAvailableName("Untitled", entityName: "Activity", predicate: nil)
