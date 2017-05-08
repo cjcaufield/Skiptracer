@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import SecretKit
 
-class ReportsTableViewCell: CustomTableViewCell
+class ReportsTableViewCell: SGCustomTableViewCell
 {
     @IBOutlet weak var leftLabel: UILabel!
     @IBOutlet weak var middleLabel: UILabel!

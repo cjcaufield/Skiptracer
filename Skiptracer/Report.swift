@@ -15,9 +15,9 @@ class Report: NSManagedObject {
     @NSManaged var activity:     Activity?
     @NSManaged var parent:       Report?
     @NSManaged var uniqueName:   String
-    @NSManaged var creationDate: NSDate
-    @NSManaged var startDate:    NSDate
-    @NSManaged var endDate:      NSDate
+    @NSManaged var creationDate: Date
+    @NSManaged var startDate:    Date
+    @NSManaged var endDate:      Date
     @NSManaged var breaks:       NSSet
     @NSManaged var notes:        String?
     @NSManaged var active:       Bool

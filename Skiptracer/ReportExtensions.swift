@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SecretKit
 
 extension Report {
     
@@ -15,7 +16,7 @@ extension Report {
     //
     
     var length: Double {
-        return max(0.0, self.liveEndDate.timeIntervalSinceDate(self.startDate))
+        return max(0.0, self.liveEndDate.timeIntervalSince(self.startDate as Date))
     }
     
     var lengthWithoutBreaks: Double {
@@ -27,9 +28,9 @@ extension Report {
         return totalLength
     }
     
-    var liveEndDate: NSDate {
+    var liveEndDate: Date {
         get {
-            return self.active ? NSDate() : self.endDate
+            return self.active ? Date() : self.endDate as Date
         }
         set(date) {
             self.endDate = date
@@ -40,29 +41,29 @@ extension Report {
     // Dates For Indices
     //
     
-    func breakDateForIndex(index: Int?) -> NSDate? {
+    func breakDateForIndex(_ index: Int?) -> Date? {
         
         let offset = self.activity?.validBreakOffset
         let interval = self.activity?.validBreakInterval
         
         if index != nil && offset != nil && interval != nil {
             let length = Double(index!) * interval! + offset!
-            return self.startDate.dateByAddingTimeInterval(length)
+            return self.startDate.addingTimeInterval(length)
         }
         
         return nil
     }
     
-    func breakEndDateForIndex(index: Int?) -> NSDate?  {
-        return self.breakDateForIndex(index)?.dateByAddingTimeInterval(self.activity!.breakLength)
+    func breakEndDateForIndex(_ index: Int?) -> Date?  {
+        return self.breakDateForIndex(index)?.addingTimeInterval(self.activity!.breakLength)
     }
     
-    func progressDateForIndex(index: Int?) -> NSDate?  {
+    func progressDateForIndex(_ index: Int?) -> Date?  {
         
         let interval = self.activity?.validProgressInterval
         
         if index != nil && interval != nil {
-            return self.startDate.dateByAddingTimeInterval(Double(index! + 1) * interval!)
+            return self.startDate.addingTimeInterval(Double(index! + 1) * interval!)
         }
         
         return nil
@@ -72,36 +73,36 @@ extension Report {
     // Next Indices
     //
     
-    func nextBreakIndex(date: NSDate) -> Int? {
+    func nextBreakIndex(_ date: Date) -> Int? {
         
         let offset = self.activity?.validBreakOffset
         let interval = self.activity?.validBreakInterval
         
         if offset != nil && interval != nil {
-            let distance = max(0.0, date.timeIntervalSinceDate(self.startDate) - offset!)
+            let distance = max(0.0, date.timeIntervalSince(self.startDate) - offset!)
             return Int(floor(distance / interval!))
         }
         
         return nil
     }
     
-    func nextBreakEndIndex(date: NSDate) -> Int? {
+    func nextBreakEndIndex(_ date: Date) -> Int? {
         
         let offset = self.activity?.validBreakEndOffset
         let interval = self.activity?.validBreakInterval
         
         if offset != nil && interval != nil {
-            let distance = max(0.0, date.timeIntervalSinceDate(self.startDate) - offset!)
+            let distance = max(0.0, date.timeIntervalSince(self.startDate) - offset!)
             return Int(floor(distance / interval!))
         }
         
         return nil
     }
     
-    func nextProgressIndex(date: NSDate) -> Int? {
+    func nextProgressIndex(_ date: Date) -> Int? {
         
         if let interval = self.activity?.validProgressInterval {
-            let distance = max(0.0, date.timeIntervalSinceDate(self.startDate))
+            let distance = max(0.0, date.timeIntervalSince(self.startDate as Date))
             return Int(floor(distance / interval))
         }
         
@@ -112,21 +113,21 @@ extension Report {
     // Next Dates
     //
     
-    func nextBreakDateAfter(date: NSDate) -> NSDate? {
+    func nextBreakDateAfter(_ date: Date) -> Date? {
         if let index = self.nextBreakIndex(date) {
             return self.breakDateForIndex(index)
         }
         return nil
     }
     
-    func nextBreakEndDateAfter(date: NSDate) -> NSDate? {
+    func nextBreakEndDateAfter(_ date: Date) -> Date? {
         if let index = self.nextBreakEndIndex(date) {
             return self.breakEndDateForIndex(index)
         }
         return nil
     }
     
-    func nextProgressDateAfter(date: NSDate) -> NSDate? {
+    func nextProgressDateAfter(_ date: Date) -> Date? {
         if let index = self.nextProgressIndex(date) {
             return self.progressDateForIndex(index)
         }
@@ -138,17 +139,17 @@ extension Report {
     //
     
     var lengthText: String {
-        return Formatter.stringFromLength(self.length)
+        return SGFormatter.stringFromLength(self.length)
     }
     
     var lengthWithoutBreaksText: String {
-        return Formatter.stringFromLength(self.lengthWithoutBreaks)
+        return SGFormatter.stringFromLength(self.lengthWithoutBreaks)
     }
     
     var startAndEndText: String {
         
-        let startText = Formatter.clockStringFromDate(self.startDate)
-        let endText = Formatter.clockStringFromDate(self.liveEndDate)
+        let startText = SGFormatter.clockStringFromDate(self.startDate)
+        let endText = SGFormatter.clockStringFromDate(self.liveEndDate)
         
         /*
         if self.active {
@@ -161,11 +162,11 @@ extension Report {
     }
     
     var dayText: String {
-        return Formatter.dayStringFromDate(self.startDate).uppercaseString
+        return SGFormatter.dayStringFromDate(self.startDate).uppercased()
     }
     
     var monthText: String {
-        return Formatter.monthStringFromDate(self.startDate).uppercaseString
+        return SGFormatter.monthStringFromDate(self.startDate).uppercased()
     }
     
     //

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SecretKit
 
 extension Activity {
     
@@ -22,19 +23,19 @@ extension Activity {
         return self.progress && self.progressInterval > 0.0
     }
     
-    var validBreakOffset: NSTimeInterval? {
+    var validBreakOffset: TimeInterval? {
         return (self.breakSettingsAreValid) ? self.breakInterval - self.breakLength : nil
     }
     
-    var validBreakEndOffset: NSTimeInterval? {
+    var validBreakEndOffset: TimeInterval? {
         return (self.breakSettingsAreValid) ? self.breakInterval : nil
     }
     
-    var validBreakInterval: NSTimeInterval? {
+    var validBreakInterval: TimeInterval? {
         return (self.breakSettingsAreValid) ? self.breakInterval : nil
     }
     
-    var validProgressInterval: NSTimeInterval? {
+    var validProgressInterval: TimeInterval? {
         return (self.progressSettingsAreValid) ? self.progressInterval : nil
     }
     
@@ -43,7 +44,7 @@ extension Activity {
     //
     
     var breakMessage: String {
-        let lengthText = Formatter.stringFromLength(self.breakLength)
+        let lengthText = SGFormatter.stringFromLength(self.breakLength)
         return "Time for a \(lengthText) break."
     }
     
@@ -52,9 +53,9 @@ extension Activity {
         return "Time to continue."
     }
     
-    func progressMessageForIndex(index: Int) -> String {
-        let lengthText = Formatter.stringFromLength(self.progressInterval * Double(index + 1))
-        let activityName = self.name ?? "Untitled"
+    func progressMessageForIndex(_ index: Int) -> String {
+        let lengthText = SGFormatter.stringFromLength(self.progressInterval * Double(index + 1))
+        let activityName = self.name
         return "You've spent \(lengthText) on \(activityName)."
     }
     

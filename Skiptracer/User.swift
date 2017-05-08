@@ -13,7 +13,7 @@ class User: NSManagedObject {
 
     @NSManaged var name:          String?
     @NSManaged var uniqueName:    String
-    @NSManaged var creationDate:  NSDate
+    @NSManaged var creationDate:  Date
     @NSManaged var currentReport: Report?
     @NSManaged var currentBreak:  Report?
     @NSManaged var activities:    NSSet

@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "F2F23313AAC3EB7A96557209B949883AF52234E6",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "F2F23313AAC3EB7A96557209B949883AF52234E6" : 0,
+    "0F6647BEB5A0497B75783AC191FDD3CE575D32AC" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "67FA0D8B-E472-433A-AA3C-489A98A41198",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "F2F23313AAC3EB7A96557209B949883AF52234E6" : "Skiptracer\/",
+    "0F6647BEB5A0497B75783AC191FDD3CE575D32AC" : "SecretKit\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Skiptracer",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Skiptracer.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/cjcaufield\/SecretKit.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "0F6647BEB5A0497B75783AC191FDD3CE575D32AC"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/cjcaufield\/Skiptracer.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "F2F23313AAC3EB7A96557209B949883AF52234E6"
+    }
+  ]
+}

@@ -35,7 +35,7 @@ class StatusController: NSObject {
         return self.data.settings.currentUser
     }
     
-    func switchActivity(newActivity: Activity) {
+    func switchActivity(_ newActivity: Activity) {
         
         if self.user?.currentBreak != nil {
             self.endCurrentBreak()
@@ -102,20 +102,22 @@ class StatusController: NSObject {
         self.data.save()
     }
     
-    func endReport(report: Report, save: Bool = true) {
+    func endReport(_ report: Report, save: Bool = true) {
         
         if !report.isBreak {
             self.notes.cancelAllNotifications()
         }
         
-        report.endDate = NSDate()
+        report.endDate = Date()
         report.active = false
         
-        //let atomic = report.activity?.atomic ?? false
-        //
-        //if !atomic && report.length < MINIMAL_DURATION {
-        //    self.data.context?.deleteObject(report)
-        //}
+        /*
+        let timed = (report.activity?.type == ActivityType.Timer.rawValue)
+        
+        if timed && report.length < MINIMAL_DURATION {
+            self.data.context?.deleteObject(report)
+        }
+        */
         
         if save {
             self.data.save()

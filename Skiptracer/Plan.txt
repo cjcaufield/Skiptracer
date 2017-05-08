@@ -1,12 +1,64 @@
 Plan
 ====
 
+0.X Workflow
+------------
+
+Atomic:
+* Implement atomic activities (don't set the active flag)
+
+Relationships:
+* Activity detail "move-to-parent". (Push a new Activity VC, but with a "selectionMode" property set)
+* Report detail "select-activity". Activity switcher to use pushed VC, just like "move-to-parent"
+
+Table:
+- Move controls from Now view into footer.
+- Double tap to start/stop.
+- Make group rows push to a new Activity VC.
+- Share footer between views.  HOW?
+- Add UI for atomic activities (checkbox, ding?)
+
+0.X iOS9
+--------
+
+- System notification confirmation appears every time.
+- Alerts not appearing.
+
+0.X UI Polish
+-------------
+
+- Now UI for break countdown.
+- White on dark grey theme (like OSX notification center)
+- Today widget?
+- Device rotation?
+- iPad SplitViewControllers?
+
+0.X Graphs
+----------
+
+- Combo control for chart type.
+- Pie chart for activities (all, or parent) for Day/Week/Month/Year/Life
+- Bar chart for " (use tableview rows for bars?)
+- Calendar chart (dots for day highlights only) (use tableview rows for weeks?)
+- Color picker algorithm
+- Color picker UI
+- Chart configuration UI
+- Link from Now (and Detail) views to relevant charts.
+
 0.X iCloud
 ----------
 
 iCloud UI:
-* Use iCloud switch (should change settings switch too)
-* Always append (n) to names when creating, and editing, etc
+- Use iCloud switch? (should change settings switch too)
+
+Break/Progress:
+- Separate break and progress settings into separate objects.
+- Implement deduplication logic for separate break and progress settings.
+
+Activities:
+- Implement deduplication logic for sub-activities.
+- Handle case where an activity moves to a new parent in merge/deduplication.
+- Prevent reports from being deleted when their activity is deleted?
 
 Browser:
 - Handle deleted objects by going back to root VC
@@ -22,41 +74,11 @@ Testing:
 - Test turning network on/off
 - Test turning iCloud on/off
 
-0.X Workflow
-------------
+0.X Mac
+-------
 
-Workflow:
-- Require/allow reports to be manually started?
-- Join previously deactivated reports if a new one is started quickly?
-- Add background breaks when app resumes? (is this even possible?  keep a lastUpdate time?)
-- Prevent reports from being deleted when their activity is deleted?
-
-Model:
-- Separate break and progress settings into separate objects.
-- Implement atomic activities
-
-Now UI:
-- Now UI for atomic activities (checkbox, ding?)
-- Now UI for break countdown.
-
-0.X Sub-Activities
-------------------
-
-- Change UIPicker to a UITableView.
-- Double tap to start/stop.
-- Activity Type: Timed, Checkbox, Group.
-- Make group rows push a new NowView.
-- Shared footer with controls for pushed views.
-- Fix up deduplication logic.
-- Change activity parent.
-
-0.X UI Polish
--------------
-
-- iPad SplitViewControllers
-- Device rotation
-- White on dark grey theme (like OSX notification center)
-- Today widget
+- Menulet
+- App
 
 0.X In-App Purchases
 --------------------
@@ -66,24 +88,6 @@ Now UI:
 
 0.X iWatch
 ----------
-
-0.X Graphs
-----------
-
-- Combo control for chart type.
-- Pie chart for activities (all, or parent) for Day/Week/Month/Year/Life
-- Bar chart for " (use tableview rows for bars?)
-- Calendar chart (dots for day highlights only) (use tableview rows for weeks?)
-- Color picker algorithm
-- Color picker UI
-- Chart configuration UI
-- Link from Now (and Detail) views to relevant charts.
-
-0.X Mac
--------
-
-- Menulet
-- App
 
 0.X Internationalization
 ------------------------
@@ -100,3 +104,8 @@ Now UI:
 - Customizable sounds for breaks and progress
 - User images for activities
 - Replace Now VC with a TableVC and footer?
+
+0.X One Day
+-----------
+
+- Add background breaks when app resumes? (is this even possible?  keep a lastUpdate time?)

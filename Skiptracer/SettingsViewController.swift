@@ -7,10 +7,9 @@
 //
 
 import UIKit
+import SecretKit
 
-private var context = 0
-
-class SettingsViewController: SGExpandableTableViewController {
+class SettingsViewController: SGDynamicTableViewController {
     
     var settings: Settings? {
         return self.object as? Settings
@@ -29,31 +28,48 @@ class SettingsViewController: SGExpandableTableViewController {
         self.refreshData()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         AppData.shared.registerCloudDataObserver(self)
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         AppData.shared.unregisterCloudDataObserver(self)
     }
     
-    override func createCellData() -> [[SGCellData]] {
-        
-        let data = [
-            [ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Alerts", modelPath: self.enableAlertsKey) ],
-            //[ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "iCloud", modelPath: self.enableICloudKey) ],
-            //[ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Test User", modelPath: self.enableTestUserKey) ],
-            //[ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Include breaks in totals", modelPath: nil) ],
-            //[ SGCellData(cellIdentifier: SWITCH_CELL_ID, title: "Automatically start/stop breaks", modelPath: nil) ]
-        ]
-        
-        //#if !DEBUG
-        //    data.removeLast()
-        //#endif
-        
-        return data
+    override func makeTableData() -> SGTableData {
+        return (
+            SGTableData(
+                SGSectionData(
+                    SGRowData(
+                        cellIdentifier: SWITCH_CELL_ID,
+                        title: "Alerts",
+                        modelPath: self.enableAlertsKey
+                    ),
+                    SGRowData(
+                        cellIdentifier: SWITCH_CELL_ID,
+                        title: "iCloud",
+                        modelPath: self.enableICloudKey
+                    ),
+                    SGRowData(
+                        cellIdentifier: SWITCH_CELL_ID,
+                        title: "Test User",
+                        modelPath: self.enableTestUserKey
+                    ),
+                    SGRowData(
+                        cellIdentifier: SWITCH_CELL_ID,
+                        title: "Include breaks in totals",
+                        modelPath: nil
+                    ),
+                    SGRowData(
+                        cellIdentifier: SWITCH_CELL_ID,
+                        title: "Automatically start/stop breaks",
+                        modelPath: nil
+                    )
+                )
+            )
+        )
     }
     
     override func refreshData() {
@@ -61,31 +77,31 @@ class SettingsViewController: SGExpandableTableViewController {
         super.refreshData()
     }
     
-    override func switchDidChange(toggle: UISwitch) {
+    override func dataModelDidChange(_ data: SGRowData) {
         
-        super.switchDidChange(toggle)
-        
-        let data = AppData.shared
         let notes = Notifications.shared
-        let info = self.dataForControl(toggle)
+        let settings = AppData.shared.settings
         
-        if info?.modelPath == self.enableAlertsKey {
+        if let path = data.modelPath {
             
-            let wantsNotes = data.settings.enableAlerts
-            notes.enableNotifications(wantsNotes)
-        }
-        
-        if info?.modelPath == self.enableTestUserKey {
-            
-            data.settings.currentUser = (toggle.on) ? data.testUser : data.basicUser
-            data.save()
-            
-            let center = NSNotificationCenter.defaultCenter()
-            center.postNotificationName(UserWasSwitchedNotification, object: nil)
+            switch path {
+                
+            case self.enableAlertsKey:
+                let wantsNotes = AppData.shared.settings.enableAlerts
+                notes.enableNotifications(wantsNotes)
+                
+            case self.enableTestUserKey:
+                settings?.currentUser = (settings?.enableTestUser)! ? settings?.testUser : settings?.basicUser
+                AppData.shared.save()
+                NotificationCenter.default.post(name: Notification.Name(rawValue: UserWasSwitchedNotification), object: nil)
+                
+            default:
+                break
+            }
         }
     }
     
-    func cloudDataDidChange(note: NSNotification) {
+    func cloudDataDidChange(_ note: Notification) {
         self.refreshData()
     }
 }

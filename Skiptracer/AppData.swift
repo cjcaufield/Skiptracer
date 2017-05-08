@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import SecretKit
 
 private var _shared: AppData? = nil
 
@@ -17,11 +18,9 @@ private var activityIndex = 0
 private var reportIndex = 0
 private var breakIndex = 0
 
-class AppData: Data {
+class AppData: SGData {
     
     var settings:  Settings!
-    var basicUser: User!
-    var testUser:  User!
     
     override class var shared: AppData {
         if _shared == nil {
@@ -31,7 +30,7 @@ class AppData: Data {
     }
     
     init() {
-        super.init(name: "Skiptracer", useCloud: true)
+        super.init(name: "Skiptracer", useCloud: false)
         assert(_shared == nil)
         _shared = self
     }
@@ -41,34 +40,31 @@ class AppData: Data {
         print("AppData.refreshProperties")
         
         self.settings  = self.fetchSettings().first ?? self.createSettings()
-        self.basicUser = self.fetchBasicUsers().first ?? self.createBasicUser()
-        self.testUser  = self.fetchTestUsers().first ?? self.createTestUser()
+        self.settings.basicUser = self.fetchBasicUsers().first ?? self.createBasicUser()
+        self.settings.testUser  = self.fetchTestUsers().first ?? self.createTestUser()
         
-        self.settings.basicUser = self.basicUser
-        self.settings.testUser = self.testUser
+        print("*** SETTING USER - \(self.settings.basicUser.uniqueName)")
         
-        print("*** SETTING USER - \(self.basicUser.uniqueName)")
+        self.settings.currentUser = self.settings.enableTestUser ? self.settings.testUser : self.settings.basicUser
         
-        self.settings.currentUser = self.settings.enableTestUser ? self.testUser : self.basicUser
-        
-        for user in [self.basicUser, self.testUser] {
+        for user in [self.settings.basicUser, self.settings.testUser] {
             
-            if user.activities.count == 0 {
+            if user?.activities.count == 0 {
                 
                 let relaxing = self.createActivity("Relaxing", user: user)
                 relaxing.permanent = true
                 relaxing.silent = true
                 
-                self.createActivity("Working", user: user)
-                self.createActivity("Playing", user: user)
+                let _ = self.createActivity("Working", user: user)
+                let _ = self.createActivity("Playing", user: user)
             }
         }
         
-        self.refreshCurrentReportAndBreak(self.basicUser)
-        self.refreshCurrentReportAndBreak(self.testUser)
+        self.refreshCurrentReportAndBreak(self.settings.basicUser)
+        self.refreshCurrentReportAndBreak(self.settings.testUser)
     }
     
-    func refreshCurrentReportAndBreak(user: User) {
+    func refreshCurrentReportAndBreak(_ user: User) {
         
         print("AppData.refreshCurrentReportAndBreak")
         
@@ -133,23 +129,25 @@ class AppData: Data {
         
         let settings = self.insertNewObject("Settings") as! Settings
         
-        let now = NSDate()
+        let now = Date()
         settings.creationDate = now
-        settings.uniqueName = "Settings - \(settingsIndex++) - \(now) - \(self.uniqueDeviceString())"
+        settings.uniqueName = "Settings - \(settingsIndex) - \(now) - \(self.uniqueDeviceString())"
+        settingsIndex += 1
         
         print("*** CREATED SETTINGS - \(settings.uniqueName)")
         return settings
     }
     
-    func createUser(testUser: Bool = false) -> User {
+    func createUser(_ testUser: Bool = false) -> User {
         
         let user = self.insertNewObject("User") as! User
         user.isTestUser = testUser
         
-        let now = NSDate()
+        let now = Date()
         let typeName = (testUser) ? "Test" : "Basic"
-        user.creationDate = NSDate()
-        user.uniqueName = "User - \(userIndex++) - \(typeName) - \(now) - \(self.uniqueDeviceString())"
+        user.creationDate = Date()
+        user.uniqueName = "User - \(userIndex) - \(typeName) - \(now) - \(self.uniqueDeviceString())"
+        userIndex += 1
         
         
         print("*** CREATED USER - \(user.uniqueName)")
@@ -164,7 +162,7 @@ class AppData: Data {
         return self.createUser(true)
     }
     
-    func createActivity(name: String?, user: User?) -> Activity {
+    func createActivity(_ name: String?, user: User?) -> Activity {
         
         let activity = self.insertNewObject("Activity") as! Activity
         if name != nil {
@@ -173,42 +171,45 @@ class AppData: Data {
         
         activity.user = user
         
-        let now = NSDate()
+        let now = Date()
         activity.creationDate = now
-        activity.uniqueName = "Activity - \(activityIndex++) - \(now) - \(self.uniqueDeviceString())"
+        activity.uniqueName = "Activity - \(activityIndex) - \(now) - \(self.uniqueDeviceString())"
+        activityIndex += 1
         
         print("*** CREATED ACTIVITY - \(activity.uniqueName)")
         return activity
     }
     
-    func createReport(activity: Activity?, parent: Report?, user: User?, active: Bool, isBreak: Bool) -> Report {
+    func createReport(_ activity: Activity?, parent: Report?, user: User?, active: Bool, isBreak: Bool) -> Report {
         
         let report = self.insertNewObject("Report") as! Report
         report.active = active
         report.isBreak = isBreak
         report.parent = parent
         report.activity = activity
-        report.startDate = NSDate()
-        report.endDate = NSDate()
+        report.startDate = Date()
+        report.endDate = Date()
         report.user = user
         
-        let now = NSDate()
+        let now = Date()
         report.creationDate = now
         if isBreak {
-            report.uniqueName = "Break - \(breakIndex++) - \(now) - \(self.uniqueDeviceString())"
+            report.uniqueName = "Break - \(breakIndex) - \(now) - \(self.uniqueDeviceString())"
+            breakIndex += 1
         } else {
-            report.uniqueName = "Report - \(reportIndex++) - \(now) - \(self.uniqueDeviceString())"
+            report.uniqueName = "Report - \(reportIndex) - \(now) - \(self.uniqueDeviceString())"
+            reportIndex += 1
         }
         
         print("*** CREATED REPORT - \(report.uniqueName)")
         return report
     }
     
-    func createReport(activity: Activity?, user: User?, active: Bool) -> Report {
+    func createReport(_ activity: Activity?, user: User?, active: Bool) -> Report {
         return createReport(activity, parent: nil, user: user, active: active, isBreak: false)
     }
     
-    func createBreak(parent: Report?, user: User?, active: Bool) -> Report {
+    func createBreak(_ parent: Report?, user: User?, active: Bool) -> Report {
         return createReport(nil, parent: parent, user: user, active: active, isBreak: true)
     }
     
@@ -219,8 +220,8 @@ class AppData: Data {
         return self.fetchObjects("Settings", predicate: nil, sortDescriptors: sortDescriptors) as! [Settings]
     }
     
-    func fetchUsers(testUser: Bool = false) -> [User] {
-        let predicate = NSPredicate(format: "isTestUser == %d", Int(testUser))
+    func fetchUsers(_ testUser: Bool = false) -> [User] {
+        let predicate = NSPredicate(format: "isTestUser == %d", testUser ? 1 : 0)
         let sortDescriptors = self.userSortDescriptors()
         return self.fetchObjects("User", predicate: predicate, sortDescriptors: sortDescriptors) as! [User]
     }
@@ -233,136 +234,136 @@ class AppData: Data {
         return self.fetchUsers(true)
     }
     
-    func fetchOrderedActivities(user: User) -> [Activity] {
+    func fetchOrderedActivities(_ user: User) -> [Activity] {
         let request = self.orderedActivitiesRequest(user)
         return self.fetchObjects(request) as! [Activity]
     }
     
-    func fetchOrganizedActivities(user: User) -> [Activity] {
+    func fetchOrganizedActivities(_ user: User) -> [Activity] {
         let request = self.organizedActivitiesRequest(user)
         return self.fetchObjects(request) as! [Activity]
     }
     
-    func fetchOrderedReportsForParent(parent: Report?, user: User) -> [Report] {
+    func fetchOrderedReportsForParent(_ parent: Report?, user: User) -> [Report] {
         let request = self.orderedReportsRequestForParent(parent, user: user)
         return self.fetchObjects(request) as! [Report]
     }
     
-    func fetchOrganizedReportsForParent(parent: Report?, user: User) -> [Report] {
+    func fetchOrganizedReportsForParent(_ parent: Report?, user: User) -> [Report] {
         let request = self.organizedReportsRequestForParent(parent, user: user)
         return self.fetchObjects(request) as! [Report]
     }
     
-    func fetchOrderedReportsForActivity(activity: Activity?, user: User) -> [Report] {
+    func fetchOrderedReportsForActivity(_ activity: Activity?, user: User) -> [Report] {
         let request = self.orderedReportsRequestForActivity(activity, user: user)
         return self.fetchObjects(request) as! [Report]
     }
     
-    func fetchOrganizedReportsForActivity(activity: Activity?, user: User) -> [Report] {
+    func fetchOrganizedReportsForActivity(_ activity: Activity?, user: User) -> [Report] {
         let request = self.organizedReportsRequestForActivity(activity, user: user)
         return self.fetchObjects(request) as! [Report]
     }
     
-    func fetchActiveReports(user: User) -> [Report] {
+    func fetchActiveReports(_ user: User) -> [Report] {
         let request = self.orderedActiveReportsRequest(user)
         return self.fetchObjects(request) as! [Report]
     }
     
-    func fetchActiveBreaks(user: User) -> [Report] {
+    func fetchActiveBreaks(_ user: User) -> [Report] {
         let request = self.orderedActiveBreaksRequest(user)
         return self.fetchObjects(request) as! [Report]
     }
     
     // MARK: - Fetch Requests
     
-    func orderedActivitiesRequest(user: User) -> NSFetchRequest {
+    func orderedActivitiesRequest(_ user: User) -> NSFetchRequest<NSFetchRequestResult> {
         let predicate = self.userPredicate(user)
         let sortDescriptors = self.activitySortDescriptors()
         return self.activitiesRequest(predicate, sortDescriptors: sortDescriptors)
     }
     
-    func organizedActivitiesRequest(user: User) -> NSFetchRequest {
+    func organizedActivitiesRequest(_ user: User) -> NSFetchRequest<NSFetchRequestResult> {
         let predicate = self.userPredicate(user)
         let sortDescriptors = self.uniqueNameSortDescriptors()
         return self.activitiesRequest(predicate, sortDescriptors: sortDescriptors)
     }
     
-    func activitiesRequest(predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor] = []) -> NSFetchRequest {
+    func activitiesRequest(_ predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor] = []) -> NSFetchRequest<NSFetchRequestResult> {
         return self.fetchRequest("Activity", predicate: predicate, sortDescriptors: sortDescriptors)
     }
     
-    func orderedReportsRequestForParent(parent: Report?, user: User) -> NSFetchRequest {
+    func orderedReportsRequestForParent(_ parent: Report?, user: User) -> NSFetchRequest<NSFetchRequestResult> {
         let predicate = self.reportsPredicateForParent(parent, user: user)
         let sortDescriptors = self.reportSortDescriptors()
         return self.reportsRequest(predicate, sortDescriptors: sortDescriptors)
     }
     
-    func organizedReportsRequestForParent(parent: Report?, user: User) -> NSFetchRequest {
+    func organizedReportsRequestForParent(_ parent: Report?, user: User) -> NSFetchRequest<NSFetchRequestResult> {
         let predicate = self.reportsPredicateForParent(parent, user: user)
         let sortDescriptors = self.uniqueNameSortDescriptors()
         return self.reportsRequest(predicate, sortDescriptors: sortDescriptors)
     }
     
-    func orderedReportsRequestForActivity(activity: Activity?, user: User) -> NSFetchRequest {
+    func orderedReportsRequestForActivity(_ activity: Activity?, user: User) -> NSFetchRequest<NSFetchRequestResult> {
         let predicate = self.reportsPredicateForActivity(activity, user: user)
         let sortDescriptors = self.reportSortDescriptors()
         return self.reportsRequest(predicate, sortDescriptors: sortDescriptors)
     }
     
-    func organizedReportsRequestForActivity(activity: Activity?, user: User) -> NSFetchRequest {
+    func organizedReportsRequestForActivity(_ activity: Activity?, user: User) -> NSFetchRequest<NSFetchRequestResult> {
         let predicate = self.reportsPredicateForActivity(activity, user: user)
         let sortDescriptors = self.uniqueNameSortDescriptors()
         return self.reportsRequest(predicate, sortDescriptors: sortDescriptors)
     }
     
-    func orderedActiveReportsRequest(user: User) -> NSFetchRequest {
+    func orderedActiveReportsRequest(_ user: User) -> NSFetchRequest<NSFetchRequestResult> {
         let predicate = self.activeReportsPredicate(user)
         let sortDescriptors = self.reportSortDescriptors()
         return self.reportsRequest(predicate, sortDescriptors: sortDescriptors)
     }
     
-    func orderedActiveBreaksRequest(user: User) -> NSFetchRequest {
+    func orderedActiveBreaksRequest(_ user: User) -> NSFetchRequest<NSFetchRequestResult> {
         let predicate = self.activeBreaksPredicate(user)
         let sortDescriptors = self.reportSortDescriptors()
         return self.reportsRequest(predicate, sortDescriptors: sortDescriptors)
     }
     
-    func reportsRequest(predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor] = []) -> NSFetchRequest {
+    func reportsRequest(_ predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor] = []) -> NSFetchRequest<NSFetchRequestResult> {
         return self.fetchRequest("Report", predicate: predicate, sortDescriptors: sortDescriptors)
     }
     
     // MARK: - Predicates
     
-    func userPredicate(user: User) -> NSPredicate {
+    func userPredicate(_ user: User) -> NSPredicate {
         return NSPredicate(format: "user = %@", user)
     }
     
     func currentUserPredicate() -> NSPredicate {
-        let user = (self.settings.enableTestUser) ? self.testUser : self.basicUser
-        return self.userPredicate(user)
+        let user = (self.settings.enableTestUser) ? self.settings.testUser : self.settings.basicUser
+        return self.userPredicate(user!)
     }
     
-    func reportsPredicateForParent(parent: Report?, user: User) -> NSPredicate {
+    func reportsPredicateForParent(_ parent: Report?, user: User) -> NSPredicate {
         return self.andPredicates([self.userPredicate(user), self.parentReportPredicate(parent)])
     }
     
-    func reportsPredicateForActivity(activity: Activity?, user: User) -> NSPredicate {
+    func reportsPredicateForActivity(_ activity: Activity?, user: User) -> NSPredicate {
         return self.andPredicates([self.userPredicate(user), self.activityPredicate(activity)])
     }
     
-    func activeReportsPredicate(user: User) -> NSPredicate {
+    func activeReportsPredicate(_ user: User) -> NSPredicate {
         return self.andPredicates([self.userPredicate(user), self.isActivePredicate(), self.isntBreakPredicate()])
     }
     
-    func activeBreaksPredicate(user: User) -> NSPredicate {
+    func activeBreaksPredicate(_ user: User) -> NSPredicate {
         return self.andPredicates([self.userPredicate(user), self.isActivePredicate(), self.isBreakPredicate()])
     }
     
-    func parentReportPredicate(parent: Report?) -> NSPredicate {
+    func parentReportPredicate(_ parent: Report?) -> NSPredicate {
         return self.nullablePredicate("parent", object: parent)
     }
     
-    func activityPredicate(activity: Activity?) -> NSPredicate {
+    func activityPredicate(_ activity: Activity?) -> NSPredicate {
         return self.nullablePredicate("activity", object: activity)
     }
     
@@ -419,25 +420,25 @@ class AppData: Data {
     
     // MARK: - Merges
     
-    func mergeSettings(settings1: Settings, with settings2: Settings) {
+    func mergeSettings(_ settings1: Settings, with settings2: Settings) {
         
         print("### mergeSettings \(settings1) --- \(settings2)")
         
         // Merge the basic user.
-        if let basic1 = settings1.basicUser, basic2 = settings2.basicUser {
+        if let basic1 = settings1.basicUser, let basic2 = settings2.basicUser {
             self.mergeUser(basic1, with: basic2)
         }
         
         // Merge the test user.
-        if let test1 = settings1.testUser, test2 = settings2.testUser {
+        if let test1 = settings1.testUser, let test2 = settings2.testUser {
             self.mergeUser(test1, with: test2)
         }
         
         // Delete the newer settings.
-        self.context?.deleteObject(settings2)
+        self.context?.delete(settings2)
     }
     
-    func mergeUser(user1: User, with user2: User) {
+    func mergeUser(_ user1: User, with user2: User) {
         
         print("###  mergeUser \(user1) --- \(user2)")
         
@@ -449,7 +450,7 @@ class AppData: Data {
         
         for activity in user2.activities.allObjects as! [Activity] {
             activity.user = user1
-            activities.addObject(activity)
+            activities.add(activity)
         }
         
         print("###    there are now \(activities.count) activities")
@@ -462,7 +463,7 @@ class AppData: Data {
         
         for report in user2.reports.allObjects as! [Report] {
             report.user = user1
-            reports.addObject(report)
+            reports.add(report)
         }
         
         print("###    there are now \(reports.count) reports")
@@ -471,7 +472,7 @@ class AppData: Data {
         
         let organizedActivities = self.fetchOrganizedActivities(user1)
         
-        for var i = 0; i < organizedActivities.count - 1; i++ {
+        for i in 0 ..< organizedActivities.count - 1 {
             
             let a = organizedActivities[i]
             let b = organizedActivities[i + 1]
@@ -486,7 +487,7 @@ class AppData: Data {
         
         let orderedActivities = self.fetchOrderedActivities(user1)
         
-        for var i = 0; i < orderedActivities.count - 1; i++ {
+        for i in 0 ..< orderedActivities.count - 1 {
             
             let a = orderedActivities[i]
             let b = orderedActivities[i + 1]
@@ -498,10 +499,10 @@ class AppData: Data {
         }
         
         // Delete the newer user.
-        self.context?.deleteObject(user2)
+        self.context?.delete(user2)
     }
     
-    func mergeActivity(activity1: Activity, with activity2: Activity, user: User) {
+    func mergeActivity(_ activity1: Activity, with activity2: Activity, user: User) {
         
         print("###      mergeActivity \(activity1) --- \(activity2)")
         
@@ -513,7 +514,7 @@ class AppData: Data {
         
         for report in activity2.reports.allObjects as! [Report] {
             report.activity = activity1
-            reports.addObject(report)
+            reports.add(report)
         }
         
         print("###        there are now \(reports.count) reports")
@@ -522,7 +523,7 @@ class AppData: Data {
         
         let orderedReports = self.fetchOrganizedReportsForActivity(activity1, user: user)
         
-        for var i = 0; i < orderedReports.count - 1; i++ {
+        for i in 0 ..< orderedReports.count - 1 {
             
             let a = orderedReports[i]
             let b = orderedReports[i + 1]
@@ -534,10 +535,10 @@ class AppData: Data {
         }
         
         // Delete the newer activity.
-        self.context?.deleteObject(activity2)
+        self.context?.delete(activity2)
     }
     
-    func mergeReport(report1: Report, with report2: Report, user: User) {
+    func mergeReport(_ report1: Report, with report2: Report, user: User) {
         
         print("###        mergeReport \(report1) --- \(report2)")
         
@@ -549,7 +550,7 @@ class AppData: Data {
         
         for abreak in report2.breaks.allObjects as! [Report] {
             abreak.parent = report1
-            breaks.addObject(abreak)
+            breaks.add(abreak)
         }
         
         print("###          there were \(breaks.count) breaks")
@@ -558,7 +559,7 @@ class AppData: Data {
         
         let orderedBreaks = self.fetchOrganizedReportsForParent(report1, user: user)
         
-        for var i = 0; i < orderedBreaks.count - 1; i++ {
+        for i in 0 ..< orderedBreaks.count - 1 {
             
             let a = orderedBreaks[i]
             let b = orderedBreaks[i + 1]
@@ -570,6 +571,6 @@ class AppData: Data {
         }
         
         // Delete the newer report.
-        self.context?.deleteObject(report2)
+        self.context?.delete(report2)
     }
 }

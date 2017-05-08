@@ -14,10 +14,10 @@ class Activity: NSManagedObject {
     @NSManaged var user:             User?
     @NSManaged var name:             String
     @NSManaged var uniqueName:       String
-    @NSManaged var creationDate:     NSDate
+    @NSManaged var creationDate:     Date
     @NSManaged var permanent:        Bool
     @NSManaged var silent:           Bool
-    @NSManaged var atomic:           Bool
+    @NSManaged var type:             Int
     @NSManaged var breakInterval:    Double
     @NSManaged var breakLength:      Double
     @NSManaged var progressInterval: Double

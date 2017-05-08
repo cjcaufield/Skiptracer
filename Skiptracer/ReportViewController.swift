@@ -7,11 +7,12 @@
 //
 
 import UIKit
+import SecretKit
 
-class ReportViewController: SGExpandableTableViewController {
+class ReportViewController: SGDynamicTableViewController, BreakObserver {
     
     var report: Report? { return self.object as? Report }
-    var timer: NSTimer?
+    var timer: Timer?
     var user: User?
     var activities = [Activity]()
     var endDateIndex = 2
@@ -24,23 +25,27 @@ class ReportViewController: SGExpandableTableViewController {
         }
     }
     
-    override func createCellData() -> [[SGCellData]] {
+    override func makeTableData() -> SGTableData {
         
-        var data = [
-            [ SGCellData(cellIdentifier: PICKER_LABEL_CELL_ID, title: "Activity",   modelPath: "activity.name") ],
-            [ SGCellData(cellIdentifier: DATE_LABEL_CELL_ID,   title: "Start Date", modelPath: "startDate") ],
-            [ SGCellData(cellIdentifier: DATE_LABEL_CELL_ID,   title: "End Date",   modelPath: "liveEndDate") ],
-            [ SGCellData(cellIdentifier: BREAKS_LABEL_CELL_ID, title: "Breaks",     modelPath: "breaks.@count") ],
-            [ SGCellData(cellIdentifier: TEXT_VIEW_CELL_ID,    title: "",           modelPath: "notes") ]
-        ]
+        let tableData =
+            SGTableData(
+                SGSectionData(
+                    SGRowData(cellIdentifier: PICKER_LABEL_CELL_ID, title: "Activity",   modelPath: "activity.name"),
+                    SGRowData(cellIdentifier: DATE_LABEL_CELL_ID,   title: "Start Date", modelPath: "startDate"),
+                    SGRowData(cellIdentifier: DATE_LABEL_CELL_ID,   title: "End Date",   modelPath: "liveEndDate"),
+                    SGRowData(cellIdentifier: LABEL_CELL_ID,        title: "Breaks",     modelPath: "breaks.@count"),
+                    SGRowData(cellIdentifier: TEXT_VIEW_CELL_ID,    title: "",           modelPath: "notes")
+                )
+            )
         
         if self.report?.isBreak ?? false {
-            data.removeAtIndex(3)
-            data.removeAtIndex(0)
-            self.endDateIndex--
+            let section = tableData.sections[0]
+            section.rows.remove(at: 3)
+            section.rows.remove(at: 0)
+            self.endDateIndex -= 1
         }
         
-        return data
+        return tableData
     }
     
     override func viewDidLoad() {
@@ -48,26 +53,26 @@ class ReportViewController: SGExpandableTableViewController {
         Notifications.shared.registerBreakObserver(self)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         AppData.shared.registerCloudDataObserver(self)
         self.refreshData()
-        self.timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "updateClock", userInfo: nil, repeats: true)
+        self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateClock), userInfo: nil, repeats: true)
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         AppData.shared.unregisterCloudDataObserver(self)
         self.timer?.invalidate()
         self.timer = nil
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let newViewController = segue.destinationViewController as! ReportsViewController
-        newViewController.parent = self.report
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let newViewController = segue.destination as! ReportsViewController
+        newViewController.parentReport = self.report
     }
     
-    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+    func textView(_ textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
         if text == "\n" {
             textView.resignFirstResponder()
             return false
@@ -77,8 +82,8 @@ class ReportViewController: SGExpandableTableViewController {
     
     func updateClock() {
         if self.report?.active == true {
-            let path = NSIndexPath(forRow: 0, inSection: self.endDateIndex)
-            if let cell = self.tableView.cellForRowAtIndexPath(path) {
+            let path = IndexPath(row: 0, section: self.endDateIndex)
+            if let cell = self.tableView.cellForRow(at: path) {
                 self.configureCell(cell, atIndexPath: path)
             }
         }
@@ -95,7 +100,7 @@ class ReportViewController: SGExpandableTableViewController {
         self.updateClock()
     }
     
-    override func enabledStateForModelPath(modelPath: String?) -> Bool {
+    override func enabledStateForModelPath(_ modelPath: String?) -> Bool {
         
         if modelPath == nil {
             return true
@@ -116,7 +121,7 @@ class ReportViewController: SGExpandableTableViewController {
         }
     }
     
-    override func canExpandCell(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) -> Bool {
+    override func canExpandCell(_ cell: UITableViewCell, atIndexPath indexPath: IndexPath) -> Bool {
         
         let data = self.dataForIndexPath(indexPath)
         
@@ -128,31 +133,31 @@ class ReportViewController: SGExpandableTableViewController {
         return isLabelCell
     }
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let path = NSIndexPath(forRow: 0, inSection: section)
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let path = IndexPath(row: 0, section: section)
         let data = self.dataForIndexPath(path)
         let isNotes = (data?.modelPath == "notes")
         return isNotes ? "Notes" : nil
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        super.tableView(tableView, didSelectRowAtIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        super.tableView(tableView, didSelectRowAt: indexPath)
         let info = self.dataForIndexPath(indexPath)
-        if info?.cellIdentifier == BREAKS_LABEL_CELL_ID {
-            self.performSegueWithIdentifier("ReportsSegue", sender: self)
+        if info?.cellIdentifier == LABEL_CELL_ID /* break cell */ {
+            self.performSegue(withIdentifier: "ReportsSegue", sender: self)
         }
     }
     
-    override func configurePicker(picker: UIPickerView, forModelPath path: String?) {
+    override func configurePickerView(_ picker: UIPickerView, forModelPath path: String?) {
         if let activity = self.report?.activity {
-            if let index = self.activities.indexOf(activity) {
+            if let index = self.activities.index(of: activity) {
                 picker.reloadAllComponents()
                 picker.selectRow(index, inComponent: 0, animated: false)
             }
         }
     }
     
-    override func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    override func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         if component != 0 {
             return ""
         } else {
@@ -160,7 +165,7 @@ class ReportViewController: SGExpandableTableViewController {
         }
     }
     
-    override func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    override func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
         if let path = self.targetedCell() {
             
@@ -169,7 +174,7 @@ class ReportViewController: SGExpandableTableViewController {
             self.report?.activity = activity
             AppData.shared.save()
             
-            if let cell = self.tableView.cellForRowAtIndexPath(path) {
+            if let cell = self.tableView.cellForRow(at: path) {
                 self.configureCell(cell, atIndexPath: path)
             }
             
@@ -177,23 +182,23 @@ class ReportViewController: SGExpandableTableViewController {
         }
     }
     
-    override func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    override func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
-    override func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    override func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return self.activities.count
     }
     
-    func autoBreakWasStarted(note: NSNotification) {
+    func autoBreakWasStarted(_ note: Notification) {
         self.refreshData()
     }
     
-    func autoBreakWasEnded(note: NSNotification) {
+    func autoBreakWasEnded(_ note: Notification) {
         self.refreshData()
     }
     
-    func cloudDataDidChange(note: NSNotification) {
+    func cloudDataDidChange(_ note: Notification) {
         self.refreshData()
     }
 }

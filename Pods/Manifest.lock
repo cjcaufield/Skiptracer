@@ -1,0 +1,16 @@
+PODS:
+  - SecretKit (0.1.7)
+
+DEPENDENCIES:
+  - SecretKit (from `~/Work/SecretKit`)
+
+EXTERNAL SOURCES:
+  SecretKit:
+    :path: "~/Work/SecretKit"
+
+SPEC CHECKSUMS:
+  SecretKit: f3a5635df2cde25e7280c9db142e2687ce7d0aec
+
+PODFILE CHECKSUM: cf8640fe0331882e46d025fcdd56384107069abe
+
+COCOAPODS: 1.1.1

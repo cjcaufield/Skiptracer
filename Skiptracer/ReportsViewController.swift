@@ -8,23 +8,24 @@
 
 import UIKit
 import CoreData
+import SecretKit
 
-class ReportsViewController: SGCoreDataTableViewController {
+class ReportsViewController: SGCoreDataTableViewController, UserObserver, BreakObserver {
 
-    var timer: NSTimer?
-    var parent: Report?
+    var timer: Timer?
+    var parentReport: Report?
     
     override var needsBackButton: Bool {
-        return self.parent != nil
+        return self.parentReport != nil
     }
     
-    override var entityName: String {
+    override var typeName: String {
         return "Report"
     }
     
     override var fetchPredicate: NSPredicate? {
         let data = AppData.shared
-        return data.reportsPredicateForParent(self.parent, user: data.settings.currentUser!)
+        return data.reportsPredicateForParent(self.parentReport, user: data.settings.currentUser!)
     }
     
     override var sortDescriptors: [NSSortDescriptor] {
@@ -32,11 +33,11 @@ class ReportsViewController: SGCoreDataTableViewController {
     }
     
     override var sectionKey: String? {
-        return (self.parent == nil) ? "dayText" : nil
+        return (self.parentReport == nil) ? "dayText" : nil
     }
     
     override var headerHeight: CGFloat {
-        return (self.parent == nil) ? 32.0 : 0.0
+        return (self.parentReport == nil) ? 32.0 : 0.0
     }
     
     override func viewDidLoad() {
@@ -46,20 +47,20 @@ class ReportsViewController: SGCoreDataTableViewController {
         Notifications.shared.registerBreakObserver(self)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.configureView()
-        self.timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "updateClock", userInfo: nil, repeats: true)
+        self.timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateClock), userInfo: nil, repeats: true)
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         self.timer?.invalidate()
         self.timer = nil
     }
     
     func configureView() {
-        self.title = (self.parent == nil) ? "Reports" : "Breaks"
+        self.title = (self.parentReport == nil) ? "History" : "Breaks"
         self.refreshData()
     }
     
@@ -70,8 +71,8 @@ class ReportsViewController: SGCoreDataTableViewController {
         
         for report in activeReports {
             if report != nil && report!.active {
-                if let path = self.fetchController.indexPathForObject(report!) {
-                    if let cell = self.tableView.cellForRowAtIndexPath(path) as? ReportsTableViewCell {
+                if let path = self.fetchController.indexPath(forObject: report!) {
+                    if let cell = self.tableView.cellForRow(at: path) as? ReportsTableViewCell {
                         self.configureCell(cell, withObject: report!)
                     }
                 }
@@ -79,35 +80,35 @@ class ReportsViewController: SGCoreDataTableViewController {
         }
     }
     
-    override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let header = view as! UITableViewHeaderFooterView
         header.textLabel?.textColor = UIColor(white: 0.6, alpha: 1.0)
-        header.textLabel?.font = UIFont.systemFontOfSize(12.0)
+        header.textLabel?.font = UIFont.systemFont(ofSize: 12.0)
         header.textLabel?.frame = header.frame
         if self.centerHeaderText {
-            header.textLabel?.textAlignment = NSTextAlignment.Center
+            header.textLabel?.textAlignment = NSTextAlignment.center
         }
     }
     
-    override func cellIdentifierForObject(object: AnyObject) -> String {
+    override func cellIdentifierForObject(_ object: AnyObject) -> String {
         return "Report"
     }
     
-    override func createNewObject() -> NSManagedObject {
+    override func createNewObject() -> AnyObject {
         let data = AppData.shared
         let user = data.settings.currentUser
-        let isBreak = (self.parent != nil)
-        return data.createReport(nil, parent: parent, user: user, active: false, isBreak: isBreak)
+        let isBreak = (self.parentReport != nil)
+        return data.createReport(nil, parent: parentReport, user: user, active: false, isBreak: isBreak)
     }
     
-    override func deleteObject(object: NSManagedObject) {
+    override func deleteObject(_ object: AnyObject, at indexPath: IndexPath) {
         if AppData.shared.settings.currentUser?.currentReport != nil {
             Notifications.shared.cancelAllNotifications()
         }
-        super.deleteObject(object)
+        super.deleteObject(object, at: indexPath)
     }
     
-    override func configureCell(cell: UITableViewCell, withObject object: AnyObject) {
+    override func configureCell(_ cell: UITableViewCell, withObject object: AnyObject) {
         
         let report = object as? Report
         
@@ -123,15 +124,15 @@ class ReportsViewController: SGCoreDataTableViewController {
                 //statsCell.backgroundColor = UIColor(red: 0.0, green: 0.478, blue: 1.0, alpha: 0.03)
             } else {
                 //statsCell.leftLabel.textColor = UIColor.blackColor()
-                statsCell.rightLabel.textColor = UIColor.blackColor()
+                statsCell.rightLabel.textColor = UIColor.black
                 //statsCell.backgroundColor = UIColor.whiteColor()
             }
         }
     }
     
-    override func didSelectObject(object: AnyObject, new: Bool = false) {
+    override func didSelectObject(_ object: AnyObject, new: Bool = false) {
         
-        let newController = self.storyboard?.instantiateViewControllerWithIdentifier("Report") as! ReportViewController
+        let newController = self.storyboard?.instantiateViewController(withIdentifier: "Report") as! ReportViewController
         newController.showDoneButton = new
         newController.object = object
         newController.title = self.nameForReport(object as? Report)
@@ -139,14 +140,14 @@ class ReportsViewController: SGCoreDataTableViewController {
         self.navigationController?.pushViewController(newController, animated: true)
     }
     
-    func nameForReport(report: Report?) -> String {
+    func nameForReport(_ report: Report?) -> String {
         
         var name = "Untitled"
         
         if report != nil && report!.isBreak {
             name = "Break"
             if let breaks = self.fetchController.fetchedObjects as? [Report] {
-                if let index = breaks.indexOf(report!) {
+                if let index = breaks.index(of: report!) {
                     name += " \(breaks.count - index)"
                 }
             }
@@ -157,15 +158,15 @@ class ReportsViewController: SGCoreDataTableViewController {
         return name
     }
     
-    func userWasSwitched(note: NSNotification) {
+    func userWasSwitched(_ note: Notification) {
         self.updateRequest()
     }
     
-    func autoBreakWasStarted(note: NSNotification) {
+    func autoBreakWasStarted(_ note: Notification) {
         self.refreshData()
     }
     
-    func autoBreakWasEnded(note: NSNotification) {
+    func autoBreakWasEnded(_ note: Notification) {
         self.refreshData()
     }
 }

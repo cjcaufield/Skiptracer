@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14E7f" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="8118.17" systemVersion="15A178w" minimumToolsVersion="Xcode 4.3">
     <entity name="Activity" representedClassName="Skiptracer.Activity" syncable="YES">
-        <attribute name="atomic" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="breakInterval" optional="YES" attributeType="Double" defaultValueString="3600" syncable="YES"/>
         <attribute name="breakLength" optional="YES" attributeType="Double" defaultValueString="300" syncable="YES"/>
         <attribute name="breaks" optional="YES" attributeType="Boolean" syncable="YES"/>
@@ -11,6 +10,7 @@
         <attribute name="progress" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="progressInterval" optional="YES" attributeType="Double" defaultValueString="1800" syncable="YES"/>
         <attribute name="silent" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="uniqueName" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="reports" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Report" inverseName="activity" inverseEntity="Report" syncable="YES"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="activities" inverseEntity="User" syncable="YES"/>

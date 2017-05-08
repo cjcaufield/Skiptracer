@@ -1,0 +1,4 @@
+Refactoring
+===========
+
+- Change all contant lets (ie. CAPS_LET_NAME) with enums (and associated strings)

@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     var app: UIApplication {
-        return UIApplication.sharedApplication()
+        return UIApplication.shared
     }
     
     class var shared: AppDelegate {
@@ -41,10 +41,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         super.init()
         assert(_shared == nil)
         _shared = self
-        Notifications.shared // Force the notification system to be created early.
+        let _ = Notifications.shared // Force the notification system to be created early.
     }
     
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
         /*
         log.setup(
@@ -56,10 +56,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             fileLogLevel: .Debug)
         */
         
-        AppData.shared // Force the database to be created early.
+        let _ = AppData.shared // Force the database to be created early.
         
         // Handle notifications that arrived in the background.
-        let localNote: AnyObject? = launchOptions?[UIApplicationLaunchOptionsLocalNotificationKey]
+        let localNote: AnyObject? = launchOptions?[UIApplicationLaunchOptionsKey.localNotification] as AnyObject?
         
         if let note = localNote as? UILocalNotification {
             Notifications.shared.handleNotification(note)
@@ -69,37 +69,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-    func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
+    func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
         Notifications.shared.handleNotification(notification)
     }
 
-    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
+    func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, for notification: UILocalNotification, completionHandler: @escaping () -> Void) {
         Notifications.shared.handleNotification(notification, action: identifier)
         completionHandler()
     }
     
-    func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
+    func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
         print("Did register for notification settings \(notificationSettings)")
     }
     
-    func applicationWillResignActive(application: UIApplication) {
+    func applicationWillResignActive(_ application: UIApplication) {
         //ENTRY_LOG()
     }
     
-    func applicationDidEnterBackground(application: UIApplication) {
+    func applicationDidEnterBackground(_ application: UIApplication) {
         //ENTRY_LOG()
     }
     
-    func applicationWillEnterForeground(application: UIApplication) {
+    func applicationWillEnterForeground(_ application: UIApplication) {
         //ENTRY_LOG()
     }
     
-    func applicationDidBecomeActive(application: UIApplication) {
+    func applicationDidBecomeActive(_ application: UIApplication) {
         //ENTRY_LOG()
         Notifications.shared.scheduleAllNotificationsForCurrentReport()
     }
     
-    func applicationWillTerminate(application: UIApplication) {
+    func applicationWillTerminate(_ application: UIApplication) {
         AppData.shared.save()
     }
 }

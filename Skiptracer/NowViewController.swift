@@ -9,14 +9,14 @@
 import UIKit
 import CoreData
 
-class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+@objc class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, BreakObserver {
     
     @IBOutlet var picker: UIPickerView!
     @IBOutlet var clockLabel: UILabel!
     @IBOutlet var stopButton: UIButton!
     @IBOutlet var breakButton: UIButton!
     
-    var timer: NSTimer?
+    var timer: Timer?
     var user: User?
     var activities = [Activity]()
 
@@ -27,47 +27,47 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         self.configureButton(self.stopButton)
         self.configureButton(self.breakButton)
         
-        self.refreshData(animated: false)
+        self.refreshData(false)
         
         Notifications.shared.registerBreakObserver(self)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         AppData.shared.registerCloudDataObserver(self)
-        self.refreshData(animated: false)
-        self.timer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: "updateClock", userInfo: nil, repeats: true)
+        self.refreshData(false)
+        self.timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updateClock), userInfo: nil, repeats: true)
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         AppData.shared.unregisterCloudDataObserver(self)
         self.timer?.invalidate()
         self.timer = nil
     }
     
-    func configureButton(button: UIButton) {
+    func configureButton(_ button: UIButton) {
         
-        let enabledColor = button.titleColorForState(.Normal)!
-        var disabledColor = button.titleColorForState(.Disabled)!
-        disabledColor = disabledColor.colorWithAlphaComponent(0.5)
+        let enabledColor = button.titleColor(for: UIControlState())!
+        var disabledColor = button.titleColor(for: .disabled)!
+        disabledColor = disabledColor.withAlphaComponent(0.5)
         
-        let color = button.enabled ? enabledColor : disabledColor
-        let backgroundColor = button.enabled ? UIColor.whiteColor() : UIColor.clearColor()
+        let color = button.isEnabled ? enabledColor : disabledColor
+        let backgroundColor = button.isEnabled ? UIColor.white : UIColor.clear
         
         let layer = button.layer
         layer.cornerRadius = button.bounds.width / 2.0
         layer.borderWidth = 1.0
-        layer.borderColor = color.CGColor
-        layer.backgroundColor = backgroundColor.CGColor
+        layer.borderColor = color.cgColor
+        layer.backgroundColor = backgroundColor.cgColor
     }
     
-    func setButtonState(button: UIButton, on: Bool) {
-        button.enabled = on
+    func setButtonState(_ button: UIButton, on: Bool) {
+        button.isEnabled = on
         self.configureButton(button)
     }
     
-    func updateClockControlStates(animated: Bool = true) {
+    func updateClockControlStates(_ animated: Bool = true) {
         
         let stopEnabled = (self.user?.currentReport != nil)
         let inBreak = (self.user?.currentBreak != nil)
@@ -78,7 +78,7 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         
         let breakImageTitle = inBreak ? "Play" : "Pause"
         let breakImage = UIImage(named: breakImageTitle)
-        self.breakButton.setImage(breakImage, forState: .Normal)
+        self.breakButton.setImage(breakImage, for: UIControlState())
         
         let alpha: CGFloat = (!stopEnabled || inBreak) ? 0.3 : 1.0
         self.setClockAlpha(alpha, animated: animated)
@@ -88,7 +88,7 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         self.clockLabel.text = self.user?.currentReport?.lengthWithoutBreaksText ?? "--:--"
     }
     
-    func setClockAlpha(alpha: CGFloat, animated: Bool) {
+    func setClockAlpha(_ alpha: CGFloat, animated: Bool) {
         
         func setClockLabelAlpha() {
             self.clockLabel.alpha = alpha
@@ -99,16 +99,16 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
             return
         }
         
-        UIView.transitionWithView(
-            self.clockLabel,
+        UIView.transition(
+            with: self.clockLabel,
             duration: 0.5,
-            options: .CurveEaseInOut,
+            options: UIViewAnimationOptions(),
             animations: setClockLabelAlpha,
             completion: nil
         )
     }
     
-    func refreshData(animated animated: Bool) {
+    func refreshData(_ animated: Bool) {
         
         let data = AppData.shared
         self.user = data.settings.currentUser
@@ -117,7 +117,7 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         var row = 0
         
         if let activity = self.user?.currentReport?.activity {
-            if let index = self.activities.indexOf(activity) {
+            if let index = self.activities.index(of: activity) {
                 row = index
             }
         }
@@ -129,48 +129,36 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         self.updateClockControlStates(animated)
     }
     
-    func switchActivity(newActivity: Activity) {
+    func switchActivity(_ newActivity: Activity) {
         StatusController.shared.switchActivity(newActivity)
         self.updateClock()
         self.updateClockControlStates()
     }
     
-    @IBAction func finishActivity(sender: AnyObject) {
+    @IBAction func finishActivity(_ sender: AnyObject) {
         if let relaxing = self.activities.first {
             self.picker.selectRow(0, inComponent: 0, animated: true)
             self.switchActivity(relaxing)
         }
     }
     
-    @IBAction func toggleBreak(sender: AnyObject) {
+    @IBAction func toggleBreak(_ sender: AnyObject) {
         StatusController.shared.toggleBreak()
         self.updateClock()
         self.updateClockControlStates()
     }
-    /*
-    func endCurrentBreak() {
-        StatusController.shared.endCurrentBreak()
+    
+    func autoBreakWasStarted(_ note: Notification) {
         self.updateClock()
         self.updateClockControlStates()
     }
     
-    func endReport(report: Report) {
-        StatusController.shared.endReport(report)
-        self.updateClock()
-        self.updateClockControlStates()
-    }
-    */
-    func autoBreakWasStarted(note: NSNotification) {
+    func autoBreakWasEnded(_ note: Notification) {
         self.updateClock()
         self.updateClockControlStates()
     }
     
-    func autoBreakWasEnded(note: NSNotification) {
-        self.updateClock()
-        self.updateClockControlStates()
-    }
-    
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         if component != 0 {
             return ""
         } else {
@@ -178,22 +166,22 @@ class NowViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDat
         }
     }
     
-    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if row >= self.activities.count { return }
         let newActivity = self.activities[row]
         self.switchActivity(newActivity)
     }
     
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return self.activities.count
     }
     
-    func cloudDataDidChange(note: NSNotification) {
-        self.refreshData(animated: true)
+    func cloudDataDidChange(_ note: Notification) {
+        self.refreshData(true)
     }
 }
 

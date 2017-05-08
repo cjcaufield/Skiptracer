@@ -34,11 +34,11 @@ class AppStore: NSObject, SKRequestDelegate, SKProductsRequestDelegate {
         return SKPaymentQueue.canMakePayments()
     }
     
-    func purchase(productID: String) -> Bool {
+    func purchase(_ productID: String) -> Bool {
         return self.beginPurchase(productID)
     }
     
-    func beginPurchase(productID: String) -> Bool {
+    func beginPurchase(_ productID: String) -> Bool {
         
         if !self.canPurchase() {
             return false
@@ -51,18 +51,18 @@ class AppStore: NSObject, SKRequestDelegate, SKProductsRequestDelegate {
         return true
     }
     
-    func completePurchase(product: SKProduct) -> Bool {
+    func completePurchase(_ product: SKProduct) -> Bool {
     
         if !self.canPurchase() {
             return false
         }
         
         let payment = SKPayment(product: product)
-        SKPaymentQueue.defaultQueue().addPayment(payment)
+        SKPaymentQueue.default().add(payment)
         return true
     }
     
-    func productsRequest(request: SKProductsRequest, didReceiveResponse response: SKProductsResponse) {
+    func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         
         if response.products.count > 0 {
             
@@ -74,12 +74,12 @@ class AppStore: NSObject, SKRequestDelegate, SKProductsRequestDelegate {
                 //let description = product.localizedDescription
                 //let price = product.price
                 
-                completePurchase(product)
+                let _ = completePurchase(product)
             }
         }
     }
     
-    func paymentQueue(queue: SKPaymentQueue!, updatedTransactions transactions: [AnyObject]!) {
+    func paymentQueue(_ queue: SKPaymentQueue!, updatedTransactions transactions: [AnyObject]!) {
         
         for possibleTransaction in transactions {
             
@@ -87,11 +87,11 @@ class AppStore: NSObject, SKRequestDelegate, SKProductsRequestDelegate {
                 
                 switch transaction.transactionState {
                         
-                    case .Purchased:
-                        SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+                    case .purchased:
+                        SKPaymentQueue.default().finishTransaction(transaction)
                         
-                    case .Failed:
-                        SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+                    case .failed:
+                        SKPaymentQueue.default().finishTransaction(transaction)
                         
                     // case .Restored:
                     //     self.restoreTransaction(transaction)
@@ -103,7 +103,7 @@ class AppStore: NSObject, SKRequestDelegate, SKProductsRequestDelegate {
         }
     }
     
-    func request(request: SKRequest, didFailWithError error: NSError) {
+    func request(_ request: SKRequest, didFailWithError error: Error) {
         // handle error
     }
 }
